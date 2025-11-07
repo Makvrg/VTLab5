@@ -1,0 +1,18 @@
+package com.example.input.commands;
+
+import com.example.controller.CollectionController;
+
+public class HelpCommand implements Command {
+
+    private final CollectionController collectionController;
+
+    public HelpCommand(CollectionController collectionController) {
+        this.collectionController = collectionController;
+    }
+
+    @Override
+    public void execute() {
+        collectionController.help();
+    }
+
+}
