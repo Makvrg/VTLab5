@@ -18,4 +18,8 @@ public class CollectionController {
         collectionService.exit();
     }
 
+    public void info() {
+        collectionService.info();
+    }
+
 }

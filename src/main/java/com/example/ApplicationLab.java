@@ -1,6 +1,7 @@
 package com.example;
 
 import com.example.controller.CollectionController;
+import com.example.entity.City;
 import com.example.input.CollectionInput;
 import com.example.input.readers.IReader;
 import com.example.input.readers.file.FileReader;
@@ -15,11 +16,21 @@ public class ApplicationLab {
 
     public static void main(String[] args) {
 
-        List<String> collection = new ArrayList<>();
+        List<City> collection = new ArrayList<>();
+        String collectionType = "ArrayList";
+        String elementsType = "City";
 
         CollectionRepository collectionRepository =
-                new CollectionRepository(collection);
+                new CollectionRepository(collection,
+                                         collectionType,
+                                         elementsType);
 
+        CollectionInput collectionInput = getCollectionInput(collectionRepository);
+
+        collectionInput.run();
+    }
+
+    private static CollectionInput getCollectionInput(CollectionRepository collectionRepository) {
         CollectionService collectionService =
                 new CollectionService(collectionRepository);
 
@@ -28,6 +39,7 @@ public class ApplicationLab {
 
         IReader terminalReader = new TerminalReader();
         IReader fileReader = new FileReader();
+
         CollectionInput collectionInput =
                 new CollectionInput(terminalReader,
                                     fileReader,
@@ -35,7 +47,7 @@ public class ApplicationLab {
 
         collectionService.addShutdownListener(collectionInput);
 
-        collectionInput.run();
+        return collectionInput;
     }
 
 }

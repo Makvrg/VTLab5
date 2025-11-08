@@ -9,7 +9,7 @@ import java.util.List;
 public class CollectionService {
 
     private final CollectionRepository collectionRepository;
-    private List<IShutdownListener> listeners = new ArrayList<>();
+    private final List<IShutdownListener> listeners = new ArrayList<>();
 
     public CollectionService(CollectionRepository collectionRepository) {
         this.collectionRepository = collectionRepository;
@@ -48,16 +48,19 @@ public class CollectionService {
                 
                 filter_less_than_population_density populationDensity : вывести элементы, значение поля populationDensity которых меньше заданного
                 
-                print_field_descending_government : вывести значения поля government всех элементов в порядке убывания
-                """;
+                print_field_descending_government : вывести значения поля government всех элементов в порядке убывания""";
         System.out.println(helpText);
     }
 
     public void exit() {
         System.out.println("Закрытие приложения");
         shutdown();
-
     }
+
+    public void info() {
+        collectionRepository.info();
+    }
+
 
     public void addShutdownListener(IShutdownListener listener) {
         listeners.add(listener);

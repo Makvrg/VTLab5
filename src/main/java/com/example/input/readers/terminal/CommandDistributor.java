@@ -1,10 +1,7 @@
 package com.example.input.readers.terminal;
 
 import com.example.controller.CollectionController;
-import com.example.input.commands.ExitCommand;
-import com.example.input.commands.ICommand;
-import com.example.input.commands.HelpCommand;
-import com.example.input.commands.UnknownCommand;
+import com.example.input.commands.*;
 
 
 import java.util.Map;
@@ -23,7 +20,9 @@ public class CommandDistributor {
                         "help",
                         args -> new HelpCommand(collectionController),
                         "exit",
-                        args -> new ExitCommand(collectionController)
+                        args -> new ExitCommand(collectionController),
+                        "info",
+                        args -> new InfoCommand(collectionController)
                 );
     }
 
