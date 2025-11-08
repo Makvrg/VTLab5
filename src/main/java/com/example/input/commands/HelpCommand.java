@@ -2,7 +2,7 @@ package com.example.input.commands;
 
 import com.example.controller.CollectionController;
 
-public class HelpCommand implements Command {
+public class HelpCommand implements ICommand {
 
     private final CollectionController collectionController;
 

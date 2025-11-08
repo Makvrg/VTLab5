@@ -2,7 +2,7 @@ package com.example.input.commands;
 
 import com.example.controller.CollectionController;
 
-public class ExitCommand implements Command {
+public class ExitCommand implements ICommand {
 
     private final CollectionController collectionController;
 
@@ -12,7 +12,7 @@ public class ExitCommand implements Command {
 
     @Override
     public void execute() {
-        collectionController.
+        collectionController.exit();
     }
 
 }

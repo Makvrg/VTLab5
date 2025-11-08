@@ -1,4 +1,4 @@
-package com.example.input.terminal;
+package com.example.input.readers.terminal;
 
 public class Processor {
 

@@ -1,6 +1,6 @@
 package com.example.input.commands;
 
-public interface Command {
+public interface ICommand {
 
     void execute();
 
