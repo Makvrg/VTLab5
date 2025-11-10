@@ -3,7 +3,6 @@ package com.example.input;
 import com.example.controller.CollectionController;
 import com.example.event.IShutdownListener;
 import com.example.input.readers.IReader;
-import com.example.input.readers.terminal.CommandDistributor;
 import com.example.input.readers.terminal.Processor;
 
 public class CollectionInput implements IRunnable, IShutdownListener {
@@ -25,11 +24,13 @@ public class CollectionInput implements IRunnable, IShutdownListener {
     public void run() {
         System.out.println("Приложение запущено");
         CommandDistributor commandDistributor =
-                new CommandDistributor(collectionController);
+                new CommandDistributor(collectionController,
+                                       terminalReader);
 
         while (!shutdown) {
             System.out.print("> ");
-            String[] inputArgs = Processor.process(terminalReader.read());
+            String[] inputArgs = Processor.processTerminalCommand(
+                    terminalReader.read());
 
             commandDistributor.distribute(inputArgs);
         }

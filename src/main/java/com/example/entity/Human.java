@@ -8,6 +8,21 @@ public class Human {
     private double height;
     private Date birthday;
 
+    public Human(double height, Date birthday) {
+        this.height = height;
+        this.birthday = birthday;
+    }
+
+
+    public double getHeight() {
+        return height;
+    }
+
+    public Date getBirthday() {
+        return birthday;
+    }
+
+
     public void setHeight(double height) {
         this.height = height;
     }

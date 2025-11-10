@@ -1,6 +1,7 @@
 package com.example.service;
 
 import com.example.event.IShutdownListener;
+import com.example.input.dto.CityAddRequestDto;
 import com.example.repository.CollectionRepository;
 
 import java.util.ArrayList;
@@ -59,6 +60,10 @@ public class CollectionService {
 
     public void info() {
         collectionRepository.info();
+    }
+
+    public void add(CityAddRequestDto cityAddRequestDto) {
+        System.out.println("Ну типа надо добавить в коллекцию, ведь валидацию объект прошёл");
     }
 
 

@@ -12,6 +12,16 @@ public class Coordinates {
         this.y = y;
     }
 
+
+    public double getX() {
+        return x;
+    }
+
+    public float getY() {
+        return y;
+    }
+
+
     public void setX(double x) {
         this.x = x;
     }
@@ -19,6 +29,7 @@ public class Coordinates {
     public void setY(float y) {
         this.y = y;
     }
+
 
     @Override
     public String toString() {

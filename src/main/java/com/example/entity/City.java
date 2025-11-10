@@ -35,12 +35,49 @@ public class City implements Comparable<City> {
         this.governor = governor;
     }
 
+
     public Long getId() {
         return id;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public Coordinates getCoordinates() {
+        return coordinates;
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public Long getArea() {
+        return area;
+    }
+
+    public Integer getPopulation() {
+        return population;
+    }
+
+    public Float getMetersAboveSeaLevel() {
+        return metersAboveSeaLevel;
+    }
+
     public long getPopulationDensity() {
         return populationDensity;
+    }
+
+    public Integer getAgglomeration() {
+        return agglomeration;
+    }
+
+    public Government getGovernment() {
+        return government;
+    }
+
+    public Human getGovernor() {
+        return governor;
     }
 
 
