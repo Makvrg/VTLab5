@@ -1,5 +1,6 @@
 package com.example;
 
+import com.example.controller.CityAddRequestValidator;
 import com.example.controller.CollectionController;
 import com.example.entity.City;
 import com.example.input.CollectionInput;
@@ -34,8 +35,10 @@ public class ApplicationLab {
         CollectionService collectionService =
                 new CollectionService(collectionRepository);
 
+        CityAddRequestValidator cityAddRequestValidator = new CityAddRequestValidator();
         CollectionController collectionController =
-                new CollectionController(collectionService);
+                new CollectionController(collectionService,
+                                         cityAddRequestValidator);
 
         IReader terminalReader = new TerminalReader();
         IReader fileReader = new FileReader();

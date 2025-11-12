@@ -133,6 +133,14 @@ public class CollectionService {
         collectionRepository.clear();
     }
 
+    public void head() {
+        collectionRepository.head();
+    }
+
+    public void removeHead() {
+        collectionRepository.removeHead();
+    }
+
 
     public void addShutdownListener(IShutdownListener listener) {
         listeners.add(listener);

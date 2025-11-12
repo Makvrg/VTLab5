@@ -24,45 +24,9 @@ public class AddCommand implements ICommand {
                       IReader terminalReader) {
         this.collectionController = collectionController;
         this.terminalReader = terminalReader;
-        // TODO Можно сделать через enum
-        this.commands = new LinkedHashMap<>();
+        commands = buildMapOfCommands(terminalReader);
 
-        this.commands.put("name",
-                cityAddRequestDto -> new NameInputCommand(cityAddRequestDto,
-                                                          terminalReader));
-        this.commands.put("x",
-                cityAddRequestDto -> new CoordXInputCommand(cityAddRequestDto,
-                                                            terminalReader));
-        this.commands.put("y",
-                cityAddRequestDto -> new CoordYInputCommand(cityAddRequestDto,
-                                                            terminalReader));
-        this.commands.put("area",
-                cityAddRequestDto -> new AreaInputCommand(cityAddRequestDto,
-                                                          terminalReader));
-        this.commands.put("population",
-                cityAddRequestDto -> new PopulationInputCommand(cityAddRequestDto,
-                                                                terminalReader));
-        this.commands.put("metersAboveSeaLevel",
-                cityAddRequestDto -> new MetersAboveSeaInputCommand(cityAddRequestDto,
-                                                                    terminalReader));
-        this.commands.put("populationDensity",
-                cityAddRequestDto -> new PopulationDensityInputCommand(cityAddRequestDto,
-                                                                       terminalReader));
-        this.commands.put("agglomeration",
-                cityAddRequestDto -> new AgglomerationInputCommand(cityAddRequestDto,
-                                                                   terminalReader));
-        this.commands.put("government",
-                cityAddRequestDto -> new GovernmentInputCommand(cityAddRequestDto,
-                                                                terminalReader));
-        this.commands.put("height",
-                cityAddRequestDto -> new HeightInputCommand(cityAddRequestDto,
-                                                            terminalReader));
-        this.commands.put("birthday",
-                cityAddRequestDto -> new BirthdayInputCommand(cityAddRequestDto,
-                                                              terminalReader));
-
-        this.cityAddRequestDto = new CityAddRequestDto();
-
+        cityAddRequestDto = new CityAddRequestDto();
         cityAddRequestDto.setCoordinatesRequestDto(new CoordinatesRequestDto());
         cityAddRequestDto.setGovernorRequestDto(new HumanRequestDto());
     }
@@ -101,6 +65,68 @@ public class AddCommand implements ICommand {
             errorsWithMessages = e.getErrorsWithMessages();
             execute();
         }
+    }
+
+    private Map<String, Function<CityAddRequestDto, ICommand>> buildMapOfCommands(
+            IReader terminalReader
+    ) {
+        Map<String, Function<CityAddRequestDto, ICommand>> commands = new LinkedHashMap<>();
+
+        commands.put("name",
+                     cityAddRequestDto ->
+                        new NameInputCommand(cityAddRequestDto,
+                                             terminalReader)
+        );
+        commands.put("x",
+                     cityAddRequestDto ->
+                        new CoordXInputCommand(cityAddRequestDto,
+                                               terminalReader)
+        );
+        commands.put("y",
+                     cityAddRequestDto ->
+                        new CoordYInputCommand(cityAddRequestDto,
+                                               terminalReader)
+        );
+        commands.put("area",
+                     cityAddRequestDto ->
+                        new AreaInputCommand(cityAddRequestDto,
+                                             terminalReader));
+        commands.put("population",
+                     cityAddRequestDto ->
+                        new PopulationInputCommand(cityAddRequestDto,
+                                                   terminalReader)
+        );
+        commands.put("metersAboveSeaLevel",
+                     cityAddRequestDto ->
+                        new MetersAboveSeaInputCommand(cityAddRequestDto,
+                                                       terminalReader)
+        );
+        commands.put("populationDensity",
+                     cityAddRequestDto ->
+                        new PopulationDensityInputCommand(cityAddRequestDto,
+                                                          terminalReader)
+        );
+        commands.put("agglomeration",
+                     cityAddRequestDto ->
+                        new AgglomerationInputCommand(cityAddRequestDto,
+                                                      terminalReader)
+        );
+        commands.put("government",
+                     cityAddRequestDto ->
+                        new GovernmentInputCommand(cityAddRequestDto,
+                                                   terminalReader)
+        );
+        commands.put("height",
+                     cityAddRequestDto ->
+                        new HeightInputCommand(cityAddRequestDto,
+                                               terminalReader)
+        );
+        commands.put("birthday",
+                     cityAddRequestDto ->
+                        new BirthdayInputCommand(cityAddRequestDto,
+                                                 terminalReader)
+        );
+        return commands;
     }
 
 }

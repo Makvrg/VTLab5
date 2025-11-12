@@ -69,4 +69,22 @@ public class CollectionRepository {
         }
     }
 
+    public void head() {
+        if (collectionWithInfo.getCountOfElements() > 0) {
+            System.out.print("Первый элемент коллекции: ");
+            System.out.println(collectionWithInfo.collection.getFirst());
+        } else {
+            System.out.println("Коллекция пуста");
+        }
+    }
+
+    public void removeHead() {
+        if (collectionWithInfo.getCountOfElements() > 0) {
+            System.out.print("Уделён первый элемент коллекции: ");
+            System.out.println(collectionWithInfo.collection.removeFirst());
+        } else {
+            System.out.println("Коллекция пуста");
+        }
+    }
+
 }
