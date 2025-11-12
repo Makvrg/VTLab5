@@ -1,7 +1,10 @@
-package com.example.controller;
+package com.example;
+
+import lombok.Getter;
 
 import java.util.Map;
 
+@Getter
 public class CityValidationException extends Exception {
 
     private final Map<String, String> errorsWithMessages;
@@ -11,7 +14,4 @@ public class CityValidationException extends Exception {
         this.errorsWithMessages = messages;
     }
 
-    public Map<String, String> getErrorsWithMessages() {
-        return errorsWithMessages;
-    }
 }

@@ -1,10 +1,12 @@
 package com.example.collection;
 
 import com.example.entity.City;
+import lombok.Getter;
 
 import java.util.Date;
 import java.util.List;
 
+@Getter
 public class CollectionWithInfo {
 
     public final List<City> collection;
@@ -19,18 +21,6 @@ public class CollectionWithInfo {
         this.initializationDate = new Date();
         this.collectionType = collectionType;
         this.elementsType = elementsType;
-    }
-
-    public Date getInitializationDate() {
-        return initializationDate;
-    }
-
-    public String getCollectionType() {
-        return collectionType;
-    }
-
-    public String getElementsType() {
-        return elementsType;
     }
 
     public int getCountOfElements() {

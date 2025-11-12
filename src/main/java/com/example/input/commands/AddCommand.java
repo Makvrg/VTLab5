@@ -1,6 +1,6 @@
 package com.example.input.commands;
 
-import com.example.controller.CityValidationException;
+import com.example.CityValidationException;
 import com.example.controller.CollectionController;
 import com.example.input.commands.lineinput.*;
 import com.example.input.dto.CityAddRequestDto;
@@ -63,8 +63,8 @@ public class AddCommand implements ICommand {
 
         this.cityAddRequestDto = new CityAddRequestDto();
 
-        cityAddRequestDto.setCoordinates(new CoordinatesRequestDto());
-        cityAddRequestDto.setGovernor(new HumanRequestDto());
+        cityAddRequestDto.setCoordinatesRequestDto(new CoordinatesRequestDto());
+        cityAddRequestDto.setGovernorRequestDto(new HumanRequestDto());
     }
 
     private void readElement(Map<String, String> errorsWithMessages) {
@@ -78,14 +78,17 @@ public class AddCommand implements ICommand {
                                              .execute()
             );
         } else {
+            System.out.println();
             System.out.println("Некоторые данные были некорректными");
             System.out.println("Пожалуйста, исправьте их:");
+            System.out.println();
             errorsWithMessages.values().forEach(System.out::println);
             errorsWithMessages.keySet().forEach(
                     command -> commands.get(command)
                                              .apply(cityAddRequestDto)
                                              .execute()
             );
+            System.out.println();
         }
     }
 

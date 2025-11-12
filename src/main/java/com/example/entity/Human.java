@@ -1,8 +1,13 @@
 package com.example.entity;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Date;
 import java.util.Objects;
 
+@Getter
+@Setter
 public class Human {
 
     private double height;
@@ -14,27 +19,10 @@ public class Human {
     }
 
 
-    public double getHeight() {
-        return height;
-    }
-
-    public Date getBirthday() {
-        return birthday;
-    }
-
-
-    public void setHeight(double height) {
-        this.height = height;
-    }
-
-    public void setBirthday(Date birthday) {
-        this.birthday = birthday;
-    }
-
     @Override
     public String toString() {
         return String.format("Human{height=%f, birthday=%s}",
-                             height, birthday.toString());
+                             height, birthday);
     }
 
     @Override

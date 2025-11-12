@@ -20,7 +20,7 @@ public class CoordXInputCommand implements ICommand {
     public void execute() {
         System.out.println("x-координата - вещественное число, не превышающее 579");
         System.out.print("Введите x-координату города > ");
-        cityAddRequestDto.getCoordinates().setX(
+        cityAddRequestDto.getCoordinatesRequestDto().setX(
                 Processor.processTerminalData(terminalReader.read())
         );
     }

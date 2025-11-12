@@ -1,5 +1,8 @@
 package com.example.entity;
 
+import lombok.Getter;
+
+@Getter
 public enum Government {
     ARISTOCRACY("Аристократия"),
     ANARCHY("Анархия"),
@@ -13,8 +16,17 @@ public enum Government {
         this.title = title;
     }
 
-    public String getTitle() {
-        return title;
+    public static Government fromString(String text) {
+        if (text == null) {
+            return null;
+        }
+
+        for (Government government : Government.values()) {
+            if (government.title.equals(text)) {
+                return government;
+            }
+        }
+        throw new IllegalArgumentException("Неизвестное значение: " + text);
     }
 
     @Override

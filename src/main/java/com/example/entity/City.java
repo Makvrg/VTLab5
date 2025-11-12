@@ -1,20 +1,46 @@
 package com.example.entity;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Date;
 import java.util.Objects;
 
+@Getter
 public class City implements Comparable<City> {
 
+    @Setter(AccessLevel.NONE)
     private Long id;
+
+    @Setter
     private String name;
+
+    @Setter
     private Coordinates coordinates;
+
+    @Setter(AccessLevel.NONE)
     private Date creationDate;
+
+    @Setter
     private Long area;
+
+    @Setter
     private Integer population;
+
+    @Setter
     private Float metersAboveSeaLevel;
+
+    @Setter
     private long populationDensity;
+
+    @Setter
     private Integer agglomeration;
+
+    @Setter
     private Government government;
+
+    @Setter
     private Human governor;
 
     public City(Long id, String name, Coordinates coordinates,
@@ -32,88 +58,6 @@ public class City implements Comparable<City> {
         this.populationDensity = populationDensity;
         this.agglomeration = agglomeration;
         this.government = government;
-        this.governor = governor;
-    }
-
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Coordinates getCoordinates() {
-        return coordinates;
-    }
-
-    public Date getCreationDate() {
-        return creationDate;
-    }
-
-    public Long getArea() {
-        return area;
-    }
-
-    public Integer getPopulation() {
-        return population;
-    }
-
-    public Float getMetersAboveSeaLevel() {
-        return metersAboveSeaLevel;
-    }
-
-    public long getPopulationDensity() {
-        return populationDensity;
-    }
-
-    public Integer getAgglomeration() {
-        return agglomeration;
-    }
-
-    public Government getGovernment() {
-        return government;
-    }
-
-    public Human getGovernor() {
-        return governor;
-    }
-
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setCoordinates(Coordinates coordinates) {
-        this.coordinates = coordinates;
-    }
-
-    public void setArea(Long area) {
-        this.area = area;
-    }
-
-    public void setPopulation(Integer population) {
-        this.population = population;
-    }
-
-    public void setMetersAboveSeaLevel(Float metersAboveSeaLevel) {
-        this.metersAboveSeaLevel = metersAboveSeaLevel;
-    }
-
-    public void setPopulationDensity(long populationDensity) {
-        this.populationDensity = populationDensity;
-    }
-
-    public void setAgglomeration(Integer agglomeration) {
-        this.agglomeration = agglomeration;
-    }
-
-    public void setGovernment(Government government) {
-        this.government = government;
-    }
-
-    public void setGovernor(Human governor) {
         this.governor = governor;
     }
 

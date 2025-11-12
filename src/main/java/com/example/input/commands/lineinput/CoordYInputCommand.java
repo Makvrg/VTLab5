@@ -20,7 +20,7 @@ public class CoordYInputCommand implements ICommand {
     public void execute() {
         System.out.println("y-координата - вещественное число");
         System.out.print("Введите y-координату города > ");
-        cityAddRequestDto.getCoordinates().setY(
+        cityAddRequestDto.getCoordinatesRequestDto().setY(
                 Processor.processTerminalData(terminalReader.read())
         );
     }

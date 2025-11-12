@@ -18,8 +18,7 @@ public class PopulationDensityInputCommand implements ICommand {
 
     @Override
     public void execute() {
-        System.out.println("Плотность населения - вещественное число");
-        System.out.print("Введите плотность населения города > ");
+        System.out.print("Введите целочисленную плотность населения города > ");
         cityAddRequestDto.setPopulationDensity(
                 Processor.processTerminalData(terminalReader.read())
         );

@@ -7,6 +7,9 @@ public class Processor {
     }
 
     public static String processTerminalData(String line) {
+        if (line.isEmpty()) {
+            return null;
+        }
         return line.strip();
     }
 

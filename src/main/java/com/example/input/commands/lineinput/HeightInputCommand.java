@@ -20,7 +20,7 @@ public class HeightInputCommand implements ICommand {
     public void execute() {
         System.out.println("Рост губернатора - вещественное число в метрах");
         System.out.print("Введите рост губернатора города > ");
-        cityAddRequestDto.getGovernor().setHeight(
+        cityAddRequestDto.getGovernorRequestDto().setHeight(
                 Processor.processTerminalData(terminalReader.read())
         );
     }

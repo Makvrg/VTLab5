@@ -25,7 +25,14 @@ public class CommandDistributor {
                         args -> new InfoCommand(collectionController),
                         "add",
                         args -> new AddCommand(collectionController,
-                                                      terminalReader)
+                                                      terminalReader),
+                        "show",
+                        args -> new ShowCommand(collectionController),
+                        "remove_by_id",
+                        args -> new RemoveByIdCommand(collectionController,
+                                                             args),
+                        "clear",
+                        args -> new ClearCommand(collectionController)
                 );
     }
 

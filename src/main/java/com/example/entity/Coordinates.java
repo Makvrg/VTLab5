@@ -1,7 +1,12 @@
 package com.example.entity;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Objects;
 
+@Getter
+@Setter
 public class Coordinates {
 
     private double x;
@@ -9,24 +14,6 @@ public class Coordinates {
 
     public Coordinates(double x, float y) {
         this.x = x;
-        this.y = y;
-    }
-
-
-    public double getX() {
-        return x;
-    }
-
-    public float getY() {
-        return y;
-    }
-
-
-    public void setX(double x) {
-        this.x = x;
-    }
-
-    public void setY(float y) {
         this.y = y;
     }
 

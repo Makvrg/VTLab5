@@ -21,7 +21,7 @@ public class BirthdayInputCommand implements ICommand {
         System.out.println(
                 "Дата и время рождения губернатора имеют формат дд-ММ-гггг ЧЧ:мм:сс");
         System.out.print("Введите дату и время рождения губернатора города > ");
-        cityAddRequestDto.getGovernor().setBirthday(
+        cityAddRequestDto.getGovernorRequestDto().setBirthday(
                 Processor.processTerminalData(terminalReader.read())
         );
     }
