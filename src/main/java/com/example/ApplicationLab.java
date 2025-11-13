@@ -1,6 +1,6 @@
 package com.example;
 
-import com.example.controller.CityAddRequestValidator;
+import com.example.controller.CityAddRequestDtoValidator;
 import com.example.controller.CollectionController;
 import com.example.entity.City;
 import com.example.input.CollectionInput;
@@ -8,6 +8,7 @@ import com.example.input.readers.IReader;
 import com.example.input.readers.file.FileReader;
 import com.example.input.readers.terminal.TerminalReader;
 import com.example.repository.CollectionRepository;
+import com.example.service.CityAddDtoValidator;
 import com.example.service.CollectionService;
 
 import java.util.ArrayList;
@@ -32,13 +33,15 @@ public class ApplicationLab {
     }
 
     private static CollectionInput getCollectionInput(CollectionRepository collectionRepository) {
+        CityAddDtoValidator cityAddDtoValidator = new CityAddDtoValidator();
         CollectionService collectionService =
-                new CollectionService(collectionRepository);
+                new CollectionService(collectionRepository,
+                                      cityAddDtoValidator);
 
-        CityAddRequestValidator cityAddRequestValidator = new CityAddRequestValidator();
+        CityAddRequestDtoValidator cityAddRequestDtoValidator = new CityAddRequestDtoValidator();
         CollectionController collectionController =
                 new CollectionController(collectionService,
-                                         cityAddRequestValidator);
+                        cityAddRequestDtoValidator);
 
         IReader terminalReader = new TerminalReader();
         IReader fileReader = new FileReader();

@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class CityAddRequestValidator {
+public class CityAddRequestDtoValidator {
 
     public Map<String, String> validate(CityAddRequestDto cityAddRequestDto) {
         Map<String, String> errorsWithMessages = new LinkedHashMap<>();

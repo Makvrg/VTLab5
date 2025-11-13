@@ -3,6 +3,7 @@ package com.example.input;
 import com.example.controller.CollectionController;
 import com.example.input.commands.*;
 import com.example.input.readers.IReader;
+import com.example.service.AddMode;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,7 +36,9 @@ public class CommandDistributor {
         commands.put("exit", _ -> new ExitCommand(collectionController));
         commands.put("info", _ -> new InfoCommand(collectionController));
         commands.put("add", _ -> new AddCommand(collectionController,
-                                                       terminalReader));
+                                                       terminalReader,
+                                                       AddMode.ALWAYS)
+        );
         commands.put("show", _ -> new ShowCommand(collectionController));
         commands.put("remove_by_id",
                      args -> new RemoveByIdCommand(collectionController,
@@ -43,6 +46,10 @@ public class CommandDistributor {
         commands.put("clear", _ -> new ClearCommand(collectionController));
         commands.put("head", _ -> new HeadCommand(collectionController));
         commands.put("remove_head", _ -> new RemoveHeadCommand(collectionController));
+        commands.put("add_if_max", _ -> new AddCommand(collectionController,
+                                                              terminalReader,
+                                                              AddMode.IF_MAX)
+        );
 
         return commands;
     }

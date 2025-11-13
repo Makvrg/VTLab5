@@ -3,25 +3,27 @@ package com.example.service;
 import com.example.CityValidationException;
 import com.example.entity.City;
 import com.example.entity.Coordinates;
-import com.example.entity.Government;
 import com.example.entity.Human;
 import com.example.event.IShutdownListener;
 import com.example.input.dto.CityAddDto;
-import com.example.input.dto.CityAddRequestDto;
 import com.example.repository.CollectionRepository;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public class CollectionService {
 
     private final CollectionRepository collectionRepository;
     private final List<IShutdownListener> listeners = new ArrayList<>();
+    private final CityAddDtoValidator cityAddDtoValidator;
     private Long id = 0L;
 
-    public CollectionService(CollectionRepository collectionRepository) {
+    public CollectionService(CollectionRepository collectionRepository,
+                             CityAddDtoValidator cityAddDtoValidator) {
         this.collectionRepository = collectionRepository;
+        this.cityAddDtoValidator = cityAddDtoValidator;
     }
 
     public void help() {
@@ -70,52 +72,38 @@ public class CollectionService {
         collectionRepository.info();
     }
 
-    public void add(CityAddDto cityAddDto) throws CityValidationException {
-        double MAX_COORD_X = 579;
-        Map<String, String> errorsWithMessages = new LinkedHashMap<>();
+    public void add(CityAddDto cityAddDto,
+                    AddMode addMode) throws CityValidationException {
 
-        if (cityAddDto.getCoordinatesDto().getX() > MAX_COORD_X) {
-            errorsWithMessages.put("x",
-                                   "Координата x не должна быть больше " + MAX_COORD_X);
-        }
-        if (cityAddDto.getArea() <= 0) {
-            errorsWithMessages.put("area", "Площадь города должна быть больше 0");
-        }
-        if (cityAddDto.getPopulation() <= 0) {
-            errorsWithMessages.put("population",
-                                   "Численность населения должна быть больше 0");
-        }
-        if (cityAddDto.getPopulationDensity() <= 0) {
-            errorsWithMessages.put("populationDensity",
-                    "Плотность населения должна быть больше 0");
-        }
-        if (cityAddDto.getGovernorDto().getHeight() <= 0) {
-            errorsWithMessages.put("height",
-                                   "Рост губернатора города должен быть больше 0");
-        }
+        Map<String, String> errorsWithMessages =
+                cityAddDtoValidator.validate(cityAddDto);
 
         if (errorsWithMessages.isEmpty()) {
-            collectionRepository.add(
-                    new City(
-                            id++,
-                            cityAddDto.getName(),
-                            new Coordinates(
-                                    cityAddDto.getCoordinatesDto().getX(),
-                                    cityAddDto.getCoordinatesDto().getY()
-                            ),
-                            new Date(),
-                            cityAddDto.getArea(),
-                            cityAddDto.getPopulation(),
-                            cityAddDto.getMetersAboveSeaLevel(),
-                            cityAddDto.getPopulationDensity(),
-                            cityAddDto.getAgglomeration(),
-                            cityAddDto.getGovernment(),
-                            new Human(
-                                    cityAddDto.getGovernorDto().getHeight(),
-                                    cityAddDto.getGovernorDto().getBirthday()
-                            )
+            City city = new City(
+                    id++,
+                    cityAddDto.getName(),
+                    new Coordinates(
+                            cityAddDto.getCoordinatesDto()
+                                    .getX(),
+                            cityAddDto.getCoordinatesDto()
+                                    .getY()
+                    ),
+                    new Date(),
+                    cityAddDto.getArea(),
+                    cityAddDto.getPopulation(),
+                    cityAddDto.getMetersAboveSeaLevel(),
+                    cityAddDto.getPopulationDensity(),
+                    cityAddDto.getAgglomeration(),
+                    cityAddDto.getGovernment(),
+                    new Human(
+                            cityAddDto.getGovernorDto()
+                                    .getHeight(),
+                            cityAddDto.getGovernorDto()
+                                    .getBirthday()
                     )
             );
+            addMode.apply(collectionRepository, city);
+
         } else {
             throw new CityValidationException(errorsWithMessages);
         }

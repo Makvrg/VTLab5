@@ -6,24 +6,23 @@ import com.example.input.dto.CityAddDto;
 import com.example.input.dto.CityAddRequestDto;
 import com.example.input.dto.CoordinatesDto;
 import com.example.input.dto.HumanDto;
+import com.example.service.AddMode;
 import com.example.service.CollectionService;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class CollectionController {
 
     private final CollectionService collectionService;
-    private final CityAddRequestValidator cityAddRequestValidator;
+    private final CityAddRequestDtoValidator cityAddRequestValidator;
 
     public CollectionController(CollectionService collectionService,
-                                CityAddRequestValidator cityAddRequestValidator) {
+                                CityAddRequestDtoValidator cityAddRequestDtoValidator) {
         this.collectionService = collectionService;
-        this.cityAddRequestValidator = cityAddRequestValidator;
+        this.cityAddRequestValidator = cityAddRequestDtoValidator;
     }
 
     public void help() {
@@ -38,8 +37,8 @@ public class CollectionController {
         collectionService.info();
     }
 
-    public void add(CityAddRequestDto cityAddRequestDto)
-            throws CityValidationException {
+    public void add(CityAddRequestDto cityAddRequestDto,
+                    AddMode addMode) throws CityValidationException {
 
         Map<String, String> errorsWithMessages =
                 cityAddRequestValidator.validate(cityAddRequestDto);
@@ -80,7 +79,7 @@ public class CollectionController {
                                     birthday
                             )
                     );
-            collectionService.add(cityAddDto);
+            collectionService.add(cityAddDto, addMode);
         } else {
             throw new CityValidationException(errorsWithMessages);
         }

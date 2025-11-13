@@ -87,4 +87,9 @@ public class CollectionRepository {
         }
     }
 
+    public void addIfMax(City city) {
+        // TODO
+        System.out.println("Я - метод addIfMax репозитория, и я работаю");
+    }
+
 }
