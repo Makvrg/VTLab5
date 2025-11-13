@@ -33,7 +33,8 @@ public class CityAddRequestDtoValidator {
                     "Координата y должна быть вещественным числом");
         }
         if (cityAddRequestDto.getArea() == null) {
-            errorsWithMessages.put("area", "Площадь города должна быть целым числом");
+            errorsWithMessages.put("area",
+                    "Площадь города должна быть целым числом");
         } else {
             try {
                 Long.valueOf(cityAddRequestDto.getArea());

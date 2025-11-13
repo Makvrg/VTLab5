@@ -113,4 +113,28 @@ public class CollectionController {
         collectionService.removeHead();
     }
 
+    public void removeAllByPopulationDensityCommand(String populationDensity) {
+        try {
+            collectionService.removeAllByPopulationDensityCommand(
+                    Long.parseLong(populationDensity)
+            );
+        } catch (NumberFormatException | NullPointerException e) {
+            System.out.println("Плотность населения города должна быть целым числом");
+        }
+    }
+
+    public void filterLessThanPopulationDensity(String populationDensity) {
+        try {
+            collectionService.filterLessThanPopulationDensity(
+                    Long.parseLong(populationDensity)
+            );
+        } catch (NumberFormatException | NullPointerException e) {
+            System.out.println("Плотность населения города должна быть целым числом");
+        }
+    }
+
+    public void printFieldDescendingGovernment() {
+        collectionService.printFieldDescendingGovernment();
+    }
+
 }

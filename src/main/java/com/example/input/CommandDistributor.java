@@ -50,7 +50,20 @@ public class CommandDistributor {
                                                               terminalReader,
                                                               AddMode.IF_MAX)
         );
-
+        commands.put("remove_all_by_population_density",
+                     args -> new RemoveAllByPopulationDensityCommand(
+                             collectionController,
+                             args)
+        );
+        commands.put("filter_less_than_population_density",
+                args -> new FilterLessThanPopulationDensityCommand(
+                        collectionController,
+                        args)
+        );
+        commands.put("print_field_descending_government",
+                _ -> new PrintFieldDescendingGovernmentCommand(
+                        collectionController)
+        );
         return commands;
     }
 

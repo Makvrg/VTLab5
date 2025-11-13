@@ -2,9 +2,9 @@ package com.example.repository;
 
 import com.example.collection.CollectionWithInfo;
 import com.example.entity.City;
+import com.example.entity.Government;
 
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class CollectionRepository {
 
@@ -36,6 +36,18 @@ public class CollectionRepository {
     public void add(City city) {
         collectionWithInfo.collection.add(city);
         System.out.println("Объект City успешно добавлен в коллекцию");
+    }
+
+    public void addIfMax(City city) {
+        if (collectionWithInfo.getCountOfElements() > 0) {
+            City maxCity = Collections.max(collectionWithInfo.collection);
+            if (city.compareTo(maxCity) > 0) {
+                collectionWithInfo.collection.add(city);
+                System.out.println("Новый объект успешно добавлен в коллекцию");
+                return;
+            }
+            System.out.println("Объект не был добавлен в коллекцию");
+        }
     }
 
     public void show() {
@@ -87,9 +99,39 @@ public class CollectionRepository {
         }
     }
 
-    public void addIfMax(City city) {
-        // TODO
-        System.out.println("Я - метод addIfMax репозитория, и я работаю");
+    public void removeAllByPopulationDensityCommand(long populationDensity) {
+        collectionWithInfo.collection.removeIf(
+                city -> city.getPopulationDensity() == populationDensity
+        );
+        System.out.println("Все City с заданными population density удалены из коллекции");
+    }
+
+    public void filterLessThanPopulationDensity(long populationDensity) {
+        if (collectionWithInfo.getCountOfElements() > 0) {
+            for (City city : collectionWithInfo.collection) {
+                if (city.getPopulationDensity() < populationDensity) {
+                    System.out.println(city);
+                }
+            }
+        } else {
+            System.out.println("Коллекция пуста");
+        }
+    }
+
+    public void printFieldDescendingGovernment() {
+        if (collectionWithInfo.getCountOfElements() > 0) {
+
+            List<Government> listOfGov = new ArrayList<>();
+            for (City city : collectionWithInfo.collection) {
+                listOfGov.add(city.getGovernment());
+            }
+            listOfGov.sort(null);
+            for (int i = collectionWithInfo.collection.size() - 1; i >= 0; i--) {
+                System.out.println(listOfGov.get(i));
+            }
+        } else {
+            System.out.println("Коллекция пуста");
+        }
     }
 
 }

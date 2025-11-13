@@ -129,6 +129,28 @@ public class CollectionService {
         collectionRepository.removeHead();
     }
 
+    public void removeAllByPopulationDensityCommand(long populationDensity) {
+        if (populationDensity <= 0) {
+            System.out.println("Плотность населения города должна быть больше 0");
+        } else {
+            collectionRepository.removeAllByPopulationDensityCommand(
+                    populationDensity);
+        }
+    }
+
+    public void filterLessThanPopulationDensity(long populationDensity) {
+        if (populationDensity <= 0) {
+            System.out.println("Плотность населения города должна быть больше 0");
+        } else {
+            collectionRepository.filterLessThanPopulationDensity(
+                    populationDensity);
+        }
+    }
+
+    public void printFieldDescendingGovernment() {
+        collectionRepository.printFieldDescendingGovernment();
+    }
+
 
     public void addShutdownListener(IShutdownListener listener) {
         listeners.add(listener);

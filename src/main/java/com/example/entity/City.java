@@ -64,8 +64,10 @@ public class City implements Comparable<City> {
 
     @Override
     public int compareTo(City city) {
-        Long thisDigit = area * population * agglomeration;
-        Long cityDigit = city.area * city.population * city.agglomeration;
+        Long thisDigit = area * population
+                * ((agglomeration != null) ? agglomeration : 1);
+        Long cityDigit = city.area * city.population
+                * ((city.agglomeration != null) ? city.agglomeration : 1);
         return thisDigit.compareTo(cityDigit);
     }
 
