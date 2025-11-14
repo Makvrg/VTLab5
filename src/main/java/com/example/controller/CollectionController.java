@@ -2,12 +2,10 @@ package com.example.controller;
 
 import com.example.CityValidationException;
 import com.example.entity.Government;
-import com.example.input.dto.CityAddDto;
-import com.example.input.dto.CityAddRequestDto;
-import com.example.input.dto.CoordinatesDto;
-import com.example.input.dto.HumanDto;
-import com.example.service.AddMode;
+import com.example.input.dto.*;
+import com.example.service.ActionData;
 import com.example.service.CollectionService;
+import com.example.service.InputMode;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -17,12 +15,12 @@ import java.util.Map;
 public class CollectionController {
 
     private final CollectionService collectionService;
-    private final CityAddRequestDtoValidator cityAddRequestValidator;
+    private final CityInputRequestDtoValidator cityAddRequestValidator;
 
     public CollectionController(CollectionService collectionService,
-                                CityAddRequestDtoValidator cityAddRequestDtoValidator) {
+                                CityInputRequestDtoValidator cityInputRequestDtoValidator) {
         this.collectionService = collectionService;
-        this.cityAddRequestValidator = cityAddRequestDtoValidator;
+        this.cityAddRequestValidator = cityInputRequestDtoValidator;
     }
 
     public void help() {
@@ -37,49 +35,73 @@ public class CollectionController {
         collectionService.info();
     }
 
-    public void add(CityAddRequestDto cityAddRequestDto,
-                    AddMode addMode) throws CityValidationException {
+    // TODO Выделить в отдельный валидатор
+    public void controlInputActionData(InputActionData inputActionData)
+            throws InputActionDataValidationException {
+        if (inputActionData.getId() != null) {
+            try {
+                Long.parseLong(inputActionData.getId());
+            } catch (NumberFormatException | NullPointerException e) {
+                throw new InputActionDataValidationException(
+                        "Аргумент id должен быть целым числом"
+                );
+            }
+            collectionService.servicingInputActionData(inputActionData);
+        }
+    }
+
+    public void controlInputCity(CityInputRequestDto cityInputRequestDto,
+                                 InputMode inputMode,
+                                 InputActionData inputActionData) throws CityValidationException {
 
         Map<String, String> errorsWithMessages =
-                cityAddRequestValidator.validate(cityAddRequestDto);
+                cityAddRequestValidator.validate(cityInputRequestDto);
 
         if (errorsWithMessages.isEmpty()) {
+            ActionData actionData = new ActionData();
+
+            if (inputActionData.getId() != null) {
+                actionData.setId(Long.valueOf(inputActionData.getId()));
+            }
+
             Date birthday = null;
-            if (cityAddRequestDto.getGovernorRequestDto().getBirthday() != null) {
+            if (cityInputRequestDto.getGovernorRequestDto().getBirthday() != null) {
                 SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
                 sdf.setLenient(false);
                 try {
-                    birthday = sdf.parse(cityAddRequestDto.getGovernorRequestDto().getBirthday());
+                    birthday = sdf.parse(cityInputRequestDto.getGovernorRequestDto().getBirthday());
                 } catch (ParseException e) {
                     throw new IllegalArgumentException(e);
                 }
             }
-            CityAddDto cityAddDto =
-                    new CityAddDto(
-                            cityAddRequestDto.getName(),
+            CityInputDto cityInputDto =
+                    new CityInputDto(
+                            cityInputRequestDto.getName(),
                             new CoordinatesDto(
-                                    Double.parseDouble(cityAddRequestDto.getCoordinatesRequestDto()
+                                    Double.parseDouble(cityInputRequestDto.getCoordinatesRequestDto()
                                                                         .getX()),
-                                    Float.parseFloat(cityAddRequestDto.getCoordinatesRequestDto()
+                                    Float.parseFloat(cityInputRequestDto.getCoordinatesRequestDto()
                                                                       .getY())
                             ),
-                            Long.valueOf(cityAddRequestDto.getArea()),
-                            Integer.valueOf(cityAddRequestDto.getPopulation()),
-                            (cityAddRequestDto.getMetersAboveSeaLevel() == null)
+                            Long.valueOf(cityInputRequestDto.getArea()),
+                            Integer.valueOf(cityInputRequestDto.getPopulation()),
+                            (cityInputRequestDto.getMetersAboveSeaLevel() == null)
                                     ? null
-                                    : Float.valueOf(cityAddRequestDto.getMetersAboveSeaLevel()),
-                            Long.parseLong(cityAddRequestDto.getPopulationDensity()),
-                            (cityAddRequestDto.getAgglomeration() == null)
+                                    : Float.valueOf(cityInputRequestDto.getMetersAboveSeaLevel()),
+                            Long.parseLong(cityInputRequestDto.getPopulationDensity()),
+                            (cityInputRequestDto.getAgglomeration() == null)
                                     ? null
-                                    : Integer.valueOf(cityAddRequestDto.getAgglomeration()),
-                            Government.fromString(cityAddRequestDto.getGovernment()),
+                                    : Integer.valueOf(cityInputRequestDto.getAgglomeration()),
+                            Government.fromString(cityInputRequestDto.getGovernment()),
                             new HumanDto(
-                                    Double.parseDouble(cityAddRequestDto.getGovernorRequestDto()
+                                    Double.parseDouble(cityInputRequestDto.getGovernorRequestDto()
                                                                         .getHeight()),
                                     birthday
                             )
                     );
-            collectionService.add(cityAddDto, addMode);
+            collectionService.servicingInputCity(cityInputDto,
+                                                 inputMode,
+                                                 actionData);
         } else {
             throw new CityValidationException(errorsWithMessages);
         }

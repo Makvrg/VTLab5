@@ -4,7 +4,10 @@ import com.example.collection.CollectionWithInfo;
 import com.example.entity.City;
 import com.example.entity.Government;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 public class CollectionRepository {
 
@@ -48,6 +51,28 @@ public class CollectionRepository {
             }
             System.out.println("Объект не был добавлен в коллекцию");
         }
+    }
+
+    public void updateById(Long id, City city) {
+        for (int i = 0; i < collectionWithInfo.getCountOfElements(); i++) {
+            if (collectionWithInfo.collection.get(i).getId().equals(id)) {
+
+                City updatedCity = collectionWithInfo.collection.get(i);
+                updatedCity.setName(city.getName());
+                updatedCity.setCoordinates(city.getCoordinates());
+                updatedCity.setArea(city.getArea());
+                updatedCity.setPopulation(city.getPopulation());
+                updatedCity.setMetersAboveSeaLevel(city.getMetersAboveSeaLevel());
+                updatedCity.setPopulationDensity(city.getPopulationDensity());
+                updatedCity.setAgglomeration(city.getAgglomeration());
+                updatedCity.setGovernment(city.getGovernment());
+                updatedCity.setGovernor(city.getGovernor());
+
+                System.out.println("Объект City по заданному id обновлён");
+                return;
+            }
+        }
+        System.out.println("Объект с таким id не существует в коллекции");
     }
 
     public void show() {

@@ -1,7 +1,7 @@
 package com.example.controller;
 
 import com.example.entity.Government;
-import com.example.input.dto.CityAddRequestDto;
+import com.example.input.dto.CityInputRequestDto;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -9,56 +9,56 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class CityAddRequestDtoValidator {
+public class CityInputRequestDtoValidator {
 
-    public Map<String, String> validate(CityAddRequestDto cityAddRequestDto) {
+    public Map<String, String> validate(CityInputRequestDto cityInputRequestDto) {
         Map<String, String> errorsWithMessages = new LinkedHashMap<>();
 
-        if (cityAddRequestDto.getName() == null
-                || cityAddRequestDto.getName().isBlank()) {
+        if (cityInputRequestDto.getName() == null
+                || cityInputRequestDto.getName().isBlank()) {
             errorsWithMessages.put("name", "Название города не должно быть пустым");
         }
         try {
-            Double.parseDouble(cityAddRequestDto.getCoordinatesRequestDto()
+            Double.parseDouble(cityInputRequestDto.getCoordinatesRequestDto()
                                                 .getX());
         } catch (NumberFormatException | NullPointerException e) {
             errorsWithMessages.put("x",
                     "Координата x должна быть вещественным числом");
         }
         try {
-            Float.parseFloat(cityAddRequestDto.getCoordinatesRequestDto()
+            Float.parseFloat(cityInputRequestDto.getCoordinatesRequestDto()
                                               .getY());
         } catch (NumberFormatException | NullPointerException e) {
             errorsWithMessages.put("y",
                     "Координата y должна быть вещественным числом");
         }
-        if (cityAddRequestDto.getArea() == null) {
+        if (cityInputRequestDto.getArea() == null) {
             errorsWithMessages.put("area",
                     "Площадь города должна быть целым числом");
         } else {
             try {
-                Long.valueOf(cityAddRequestDto.getArea());
+                Long.valueOf(cityInputRequestDto.getArea());
             } catch (NumberFormatException e) {
                 errorsWithMessages.put("area",
                         "Площадь города должна быть целым числом");
             }
         }
-        if (cityAddRequestDto.getPopulation() == null) {
+        if (cityInputRequestDto.getPopulation() == null) {
             errorsWithMessages.put(
                     "population",
                     "Численность населения города должна быть целым числом");
         } else {
             try {
-                Integer.valueOf(cityAddRequestDto.getPopulation());
+                Integer.valueOf(cityInputRequestDto.getPopulation());
             } catch (NumberFormatException e) {
                 errorsWithMessages.put(
                         "population",
                         "Численность населения города должна быть целым числом");
             }
         }
-        if (cityAddRequestDto.getMetersAboveSeaLevel() != null) {
+        if (cityInputRequestDto.getMetersAboveSeaLevel() != null) {
             try {
-                Float.valueOf(cityAddRequestDto.getMetersAboveSeaLevel());
+                Float.valueOf(cityInputRequestDto.getMetersAboveSeaLevel());
             } catch (NumberFormatException e) {
                 errorsWithMessages.put(
                         "metersAboveSeaLevel",
@@ -66,43 +66,43 @@ public class CityAddRequestDtoValidator {
             }
         }
         try {
-            Long.parseLong(cityAddRequestDto.getPopulationDensity());
+            Long.parseLong(cityInputRequestDto.getPopulationDensity());
         } catch (NumberFormatException | NullPointerException e) {
             errorsWithMessages.put(
                     "populationDensity",
                     "Плотность населения города должна быть целым числом");
         }
-        if (cityAddRequestDto.getAgglomeration() != null) {
+        if (cityInputRequestDto.getAgglomeration() != null) {
             try {
-                Integer.valueOf(cityAddRequestDto.getAgglomeration());
+                Integer.valueOf(cityInputRequestDto.getAgglomeration());
             } catch (NumberFormatException e) {
                 errorsWithMessages.put(
                         "agglomeration",
                         "Численность населения агломерации должна быть целым числом");
             }
         }
-        if (cityAddRequestDto.getGovernment() == null
+        if (cityInputRequestDto.getGovernment() == null
                 || !Arrays.stream(Government.values())
                 .map(Government::getTitle)
                 .toList()
-                .contains(cityAddRequestDto.getGovernment())) {
+                .contains(cityInputRequestDto.getGovernment())) {
             errorsWithMessages.put(
                     "government",
                     "Тип правления города должен быть одним из предложенных");
         }
         try {
-            Double.parseDouble(cityAddRequestDto.getGovernorRequestDto()
+            Double.parseDouble(cityInputRequestDto.getGovernorRequestDto()
                                                 .getHeight());
         } catch (NumberFormatException | NullPointerException e) {
             errorsWithMessages.put("height",
                     "Рост губернатора должен быть вещественным числом в метрах");
         }
-        if (cityAddRequestDto.getGovernorRequestDto().getBirthday() != null) {
+        if (cityInputRequestDto.getGovernorRequestDto().getBirthday() != null) {
             try {
                 SimpleDateFormat sdf =
                         new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
                 sdf.setLenient(false);
-                sdf.parse(cityAddRequestDto.getGovernorRequestDto().getBirthday());
+                sdf.parse(cityInputRequestDto.getGovernorRequestDto().getBirthday());
             } catch (ParseException e) {
                 errorsWithMessages.put("birthday",
                         "Дата и время рождения губернатора "

@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CityAddRequestDto {
+public class CityInputRequestDto {
 
     private String name;
     private CoordinatesRequestDto coordinatesRequestDto;

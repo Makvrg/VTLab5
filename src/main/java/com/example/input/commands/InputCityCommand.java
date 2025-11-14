@@ -2,48 +2,52 @@ package com.example.input.commands;
 
 import com.example.CityValidationException;
 import com.example.controller.CollectionController;
+import com.example.controller.InputActionDataValidationException;
 import com.example.entity.Government;
-import com.example.input.dto.CityAddRequestDto;
+import com.example.input.dto.CityInputRequestDto;
 import com.example.input.dto.CoordinatesRequestDto;
 import com.example.input.dto.HumanRequestDto;
+import com.example.input.dto.InputActionData;
 import com.example.input.readers.IReader;
 import com.example.input.readers.terminal.Processor;
-import com.example.service.AddMode;
+import com.example.service.InputMode;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public class AddCommand implements ICommand {
+public class InputCityCommand implements ICommand {
 
     private final CollectionController collectionController;
     private final IReader terminalReader;
-    private final AddMode addMode;
+    private final InputMode inputMode;
     private final Map<String, Runnable> readActions;
-    private final CityAddRequestDto cityAddRequestDto;
+    private final InputActionData inputActionData;
+    private final CityInputRequestDto cityInputRequestDto;
     private Map<String, String> errorsWithMessages = new LinkedHashMap<>();
 
-    public AddCommand(CollectionController collectionController,
-                      IReader terminalReader,
-                      AddMode addMode) {
+    public InputCityCommand(CollectionController collectionController,
+                            IReader terminalReader,
+                            InputMode inputMode,
+                            InputActionData inputActionData) {
         this.collectionController = collectionController;
         this.terminalReader = terminalReader;
-        this.addMode = addMode;
+        this.inputMode = inputMode;
+        this.inputActionData = inputActionData;
         readActions = buildMapOfReadActions();
 
-        cityAddRequestDto = new CityAddRequestDto();
-        cityAddRequestDto.setCoordinatesRequestDto(
+        cityInputRequestDto = new CityInputRequestDto();
+        cityInputRequestDto.setCoordinatesRequestDto(
                 new CoordinatesRequestDto()
         );
-        cityAddRequestDto.setGovernorRequestDto(
+        cityInputRequestDto.setGovernorRequestDto(
                 new HumanRequestDto()
         );
     }
 
     private void readManage(Map<String, String> errorsWithMessages) {
         if (errorsWithMessages.isEmpty()) {
-            System.out.println("Выбрано добавление нового объекта City");
-            System.out.println("Следуя указаниям, введите данные");
+            System.out.println("Следуя указаниям, введите данные объекта City");
 
             readActions.keySet().forEach(
                     action -> readActions.get(action)
@@ -65,9 +69,25 @@ public class AddCommand implements ICommand {
 
     @Override
     public void execute() {
+        if (!inputActionData.containsEmpty().isEmpty()) {
+            System.out.println("Отсутствуют аргументы: ");
+            for (String emptyField : inputActionData.containsEmpty()) {
+                System.out.print(emptyField);
+            }
+            System.out.println();
+            return;
+        }
+        try {
+            collectionController.controlInputActionData(inputActionData);
+        } catch (InputActionDataValidationException e) {
+            System.out.println(e.getMessage());
+            return;
+        }
         readManage(errorsWithMessages);
         try {
-            collectionController.add(cityAddRequestDto, addMode);
+            collectionController.controlInputCity(cityInputRequestDto,
+                                                  inputMode,
+                                                  inputActionData);
         } catch (CityValidationException e) {
             errorsWithMessages = e.getErrorsWithMessages();
             execute();
@@ -92,7 +112,7 @@ public class AddCommand implements ICommand {
                     setDtoField(
                             null,
                             "Введите название города",
-                            cityAddRequestDto::setName
+                            cityInputRequestDto::setName
                     )
         );
         commands.put("x",
@@ -100,7 +120,7 @@ public class AddCommand implements ICommand {
                     setDtoField(
                             "x-координата - вещественное число, не превышающее 579",
                             "Введите x-координату города",
-                            cityAddRequestDto.getCoordinatesRequestDto()::setX
+                            cityInputRequestDto.getCoordinatesRequestDto()::setX
                     )
         );
         commands.put("y",
@@ -108,7 +128,7 @@ public class AddCommand implements ICommand {
                     setDtoField(
                             "y-координата - вещественное число",
                             "Введите y-координату города",
-                            cityAddRequestDto.getCoordinatesRequestDto()::setY
+                            cityInputRequestDto.getCoordinatesRequestDto()::setY
                     )
         );
         commands.put("area",
@@ -116,7 +136,7 @@ public class AddCommand implements ICommand {
                     setDtoField(
                             null,
                             "Введите целочисленную площадь города",
-                            cityAddRequestDto::setArea
+                            cityInputRequestDto::setArea
                     )
         );
         commands.put("population",
@@ -124,7 +144,7 @@ public class AddCommand implements ICommand {
                     setDtoField(
                             null,
                             "Введите численность населения города",
-                            cityAddRequestDto::setPopulation
+                            cityInputRequestDto::setPopulation
                     )
         );
         commands.put("metersAboveSeaLevel",
@@ -132,7 +152,7 @@ public class AddCommand implements ICommand {
                     setDtoField(
                             "Количество метров над уровнем моря - вещественное число",
                             "Введите количество метров над уровнем моря",
-                            cityAddRequestDto::setMetersAboveSeaLevel
+                            cityInputRequestDto::setMetersAboveSeaLevel
                     )
         );
         commands.put("populationDensity",
@@ -140,7 +160,7 @@ public class AddCommand implements ICommand {
                     setDtoField(
                             null,
                             "Введите целочисленную плотность населения города",
-                            cityAddRequestDto::setPopulationDensity
+                            cityInputRequestDto::setPopulationDensity
                         )
         );
         commands.put("agglomeration",
@@ -148,7 +168,7 @@ public class AddCommand implements ICommand {
                     setDtoField(
                             null,
                             "Введите численность населения агломерации города",
-                            cityAddRequestDto::setAgglomeration
+                            cityInputRequestDto::setAgglomeration
                     )
         );
         StringBuilder governmentExplanation = new StringBuilder();
@@ -163,7 +183,7 @@ public class AddCommand implements ICommand {
                     setDtoField(
                             governmentExplanation.toString(),
                             "Введите тип правления города",
-                            cityAddRequestDto::setGovernment
+                            cityInputRequestDto::setGovernment
                     )
         );
         commands.put("height",
@@ -171,7 +191,7 @@ public class AddCommand implements ICommand {
                     setDtoField(
                             "Рост губернатора - вещественное число в метрах",
                             "Введите рост губернатора города",
-                            cityAddRequestDto.getGovernorRequestDto()::setHeight
+                            cityInputRequestDto.getGovernorRequestDto()::setHeight
                     )
         );
         commands.put("birthday",
@@ -179,7 +199,7 @@ public class AddCommand implements ICommand {
                     setDtoField(
                             "Дата и время рождения губернатора имеют формат дд-ММ-гггг ЧЧ:мм:сс",
                             "Введите дату и время рождения губернатора города",
-                            cityAddRequestDto.getGovernorRequestDto()::setBirthday
+                            cityInputRequestDto.getGovernorRequestDto()::setBirthday
                     )
         );
         return commands;

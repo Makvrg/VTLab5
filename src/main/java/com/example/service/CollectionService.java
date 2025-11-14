@@ -1,11 +1,13 @@
 package com.example.service;
 
 import com.example.CityValidationException;
+import com.example.controller.InputActionDataValidationException;
 import com.example.entity.City;
 import com.example.entity.Coordinates;
 import com.example.entity.Human;
 import com.example.event.IShutdownListener;
-import com.example.input.dto.CityAddDto;
+import com.example.input.dto.CityInputDto;
+import com.example.input.dto.InputActionData;
 import com.example.repository.CollectionRepository;
 
 import java.util.ArrayList;
@@ -17,13 +19,13 @@ public class CollectionService {
 
     private final CollectionRepository collectionRepository;
     private final List<IShutdownListener> listeners = new ArrayList<>();
-    private final CityAddDtoValidator cityAddDtoValidator;
+    private final CityInputDtoValidator cityInputDtoValidator;
     private Long id = 0L;
 
     public CollectionService(CollectionRepository collectionRepository,
-                             CityAddDtoValidator cityAddDtoValidator) {
+                             CityInputDtoValidator cityInputDtoValidator) {
         this.collectionRepository = collectionRepository;
-        this.cityAddDtoValidator = cityAddDtoValidator;
+        this.cityInputDtoValidator = cityInputDtoValidator;
     }
 
     public void help() {
@@ -72,37 +74,52 @@ public class CollectionService {
         collectionRepository.info();
     }
 
-    public void add(CityAddDto cityAddDto,
-                    AddMode addMode) throws CityValidationException {
+    // TODO Выделить в отдельный валидатор
+    public void servicingInputActionData(InputActionData inputActionData)
+            throws InputActionDataValidationException {
+        if (inputActionData.getId() != null) {
+            if (Long.parseLong(inputActionData.getId()) < 0) {
+                throw new InputActionDataValidationException(
+                        "Аргумент id должен быть положительным числом"
+                );
+            }
+        }
+    }
+
+    public void servicingInputCity(CityInputDto cityInputDto,
+                                   InputMode inputMode,
+                                   ActionData actionData) throws CityValidationException {
 
         Map<String, String> errorsWithMessages =
-                cityAddDtoValidator.validate(cityAddDto);
+                cityInputDtoValidator.validate(cityInputDto);
 
         if (errorsWithMessages.isEmpty()) {
             City city = new City(
-                    id++,
-                    cityAddDto.getName(),
+                    (actionData.getId() != null) ? actionData.getId() : id++,
+                    cityInputDto.getName(),
                     new Coordinates(
-                            cityAddDto.getCoordinatesDto()
+                            cityInputDto.getCoordinatesDto()
                                     .getX(),
-                            cityAddDto.getCoordinatesDto()
+                            cityInputDto.getCoordinatesDto()
                                     .getY()
                     ),
                     new Date(),
-                    cityAddDto.getArea(),
-                    cityAddDto.getPopulation(),
-                    cityAddDto.getMetersAboveSeaLevel(),
-                    cityAddDto.getPopulationDensity(),
-                    cityAddDto.getAgglomeration(),
-                    cityAddDto.getGovernment(),
+                    cityInputDto.getArea(),
+                    cityInputDto.getPopulation(),
+                    cityInputDto.getMetersAboveSeaLevel(),
+                    cityInputDto.getPopulationDensity(),
+                    cityInputDto.getAgglomeration(),
+                    cityInputDto.getGovernment(),
                     new Human(
-                            cityAddDto.getGovernorDto()
+                            cityInputDto.getGovernorDto()
                                     .getHeight(),
-                            cityAddDto.getGovernorDto()
+                            cityInputDto.getGovernorDto()
                                     .getBirthday()
                     )
             );
-            addMode.apply(collectionRepository, city);
+            actionData.setCity(city);
+
+            inputMode.apply(collectionRepository, actionData);
 
         } else {
             throw new CityValidationException(errorsWithMessages);

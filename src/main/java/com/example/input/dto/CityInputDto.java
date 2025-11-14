@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CityAddDto {
+public class CityInputDto {
 
     private String name;
     private CoordinatesDto coordinatesDto;
@@ -18,15 +18,15 @@ public class CityAddDto {
     private Government government;
     private HumanDto governorDto;
 
-    public CityAddDto(String name,
-                      CoordinatesDto coordinatesDto,
-                      Long area,
-                      Integer population,
-                      Float metersAboveSeaLevel,
-                      long populationDensity,
-                      Integer agglomeration,
-                      Government government,
-                      HumanDto governorDto) {
+    public CityInputDto(String name,
+                        CoordinatesDto coordinatesDto,
+                        Long area,
+                        Integer population,
+                        Float metersAboveSeaLevel,
+                        long populationDensity,
+                        Integer agglomeration,
+                        Government government,
+                        HumanDto governorDto) {
         this.name = name;
         this.coordinatesDto = coordinatesDto;
         this.area = area;
