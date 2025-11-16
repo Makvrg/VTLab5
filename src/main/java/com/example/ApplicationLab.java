@@ -4,8 +4,14 @@ import com.example.controller.CityInputRequestDtoValidator;
 import com.example.controller.CollectionController;
 import com.example.entity.City;
 import com.example.input.CollectionInput;
+import com.example.input.dto.CityInputRequestDto;
+import com.example.input.env.EnvVariableProvider;
+import com.example.input.env.EnvironmentProvider;
+import com.example.input.json.CityJsonParser;
+import com.example.input.json.JsonParser;
 import com.example.input.readers.IReader;
-import com.example.input.readers.file.FileReader;
+import com.example.input.readers.file.FileInputStreamProvider;
+import com.example.input.readers.file.InputStreamProvider;
 import com.example.input.readers.terminal.TerminalReader;
 import com.example.repository.CollectionRepository;
 import com.example.service.CityInputDtoValidator;
@@ -44,12 +50,17 @@ public class ApplicationLab {
                         cityInputRequestDtoValidator);
 
         IReader terminalReader = new TerminalReader();
-        IReader fileReader = new FileReader();
 
+        EnvironmentProvider environmentProvider = new EnvVariableProvider("CITY_FILE");
+        InputStreamProvider inputStreamProvider = new FileInputStreamProvider();
+        JsonParser<List<CityInputRequestDto>> parser = new CityJsonParser();
         CollectionInput collectionInput =
                 new CollectionInput(terminalReader,
-                                    fileReader,
-                                    collectionController);
+                                    collectionController,
+                                    environmentProvider,
+                                    inputStreamProvider,
+                                    parser
+                );
 
         collectionService.addShutdownListener(collectionInput);
 

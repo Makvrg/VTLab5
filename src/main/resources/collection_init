@@ -1,0 +1,67 @@
+[
+{
+  "name": "New York",
+  "coordinatesRequestDto": {
+    "x": "123.45",
+    "y": "67.89"
+  },
+  "area": "468",
+  "population": "8537673",
+  "metersAboveSeaLevel": "10.2",
+  "populationDensity": "10000",
+  "agglomeration": "20000000",
+  "government": "Тоталитаризм",
+  "governorRequestDto": {
+    "height": "1.89",
+    "birthday": "15-03-1990 12:30:00"
+  }
+},
+{
+  "name": "Paris",
+  "coordinatesRequestDto": {
+    "x": "48.85",
+    "y": "2.35"
+  },
+  "area": "105",
+  "population": "2148000",
+  "metersAboveSeaLevel": "35",
+  "populationDensity": "20000",
+  "agglomeration": "11000000",
+  "government": "Олигархия",
+  "governorRequestDto": {
+    "height": "1.74",
+    "birthday": "22-06-1980 09:20:00"
+  }
+},
+{
+  "name": "Воткинск",
+  "coordinatesRequestDto": { "x": "10.5", "y": "20.5" },
+  "area": "250",
+  "population": "1000000",
+  "metersAboveSeaLevel": "50",
+  "populationDensity": "2000",
+  "agglomeration": "4000000",
+  "government": "Монархия",
+  "governorRequestDto": {
+    "height": "1.80",
+    "birthday": "01-01-1990 12:00:00"
+  }
+},
+{
+  "name": "Москва",
+  "coordinatesRequestDto": {
+    "x": "13.45",
+    "y": "7.89"
+  },
+  "area": "4898",
+  "population": "9053763",
+  "metersAboveSeaLevel": "-1.2",
+  "populationDensity": "693920",
+  "agglomeration": null,
+  "government": "Тоталитаризм",
+  "governorRequestDto": {
+    "height": "1.77",
+    "birthday": null
+  }
+}
+]

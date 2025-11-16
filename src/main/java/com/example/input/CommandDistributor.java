@@ -77,6 +77,10 @@ public class CommandDistributor {
                                         ? ""
                                         : args[1]))
         );
+        commands.put("execute_script",
+                args -> new ExecuteScriptCommand(collectionController,
+                                                 args)
+        );
         return commands;
     }
 
