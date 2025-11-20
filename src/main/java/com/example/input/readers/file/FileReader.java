@@ -9,6 +9,8 @@ public class FileReader implements IReader {
 
     private final InputStreamProvider inputStreamProvider;
     private final String fileName;
+    private InputStreamReader inputStreamReader;
+    private boolean lastIsNewLine = false;
 
     public FileReader(InputStreamProvider inputStreamProvider,
                       String fileName) {
@@ -18,25 +20,34 @@ public class FileReader implements IReader {
 
     @Override
     public String read() throws IOException {
-        try (InputStreamReader inputStreamReader = inputStreamProvider.open(fileName)) {
-            StringBuilder sb = new StringBuilder();
-            int code;
+        if (inputStreamReader == null) {
+            inputStreamReader = inputStreamProvider.open(fileName);
+        }
+        StringBuilder sb = new StringBuilder();
+        int code;
 
-            while ((code = inputStreamReader.read()) != -1) {
-                char c = (char) code;
+        while ((code = inputStreamReader.read()) != -1) {
+            char c = (char) code;
 
-                if (c == '\n') {
-                    break;
-                }
-                if (c != '\r') {
-                    sb.append(c);
-                }
+            if (c == '\n') {
+                lastIsNewLine = true;
+                break;
             }
-            if (code == -1 && sb.isEmpty()) {
+            if (c != '\r') {
+                lastIsNewLine = false;
+                sb.append(c);
+            }
+        }
+        if (code == -1 && sb.isEmpty()) {
+            if (lastIsNewLine) {
+                lastIsNewLine = false;
+                return "";
+            } else {
+                inputStreamReader.close();
                 return null;
             }
-            return sb.toString();
         }
+        return sb.toString();
     }
 
 }

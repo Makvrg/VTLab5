@@ -10,6 +10,7 @@ import com.example.input.json.JsonParser;
 import com.example.input.readers.IReader;
 import com.example.input.readers.file.InputStreamProvider;
 import com.example.input.readers.terminal.Processor;
+import lombok.Setter;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -17,7 +18,11 @@ import java.util.List;
 
 public class CollectionInput implements IRunnable, IShutdownListener {
 
-    private final IReader reader;
+    @Setter
+    private IReader reader;
+
+    private final IReader terminalReader;
+
     private final CollectionController collectionController;
     private final EnvironmentProvider environmentProvider;
     private final InputStreamProvider inputStreamProvider;
@@ -30,6 +35,7 @@ public class CollectionInput implements IRunnable, IShutdownListener {
                            InputStreamProvider inputStreamProvider,
                            JsonParser<List<CityRawRequestDto>> parser) {
         this.reader = reader;
+        terminalReader = reader;
         this.collectionController = collectionController;
         this.environmentProvider = environmentProvider;
         this.inputStreamProvider = inputStreamProvider;
@@ -51,19 +57,33 @@ public class CollectionInput implements IRunnable, IShutdownListener {
 
         CommandDistributor commandDistributor =
                 new CommandDistributor(collectionController,
-                                       reader);
+                                       reader,
+                                       this::setReader);
 
         while (!shutdown) {
             System.out.print("> ");
             try {
+                String inputLine = reader.read();
+
+                if (inputLine == null) {
+                    reader = terminalReader;
+                    commandDistributor.setReader(terminalReader);
+                    System.out.println("Активен режим чтения терминала");
+                    continue;
+                }
+
                 String[] inputArgs = Processor.processTerminalCommand(
-                        reader.read());
+                        inputLine
+                );
                 commandDistributor.distribute(inputArgs);
             } catch (IOException e) {
+                System.out.println(e.getMessage());
                 System.out.println(
                         "Файл с указанным названием не найден или к нему нет доступа"
                 );
-                collectionController.exit();
+                reader = terminalReader;
+                commandDistributor.setReader(terminalReader);
+                System.out.println("Активен режим чтения терминала");
             }
         }
     }

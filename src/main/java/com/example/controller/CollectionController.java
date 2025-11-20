@@ -3,6 +3,7 @@ package com.example.controller;
 import com.example.CityValidationException;
 import com.example.entity.Government;
 import com.example.input.dto.*;
+import com.example.input.readers.file.IORuntimeException;
 import com.example.service.CollectionService;
 import com.example.service.ParamTypedData;
 
@@ -182,6 +183,12 @@ public class CollectionController {
 
     public void printFieldDescendingGovernment() {
         collectionService.printFieldDescendingGovernment();
+    }
+
+    public void executeScript(String fileName) throws IORuntimeException {
+        if (fileName == null) {
+            throw new IORuntimeException("Не введено название файла");
+        }
     }
 
 }

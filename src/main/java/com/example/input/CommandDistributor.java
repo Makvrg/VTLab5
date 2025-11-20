@@ -4,20 +4,26 @@ import com.example.controller.CollectionController;
 import com.example.input.commands.*;
 import com.example.input.dto.ParamRawData;
 import com.example.input.readers.IReader;
+import lombok.Setter;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class CommandDistributor {
 
     private final Map<String, Function<String[], ICommand>> commands;
 
-    public CommandDistributor(CollectionController collectionController,
-                              IReader terminalReader) {
+    @Setter
+    private IReader reader;
 
+    public CommandDistributor(CollectionController collectionController,
+                              IReader reader,
+                              Consumer<IReader> setCollectionInputReader) {
+        this.reader = reader;
         commands = buildMapOfCommands(collectionController,
-                                      terminalReader);
+                                      setCollectionInputReader);
     }
 
     public void distribute(String[] inputArgs) {
@@ -29,14 +35,14 @@ public class CommandDistributor {
 
     private Map<String, Function<String[], ICommand>> buildMapOfCommands(
             CollectionController collectionController,
-            IReader terminalReader) {
+            Consumer<IReader> setCollectionInputReader) {
         Map<String, Function<String[], ICommand>> commands = new HashMap<>();
 
         commands.put("help", _ -> new HelpCommand(collectionController));
         commands.put("exit", _ -> new ExitCommand(collectionController));
         commands.put("info", _ -> new InfoCommand(collectionController));
         commands.put("add", _ -> new AddCityCommand(collectionController,
-                                                    terminalReader,
+                                                    reader,
                                                     new ParamRawData())
         );
         commands.put("show", _ -> new ShowCommand(collectionController));
@@ -47,7 +53,7 @@ public class CommandDistributor {
         commands.put("head", _ -> new HeadCommand(collectionController));
         commands.put("remove_head", _ -> new RemoveHeadCommand(collectionController));
         commands.put("add_if_max", _ -> new AddIfMaxCityCommand(collectionController,
-                                                                terminalReader,
+                                                                reader,
                                                                 new ParamRawData())
         );
         commands.put("remove_all_by_population_density",
@@ -67,7 +73,7 @@ public class CommandDistributor {
         commands.put("update",
                 args -> new UpdateByIdCityCommand(
                         collectionController,
-                        terminalReader,
+                        reader,
                         new ParamRawData()
                                 // TODO Можно реализовать Билдер
                                 .setId((args.length == 1 || args[1] == null)
@@ -76,7 +82,9 @@ public class CommandDistributor {
         );
         commands.put("execute_script",
                 args -> new ExecuteScriptCommand(collectionController,
-                                                 args)
+                                                        args,
+                                                        setCollectionInputReader,
+                                                        this::setReader)
         );
         return commands;
     }

@@ -20,17 +20,17 @@ import java.util.function.Consumer;
 public class AddCityCommand implements ICommand {
 
     protected final CollectionController collectionController;
-    private final IReader inputReader;
+    private final IReader reader;
     private final Map<String, Runnable> readActions;
     protected final ParamRawData paramRawData;
     protected final CityRawRequestDto cityRawRequestDto;
     private Map<String, String> errorsWithMessages = new LinkedHashMap<>();
 
     public AddCityCommand(CollectionController collectionController,
-                          IReader inputReader,
+                          IReader reader,
                           ParamRawData paramRawData) {
         this.collectionController = collectionController;
-        this.inputReader = inputReader;
+        this.reader = reader;
         this.paramRawData = paramRawData;
         readActions = buildMapOfReadActions();
 
@@ -85,7 +85,6 @@ public class AddCityCommand implements ICommand {
             readManage(errorsWithMessages);
         } catch (IORuntimeException e) {
             System.out.println(e.getMessage());
-            collectionController.exit();
             return;
         }
 
@@ -109,11 +108,15 @@ public class AddCityCommand implements ICommand {
         }
         System.out.print(message + " > ");
         try {
-            String inputString = inputReader.read();
+            String inputString = reader.read();
             setter.accept(Processor.processTerminalData(inputString));
         } catch (IOException e) {
             throw new IORuntimeException(
                     "Файл с указанным названием не найден или к нему нет доступа"
+            );
+        } catch (NullPointerException e) {
+            throw new IORuntimeException(
+                    "\nНеожиданное количество строк данных в файле"
             );
         }
     }
