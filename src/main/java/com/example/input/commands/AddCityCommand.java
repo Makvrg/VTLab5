@@ -2,46 +2,44 @@ package com.example.input.commands;
 
 import com.example.CityValidationException;
 import com.example.controller.CollectionController;
-import com.example.controller.InputActionDataValidationException;
+import com.example.controller.RawActionDataValidationException;
 import com.example.entity.Government;
-import com.example.input.dto.CityInputRequestDto;
-import com.example.input.dto.CoordinatesRequestDto;
-import com.example.input.dto.HumanRequestDto;
-import com.example.input.dto.InputActionData;
+import com.example.input.dto.CityRawRequestDto;
+import com.example.input.dto.CoordRawRequestDto;
+import com.example.input.dto.HumanRawRequestDto;
+import com.example.input.dto.ParamRawData;
 import com.example.input.readers.IReader;
+import com.example.input.readers.file.IORuntimeException;
 import com.example.input.readers.terminal.Processor;
-import com.example.service.InputMode;
 
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public class InputCityCommand implements ICommand {
+public class AddCityCommand implements ICommand {
 
-    private final CollectionController collectionController;
-    private final IReader terminalReader;
-    private final InputMode inputMode;
+    protected final CollectionController collectionController;
+    private final IReader inputReader;
     private final Map<String, Runnable> readActions;
-    private final InputActionData inputActionData;
-    private final CityInputRequestDto cityInputRequestDto;
+    protected final ParamRawData paramRawData;
+    protected final CityRawRequestDto cityRawRequestDto;
     private Map<String, String> errorsWithMessages = new LinkedHashMap<>();
 
-    public InputCityCommand(CollectionController collectionController,
-                            IReader terminalReader,
-                            InputMode inputMode,
-                            InputActionData inputActionData) {
+    public AddCityCommand(CollectionController collectionController,
+                          IReader inputReader,
+                          ParamRawData paramRawData) {
         this.collectionController = collectionController;
-        this.terminalReader = terminalReader;
-        this.inputMode = inputMode;
-        this.inputActionData = inputActionData;
+        this.inputReader = inputReader;
+        this.paramRawData = paramRawData;
         readActions = buildMapOfReadActions();
 
-        cityInputRequestDto = new CityInputRequestDto();
-        cityInputRequestDto.setCoordinatesRequestDto(
-                new CoordinatesRequestDto()
+        cityRawRequestDto = new CityRawRequestDto();
+        cityRawRequestDto.setCoordinates(
+                new CoordRawRequestDto()
         );
-        cityInputRequestDto.setGovernorRequestDto(
-                new HumanRequestDto()
+        cityRawRequestDto.setGovernor(
+                new HumanRawRequestDto()
         );
     }
 
@@ -69,29 +67,38 @@ public class InputCityCommand implements ICommand {
 
     @Override
     public void execute() {
-        if (!inputActionData.containsEmpty().isEmpty()) {
+        if (!paramRawData.containsEmpty().isEmpty()) {
             System.out.println("Отсутствуют аргументы: ");
-            for (String emptyField : inputActionData.containsEmpty()) {
+            for (String emptyField : paramRawData.containsEmpty()) {
                 System.out.print(emptyField);
             }
             System.out.println();
             return;
         }
         try {
-            collectionController.controlInputActionData(inputActionData);
-        } catch (InputActionDataValidationException e) {
+            collectionController.controlRawActionData(paramRawData);
+        } catch (RawActionDataValidationException e) {
             System.out.println(e.getMessage());
             return;
         }
-        readManage(errorsWithMessages);
         try {
-            collectionController.controlInputCity(cityInputRequestDto,
-                                                  inputMode,
-                                                  inputActionData);
+            readManage(errorsWithMessages);
+        } catch (IORuntimeException e) {
+            System.out.println(e.getMessage());
+            collectionController.exit();
+            return;
+        }
+
+        try {
+            useController();
         } catch (CityValidationException e) {
             errorsWithMessages = e.getErrorsWithMessages();
             execute();
         }
+    }
+
+    protected void useController() throws CityValidationException {
+        collectionController.add(cityRawRequestDto, paramRawData);
     }
 
     private void setDtoField(String explanation,
@@ -101,7 +108,14 @@ public class InputCityCommand implements ICommand {
             System.out.println(explanation);
         }
         System.out.print(message + " > ");
-        setter.accept(Processor.processTerminalData(terminalReader.read()));
+        try {
+            String inputString = inputReader.read();
+            setter.accept(Processor.processTerminalData(inputString));
+        } catch (IOException e) {
+            throw new IORuntimeException(
+                    "Файл с указанным названием не найден или к нему нет доступа"
+            );
+        }
     }
 
     private Map<String, Runnable> buildMapOfReadActions() {
@@ -112,7 +126,7 @@ public class InputCityCommand implements ICommand {
                     setDtoField(
                             null,
                             "Введите название города",
-                            cityInputRequestDto::setName
+                            cityRawRequestDto::setName
                     )
         );
         commands.put("x",
@@ -120,7 +134,7 @@ public class InputCityCommand implements ICommand {
                     setDtoField(
                             "x-координата - вещественное число, не превышающее 579",
                             "Введите x-координату города",
-                            cityInputRequestDto.getCoordinatesRequestDto()::setX
+                            cityRawRequestDto.getCoordinates()::setX
                     )
         );
         commands.put("y",
@@ -128,7 +142,7 @@ public class InputCityCommand implements ICommand {
                     setDtoField(
                             "y-координата - вещественное число",
                             "Введите y-координату города",
-                            cityInputRequestDto.getCoordinatesRequestDto()::setY
+                            cityRawRequestDto.getCoordinates()::setY
                     )
         );
         commands.put("area",
@@ -136,7 +150,7 @@ public class InputCityCommand implements ICommand {
                     setDtoField(
                             null,
                             "Введите целочисленную площадь города",
-                            cityInputRequestDto::setArea
+                            cityRawRequestDto::setArea
                     )
         );
         commands.put("population",
@@ -144,7 +158,7 @@ public class InputCityCommand implements ICommand {
                     setDtoField(
                             null,
                             "Введите численность населения города",
-                            cityInputRequestDto::setPopulation
+                            cityRawRequestDto::setPopulation
                     )
         );
         commands.put("metersAboveSeaLevel",
@@ -152,7 +166,7 @@ public class InputCityCommand implements ICommand {
                     setDtoField(
                             "Количество метров над уровнем моря - вещественное число",
                             "Введите количество метров над уровнем моря",
-                            cityInputRequestDto::setMetersAboveSeaLevel
+                            cityRawRequestDto::setMetersAboveSeaLevel
                     )
         );
         commands.put("populationDensity",
@@ -160,7 +174,7 @@ public class InputCityCommand implements ICommand {
                     setDtoField(
                             null,
                             "Введите целочисленную плотность населения города",
-                            cityInputRequestDto::setPopulationDensity
+                            cityRawRequestDto::setPopulationDensity
                         )
         );
         commands.put("agglomeration",
@@ -168,7 +182,7 @@ public class InputCityCommand implements ICommand {
                     setDtoField(
                             null,
                             "Введите численность населения агломерации города",
-                            cityInputRequestDto::setAgglomeration
+                            cityRawRequestDto::setAgglomeration
                     )
         );
         StringBuilder governmentExplanation = new StringBuilder();
@@ -183,7 +197,7 @@ public class InputCityCommand implements ICommand {
                     setDtoField(
                             governmentExplanation.toString(),
                             "Введите тип правления города",
-                            cityInputRequestDto::setGovernment
+                            cityRawRequestDto::setGovernment
                     )
         );
         commands.put("height",
@@ -191,7 +205,7 @@ public class InputCityCommand implements ICommand {
                     setDtoField(
                             "Рост губернатора - вещественное число в метрах",
                             "Введите рост губернатора города",
-                            cityInputRequestDto.getGovernorRequestDto()::setHeight
+                            cityRawRequestDto.getGovernor()::setHeight
                     )
         );
         commands.put("birthday",
@@ -199,7 +213,7 @@ public class InputCityCommand implements ICommand {
                     setDtoField(
                             "Дата и время рождения губернатора имеют формат дд-ММ-гггг ЧЧ:мм:сс",
                             "Введите дату и время рождения губернатора города",
-                            cityInputRequestDto.getGovernorRequestDto()::setBirthday
+                            cityRawRequestDto.getGovernor()::setBirthday
                     )
         );
         return commands;

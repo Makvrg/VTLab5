@@ -7,12 +7,12 @@ import java.util.Date;
 
 @Getter
 @Setter
-public class HumanDto {
+public class HumanTypedRequestDto {
 
     private double height;
     private Date birthday;
 
-    public HumanDto(double height, Date birthday) {
+    public HumanTypedRequestDto(double height, Date birthday) {
         this.height = height;
         this.birthday = birthday;
     }

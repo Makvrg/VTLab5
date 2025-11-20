@@ -2,9 +2,8 @@ package com.example.input;
 
 import com.example.controller.CollectionController;
 import com.example.input.commands.*;
-import com.example.input.dto.InputActionData;
+import com.example.input.dto.ParamRawData;
 import com.example.input.readers.IReader;
-import com.example.service.InputMode;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,22 +35,20 @@ public class CommandDistributor {
         commands.put("help", _ -> new HelpCommand(collectionController));
         commands.put("exit", _ -> new ExitCommand(collectionController));
         commands.put("info", _ -> new InfoCommand(collectionController));
-        commands.put("add", _ -> new InputCityCommand(collectionController,
-                                                      terminalReader,
-                                                      InputMode.ALWAYS,
-                                                      new InputActionData())
+        commands.put("add", _ -> new AddCityCommand(collectionController,
+                                                    terminalReader,
+                                                    new ParamRawData())
         );
         commands.put("show", _ -> new ShowCommand(collectionController));
         commands.put("remove_by_id",
                      args -> new RemoveByIdCommand(collectionController,
-                                                          args));
+                                                   args));
         commands.put("clear", _ -> new ClearCommand(collectionController));
         commands.put("head", _ -> new HeadCommand(collectionController));
         commands.put("remove_head", _ -> new RemoveHeadCommand(collectionController));
-        commands.put("add_if_max", _ -> new InputCityCommand(collectionController,
-                                                             terminalReader,
-                                                             InputMode.IF_MAX,
-                                                             new InputActionData())
+        commands.put("add_if_max", _ -> new AddIfMaxCityCommand(collectionController,
+                                                                terminalReader,
+                                                                new ParamRawData())
         );
         commands.put("remove_all_by_population_density",
                      args -> new RemoveAllByPopulationDensityCommand(
@@ -68,10 +65,10 @@ public class CommandDistributor {
                         collectionController)
         );
         commands.put("update",
-                args -> new InputCityCommand(collectionController,
+                args -> new UpdateByIdCityCommand(
+                        collectionController,
                         terminalReader,
-                        InputMode.UPDATE_BY_ID,
-                        new InputActionData()
+                        new ParamRawData()
                                 // TODO Можно реализовать Билдер
                                 .setId((args.length == 1 || args[1] == null)
                                         ? ""

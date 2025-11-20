@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class HumanRequestDto {
+public class HumanRawRequestDto {
 
     private String height;
     private String birthday;

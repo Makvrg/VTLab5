@@ -3,14 +3,13 @@ package com.example.input;
 import com.example.CityValidationException;
 import com.example.controller.CollectionController;
 import com.example.event.IShutdownListener;
-import com.example.input.dto.CityInputRequestDto;
-import com.example.input.dto.InputActionData;
+import com.example.input.dto.CityRawRequestDto;
+import com.example.input.dto.ParamRawData;
 import com.example.input.env.EnvironmentProvider;
 import com.example.input.json.JsonParser;
 import com.example.input.readers.IReader;
 import com.example.input.readers.file.InputStreamProvider;
 import com.example.input.readers.terminal.Processor;
-import com.example.service.InputMode;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -22,14 +21,14 @@ public class CollectionInput implements IRunnable, IShutdownListener {
     private final CollectionController collectionController;
     private final EnvironmentProvider environmentProvider;
     private final InputStreamProvider inputStreamProvider;
-    private final JsonParser<List<CityInputRequestDto>> parser;
+    private final JsonParser<List<CityRawRequestDto>> parser;
     private boolean shutdown = false;
 
     public CollectionInput(IReader reader,
                            CollectionController collectionController,
                            EnvironmentProvider environmentProvider,
                            InputStreamProvider inputStreamProvider,
-                           JsonParser<List<CityInputRequestDto>> parser) {
+                           JsonParser<List<CityRawRequestDto>> parser) {
         this.reader = reader;
         this.collectionController = collectionController;
         this.environmentProvider = environmentProvider;
@@ -79,13 +78,12 @@ public class CollectionInput implements IRunnable, IShutdownListener {
             return;
         }
         try (InputStreamReader reader = inputStreamProvider.open(fileName)) {
-            List<CityInputRequestDto> cities = parser.parse(reader);
+            List<CityRawRequestDto> cities = parser.parse(reader);
             int counter = 1;
-            for (CityInputRequestDto cityInputRequestDto : cities) {
+            for (CityRawRequestDto cityRawRequestDto : cities) {
                 try {
-                    collectionController.controlInputCity(cityInputRequestDto,
-                                                          InputMode.ALWAYS,
-                                                          new InputActionData()
+                    collectionController.add(cityRawRequestDto,
+                                             new ParamRawData()
                     );
                 } catch (CityValidationException e) {
                     System.out.println(

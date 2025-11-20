@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ActionData {
+public class ParamTypedData {
 
     private City city;
     private Long id;

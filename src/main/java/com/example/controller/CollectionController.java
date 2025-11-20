@@ -3,24 +3,24 @@ package com.example.controller;
 import com.example.CityValidationException;
 import com.example.entity.Government;
 import com.example.input.dto.*;
-import com.example.service.ActionData;
 import com.example.service.CollectionService;
-import com.example.service.InputMode;
+import com.example.service.ParamTypedData;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.AbstractMap;
 import java.util.Date;
 import java.util.Map;
 
 public class CollectionController {
 
     private final CollectionService collectionService;
-    private final CityInputRequestDtoValidator cityAddRequestValidator;
+    private final CityRawRequestDtoValidator cityAddRequestValidator;
 
     public CollectionController(CollectionService collectionService,
-                                CityInputRequestDtoValidator cityInputRequestDtoValidator) {
+                                CityRawRequestDtoValidator cityRawRequestDtoValidator) {
         this.collectionService = collectionService;
-        this.cityAddRequestValidator = cityInputRequestDtoValidator;
+        this.cityAddRequestValidator = cityRawRequestDtoValidator;
     }
 
     public void help() {
@@ -35,76 +35,101 @@ public class CollectionController {
         collectionService.info();
     }
 
+
     // TODO Выделить в отдельный валидатор
-    public void controlInputActionData(InputActionData inputActionData)
-            throws InputActionDataValidationException {
-        if (inputActionData.getId() != null) {
+    public void controlRawActionData(ParamRawData paramRawData)
+            throws RawActionDataValidationException {
+        if (paramRawData.getId() != null) {
             try {
-                Long.parseLong(inputActionData.getId());
+                Long.parseLong(paramRawData.getId());
             } catch (NumberFormatException | NullPointerException e) {
-                throw new InputActionDataValidationException(
+                throw new RawActionDataValidationException(
                         "Аргумент id должен быть целым числом"
                 );
             }
-            collectionService.servicingInputActionData(inputActionData);
+            collectionService.servicingRawActionData(paramRawData);
         }
     }
 
-    public void controlInputCity(CityInputRequestDto cityInputRequestDto,
-                                 InputMode inputMode,
-                                 InputActionData inputActionData) throws CityValidationException {
+    private AbstractMap.SimpleImmutableEntry<CityTypedRequestDto, ParamTypedData> controlInputCity(
+            CityRawRequestDto cityRawRequestDto,
+            ParamRawData paramRawData) throws CityValidationException {
 
         Map<String, String> errorsWithMessages =
-                cityAddRequestValidator.validate(cityInputRequestDto);
+                cityAddRequestValidator.validate(cityRawRequestDto);
 
         if (errorsWithMessages.isEmpty()) {
-            ActionData actionData = new ActionData();
+            ParamTypedData paramTypedData = new ParamTypedData();
 
-            if (inputActionData.getId() != null) {
-                actionData.setId(Long.valueOf(inputActionData.getId()));
+            if (paramRawData.getId() != null) {
+                paramTypedData.setId(Long.valueOf(paramRawData.getId()));
             }
 
             Date birthday = null;
-            if (cityInputRequestDto.getGovernorRequestDto().getBirthday() != null) {
+            if (cityRawRequestDto.getGovernor().getBirthday() != null) {
                 SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
                 sdf.setLenient(false);
                 try {
-                    birthday = sdf.parse(cityInputRequestDto.getGovernorRequestDto().getBirthday());
+                    birthday = sdf.parse(cityRawRequestDto.getGovernor()
+                                                            .getBirthday());
                 } catch (ParseException e) {
                     throw new IllegalArgumentException(e);
                 }
             }
-            CityInputDto cityInputDto =
-                    new CityInputDto(
-                            cityInputRequestDto.getName(),
-                            new CoordinatesDto(
-                                    Double.parseDouble(cityInputRequestDto.getCoordinatesRequestDto()
-                                                                        .getX()),
-                                    Float.parseFloat(cityInputRequestDto.getCoordinatesRequestDto()
-                                                                      .getY())
+            CityTypedRequestDto cityTypedRequestDto =
+                    new CityTypedRequestDto(
+                            cityRawRequestDto.getName(),
+                            new CoordTypedRequestDto(
+                                    Double.parseDouble(cityRawRequestDto.getCoordinates()
+                                                                          .getX()),
+                                    Float.parseFloat(cityRawRequestDto.getCoordinates()
+                                                                        .getY())
                             ),
-                            Long.valueOf(cityInputRequestDto.getArea()),
-                            Integer.valueOf(cityInputRequestDto.getPopulation()),
-                            (cityInputRequestDto.getMetersAboveSeaLevel() == null)
+                            Long.valueOf(cityRawRequestDto.getArea()),
+                            Integer.valueOf(cityRawRequestDto.getPopulation()),
+                            (cityRawRequestDto.getMetersAboveSeaLevel() == null)
                                     ? null
-                                    : Float.valueOf(cityInputRequestDto.getMetersAboveSeaLevel()),
-                            Long.parseLong(cityInputRequestDto.getPopulationDensity()),
-                            (cityInputRequestDto.getAgglomeration() == null)
+                                    : Float.valueOf(cityRawRequestDto.getMetersAboveSeaLevel()),
+                            Long.parseLong(cityRawRequestDto.getPopulationDensity()),
+                            (cityRawRequestDto.getAgglomeration() == null)
                                     ? null
-                                    : Integer.valueOf(cityInputRequestDto.getAgglomeration()),
-                            Government.fromString(cityInputRequestDto.getGovernment()),
-                            new HumanDto(
-                                    Double.parseDouble(cityInputRequestDto.getGovernorRequestDto()
-                                                                        .getHeight()),
+                                    : Integer.valueOf(cityRawRequestDto.getAgglomeration()),
+                            Government.fromString(cityRawRequestDto.getGovernment()),
+                            new HumanTypedRequestDto(
+                                    Double.parseDouble(cityRawRequestDto.getGovernor()
+                                                                          .getHeight()),
                                     birthday
                             )
                     );
-            collectionService.servicingInputCity(cityInputDto,
-                                                 inputMode,
-                                                 actionData);
+            return new AbstractMap.SimpleImmutableEntry<>(
+                    cityTypedRequestDto,
+                    paramTypedData
+            );
         } else {
             throw new CityValidationException(errorsWithMessages);
         }
+    }
+
+
+    public void add(CityRawRequestDto cityRawRequestDto,
+                    ParamRawData paramRawData) throws CityValidationException {
+        AbstractMap.SimpleImmutableEntry<CityTypedRequestDto, ParamTypedData> entry =
+                controlInputCity(cityRawRequestDto, paramRawData);
+        collectionService.add(entry.getKey(), entry.getValue());
+    }
+
+    public void addIfMax(CityRawRequestDto cityRawRequestDto,
+                    ParamRawData paramRawData) throws CityValidationException {
+        AbstractMap.SimpleImmutableEntry<CityTypedRequestDto, ParamTypedData> entry =
+                controlInputCity(cityRawRequestDto, paramRawData);
+        collectionService.addIfMax(entry.getKey(), entry.getValue());
+    }
+
+    public void updateById(CityRawRequestDto cityRawRequestDto,
+                         ParamRawData paramRawData) throws CityValidationException {
+        AbstractMap.SimpleImmutableEntry<CityTypedRequestDto, ParamTypedData> entry =
+                controlInputCity(cityRawRequestDto, paramRawData);
+        collectionService.updateById(entry.getKey(), entry.getValue());
     }
 
     public void show() {

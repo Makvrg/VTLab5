@@ -5,12 +5,12 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CoordinatesDto {
+public class CoordTypedRequestDto {
 
     private double x;
     private float y;
 
-    public CoordinatesDto(double x, float y) {
+    public CoordTypedRequestDto(double x, float y) {
         this.x = x;
         this.y = y;
     }

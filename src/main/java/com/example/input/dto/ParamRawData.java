@@ -6,11 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-public class InputActionData {
+public class ParamRawData {
 
     private String id;
 
-    public InputActionData setId(String id) {
+    public ParamRawData setId(String id) {
         this.id = id;
         return this;
     }

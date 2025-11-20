@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CoordinatesRequestDto {
+public class CoordRawRequestDto {
 
     private String x;
     private String y;

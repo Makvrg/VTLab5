@@ -1,10 +1,10 @@
 package com.example;
 
-import com.example.controller.CityInputRequestDtoValidator;
+import com.example.controller.CityRawRequestDtoValidator;
 import com.example.controller.CollectionController;
 import com.example.entity.City;
 import com.example.input.CollectionInput;
-import com.example.input.dto.CityInputRequestDto;
+import com.example.input.dto.CityRawRequestDto;
 import com.example.input.env.EnvVariableProvider;
 import com.example.input.env.EnvironmentProvider;
 import com.example.input.json.CityJsonParser;
@@ -14,7 +14,7 @@ import com.example.input.readers.file.FileInputStreamProvider;
 import com.example.input.readers.file.InputStreamProvider;
 import com.example.input.readers.terminal.TerminalReader;
 import com.example.repository.CollectionRepository;
-import com.example.service.CityInputDtoValidator;
+import com.example.service.CityTypedRequestDtoValidator;
 import com.example.service.CollectionService;
 
 import java.util.ArrayList;
@@ -39,21 +39,21 @@ public class ApplicationLab {
     }
 
     private static CollectionInput getCollectionInput(CollectionRepository collectionRepository) {
-        CityInputDtoValidator cityInputDtoValidator = new CityInputDtoValidator();
+        CityTypedRequestDtoValidator cityTypedRequestDtoValidator = new CityTypedRequestDtoValidator();
         CollectionService collectionService =
                 new CollectionService(collectionRepository,
-                        cityInputDtoValidator);
+                        cityTypedRequestDtoValidator);
 
-        CityInputRequestDtoValidator cityInputRequestDtoValidator = new CityInputRequestDtoValidator();
+        CityRawRequestDtoValidator cityRawRequestDtoValidator = new CityRawRequestDtoValidator();
         CollectionController collectionController =
                 new CollectionController(collectionService,
-                        cityInputRequestDtoValidator);
+                        cityRawRequestDtoValidator);
 
         IReader terminalReader = new TerminalReader();
 
         EnvironmentProvider environmentProvider = new EnvVariableProvider("CITY_FILE");
         InputStreamProvider inputStreamProvider = new FileInputStreamProvider();
-        JsonParser<List<CityInputRequestDto>> parser = new CityJsonParser();
+        JsonParser<List<CityRawRequestDto>> parser = new CityJsonParser();
         CollectionInput collectionInput =
                 new CollectionInput(terminalReader,
                                     collectionController,

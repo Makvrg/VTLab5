@@ -1,31 +1,32 @@
 package com.example.service;
 
 import com.example.CityValidationException;
-import com.example.controller.InputActionDataValidationException;
+import com.example.controller.RawActionDataValidationException;
 import com.example.entity.City;
 import com.example.entity.Coordinates;
 import com.example.entity.Human;
 import com.example.event.IShutdownListener;
-import com.example.input.dto.CityInputDto;
-import com.example.input.dto.InputActionData;
+import com.example.input.dto.CityTypedRequestDto;
+import com.example.input.dto.ParamRawData;
 import com.example.repository.CollectionRepository;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class CollectionService {
 
     private final CollectionRepository collectionRepository;
     private final List<IShutdownListener> listeners = new ArrayList<>();
-    private final CityInputDtoValidator cityInputDtoValidator;
+    private final CityTypedRequestDtoValidator cityTypedRequestDtoValidator;
     private Long id = 0L;
 
     public CollectionService(CollectionRepository collectionRepository,
-                             CityInputDtoValidator cityInputDtoValidator) {
+                             CityTypedRequestDtoValidator cityTypedRequestDtoValidator) {
         this.collectionRepository = collectionRepository;
-        this.cityInputDtoValidator = cityInputDtoValidator;
+        this.cityTypedRequestDtoValidator = cityTypedRequestDtoValidator;
     }
 
     public void help() {
@@ -74,56 +75,88 @@ public class CollectionService {
         collectionRepository.info();
     }
 
+
     // TODO Выделить в отдельный валидатор
-    public void servicingInputActionData(InputActionData inputActionData)
-            throws InputActionDataValidationException {
-        if (inputActionData.getId() != null) {
-            if (Long.parseLong(inputActionData.getId()) < 0) {
-                throw new InputActionDataValidationException(
+    public void servicingRawActionData(ParamRawData paramRawData)
+            throws RawActionDataValidationException {
+        if (paramRawData.getId() != null) {
+            if (Long.parseLong(paramRawData.getId()) < 0) {
+                throw new RawActionDataValidationException(
                         "Аргумент id должен быть положительным числом"
                 );
             }
         }
     }
 
-    public void servicingInputCity(CityInputDto cityInputDto,
-                                   InputMode inputMode,
-                                   ActionData actionData) throws CityValidationException {
+    private void servicingInputCity(CityTypedRequestDto cityTypedRequestDto,
+                                    ParamTypedData paramTypedData,
+                                    Consumer<ParamTypedData> repoMethod)
+            throws CityValidationException {
 
         Map<String, String> errorsWithMessages =
-                cityInputDtoValidator.validate(cityInputDto);
+                cityTypedRequestDtoValidator.validate(cityTypedRequestDto);
 
         if (errorsWithMessages.isEmpty()) {
             City city = new City(
-                    (actionData.getId() != null) ? actionData.getId() : id++,
-                    cityInputDto.getName(),
+                    (paramTypedData.getId() != null) ? paramTypedData.getId() : id++,
+                    cityTypedRequestDto.getName(),
                     new Coordinates(
-                            cityInputDto.getCoordinatesDto()
+                            cityTypedRequestDto.getCoordinates()
                                     .getX(),
-                            cityInputDto.getCoordinatesDto()
+                            cityTypedRequestDto.getCoordinates()
                                     .getY()
                     ),
                     new Date(),
-                    cityInputDto.getArea(),
-                    cityInputDto.getPopulation(),
-                    cityInputDto.getMetersAboveSeaLevel(),
-                    cityInputDto.getPopulationDensity(),
-                    cityInputDto.getAgglomeration(),
-                    cityInputDto.getGovernment(),
+                    cityTypedRequestDto.getArea(),
+                    cityTypedRequestDto.getPopulation(),
+                    cityTypedRequestDto.getMetersAboveSeaLevel(),
+                    cityTypedRequestDto.getPopulationDensity(),
+                    cityTypedRequestDto.getAgglomeration(),
+                    cityTypedRequestDto.getGovernment(),
                     new Human(
-                            cityInputDto.getGovernorDto()
+                            cityTypedRequestDto.getGovernor()
                                     .getHeight(),
-                            cityInputDto.getGovernorDto()
+                            cityTypedRequestDto.getGovernor()
                                     .getBirthday()
                     )
             );
-            actionData.setCity(city);
-
-            inputMode.apply(collectionRepository, actionData);
-
+            paramTypedData.setCity(city);
+            repoMethod.accept(paramTypedData);
         } else {
             throw new CityValidationException(errorsWithMessages);
         }
+    }
+
+
+    public void add(CityTypedRequestDto cityTypedRequestDto,
+                    ParamTypedData paramTypedData) throws CityValidationException {
+        servicingInputCity(
+                cityTypedRequestDto,
+                paramTypedData,
+                paramTypedDataArg ->
+                        collectionRepository.add(paramTypedDataArg.getCity())
+        );
+    }
+
+    public void addIfMax(CityTypedRequestDto cityTypedRequestDto,
+                    ParamTypedData paramTypedData) throws CityValidationException {
+        servicingInputCity(
+                cityTypedRequestDto,
+                paramTypedData,
+                paramTypedDataArg ->
+                        collectionRepository.addIfMax(paramTypedDataArg.getCity())
+        );
+    }
+
+    public void updateById(CityTypedRequestDto cityTypedRequestDto,
+                         ParamTypedData paramTypedData) throws CityValidationException {
+        servicingInputCity(
+                cityTypedRequestDto,
+                paramTypedData,
+                paramTypedDataArg ->
+                        collectionRepository.updateById(paramTypedData.getId(),
+                                                        paramTypedDataArg.getCity())
+        );
     }
 
     public void show() {

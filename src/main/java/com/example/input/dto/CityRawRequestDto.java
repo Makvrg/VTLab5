@@ -5,16 +5,16 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CityInputRequestDto {
+public class CityRawRequestDto {
 
     private String name;
-    private CoordinatesRequestDto coordinatesRequestDto;
+    private CoordRawRequestDto coordinates;
     private String area;
     private String population;
     private String metersAboveSeaLevel;
     private String populationDensity;
     private String agglomeration;
     private String government;
-    private HumanRequestDto governorRequestDto;
+    private HumanRawRequestDto governor;
 
 }
