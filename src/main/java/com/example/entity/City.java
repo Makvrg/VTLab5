@@ -1,6 +1,5 @@
 package com.example.entity;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,39 +7,19 @@ import java.util.Date;
 import java.util.Objects;
 
 @Getter
+@Setter
 public class City implements Comparable<City> {
 
-    @Setter(AccessLevel.NONE)
     private Long id;
-
-    @Setter
     private String name;
-
-    @Setter
     private Coordinates coordinates;
-
-    @Setter(AccessLevel.NONE)
     private Date creationDate;
-
-    @Setter
     private Long area;
-
-    @Setter
     private Integer population;
-
-    @Setter
     private Float metersAboveSeaLevel;
-
-    @Setter
     private long populationDensity;
-
-    @Setter
     private Integer agglomeration;
-
-    @Setter
     private Government government;
-
-    @Setter
     private Human governor;
 
     public City(Long id, String name, Coordinates coordinates,
@@ -59,6 +38,22 @@ public class City implements Comparable<City> {
         this.agglomeration = agglomeration;
         this.government = government;
         this.governor = governor;
+    }
+
+    public City(City other) {
+        this(
+                other.id,
+                other.name,
+                new Coordinates(other.coordinates),
+                new Date(other.creationDate.getTime()),
+                other.area,
+                other.population,
+                other.metersAboveSeaLevel,
+                other.populationDensity,
+                other.agglomeration,
+                other.government,
+                new Human(other.governor)
+        );
     }
 
 

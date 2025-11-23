@@ -1,15 +1,18 @@
 package com.example.input;
 
 import com.example.CityValidationException;
-import com.example.controller.CollectionController;
+import com.example.entity.City;
 import com.example.event.IShutdownListener;
 import com.example.input.dto.CityRawRequestDto;
-import com.example.input.dto.ParamRawData;
+import com.example.input.dto.CityTypedRequestDto;
 import com.example.input.env.EnvironmentProvider;
 import com.example.input.json.JsonParser;
 import com.example.input.readers.IReader;
 import com.example.input.readers.file.InputStreamProvider;
 import com.example.input.readers.terminal.Processor;
+import com.example.service.CollectionService;
+import com.example.typer.DataTyper;
+import com.example.validator.CommandValidator;
 import lombok.Setter;
 
 import java.io.IOException;
@@ -23,20 +26,26 @@ public class CollectionInput implements IRunnable, IShutdownListener {
 
     private final IReader terminalReader;
 
-    private final CollectionController collectionController;
+    private final CollectionService collectionService;
+    private final CommandValidator commandValidator;
+    private final DataTyper dataTyper;
     private final EnvironmentProvider environmentProvider;
     private final InputStreamProvider inputStreamProvider;
     private final JsonParser<List<CityRawRequestDto>> parser;
     private boolean shutdown = false;
 
     public CollectionInput(IReader reader,
-                           CollectionController collectionController,
+                           CollectionService collectionService,
+                           CommandValidator commandValidator,
+                           DataTyper dataTyper,
                            EnvironmentProvider environmentProvider,
                            InputStreamProvider inputStreamProvider,
                            JsonParser<List<CityRawRequestDto>> parser) {
         this.reader = reader;
         terminalReader = reader;
-        this.collectionController = collectionController;
+        this.collectionService = collectionService;
+        this.commandValidator = commandValidator;
+        this.dataTyper = dataTyper;
         this.environmentProvider = environmentProvider;
         this.inputStreamProvider = inputStreamProvider;
         this.parser = parser;
@@ -52,13 +61,17 @@ public class CollectionInput implements IRunnable, IShutdownListener {
             System.out.println(
                     "Произошла ошибка инициализации коллекции: "
                     + e.getMessage());
-            collectionController.exit();
+            collectionService.exit();
         }
 
         CommandDistributor commandDistributor =
-                new CommandDistributor(collectionController,
-                                       reader,
-                                       this::setReader);
+                new CommandDistributor(
+                        collectionService,
+                        commandValidator,
+                        dataTyper,
+                        reader,
+                        this::setReader
+                );
 
         while (!shutdown) {
             System.out.print("> ");
@@ -94,7 +107,7 @@ public class CollectionInput implements IRunnable, IShutdownListener {
         if (fileName == null) {
             System.out.println(
                     "Не найдена переменная окружения с названием файла");
-            collectionController.exit();
+            collectionService.exit();
             return;
         }
         try (InputStreamReader reader = inputStreamProvider.open(fileName)) {
@@ -102,9 +115,13 @@ public class CollectionInput implements IRunnable, IShutdownListener {
             int counter = 1;
             for (CityRawRequestDto cityRawRequestDto : cities) {
                 try {
-                    collectionController.add(cityRawRequestDto,
-                                             new ParamRawData()
-                    );
+                    CityTypedRequestDto cityTypedRequestDto =
+                            dataTyper.typifyCityRawRequestDto(cityRawRequestDto);
+                    commandValidator.validateCityTypedRequestDto(cityTypedRequestDto);
+
+                    City city = dataTyper.typifyCityTypedRequestDtoToCity(cityTypedRequestDto);
+
+                    collectionService.add(city);
                 } catch (CityValidationException e) {
                     System.out.println(
                             "При инициализации коллекции данными из файла "
@@ -115,7 +132,7 @@ public class CollectionInput implements IRunnable, IShutdownListener {
                     e.getErrorsWithMessages()
                      .values()
                      .forEach(System.out::println);
-                    collectionController.exit();
+                    collectionService.exit();
                     return;
                 }
                 counter++;

@@ -1,18 +1,18 @@
 package com.example.input.commands;
 
-import com.example.controller.CollectionController;
+import com.example.service.CollectionService;
 
 public class HeadCommand implements ICommand {
 
-    private final CollectionController collectionController;
+    private final CollectionService collectionService;
 
-    public HeadCommand(CollectionController collectionController) {
-        this.collectionController = collectionController;
+    public HeadCommand(CollectionService collectionService) {
+        this.collectionService = collectionService;
     }
 
     @Override
     public void execute() {
-        collectionController.head();
+        System.out.println(collectionService.head());
     }
 
 }

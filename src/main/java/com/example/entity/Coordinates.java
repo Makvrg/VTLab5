@@ -17,6 +17,13 @@ public class Coordinates {
         this.y = y;
     }
 
+    public Coordinates(Coordinates other) {
+        this(
+                other.x,
+                other.y
+        );
+    }
+
 
     @Override
     public String toString() {

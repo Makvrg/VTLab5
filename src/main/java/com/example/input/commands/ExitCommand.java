@@ -1,18 +1,18 @@
 package com.example.input.commands;
 
-import com.example.controller.CollectionController;
+import com.example.service.CollectionService;
 
 public class ExitCommand implements ICommand {
 
-    private final CollectionController collectionController;
+    private final CollectionService collectionService;
 
-    public ExitCommand(CollectionController collectionController) {
-        this.collectionController = collectionController;
+    public ExitCommand(CollectionService collectionService) {
+        this.collectionService = collectionService;
     }
 
     @Override
     public void execute() {
-        collectionController.exit();
+        collectionService.exit();
     }
 
 }

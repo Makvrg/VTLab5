@@ -18,6 +18,13 @@ public class Human {
         this.birthday = birthday;
     }
 
+    public Human(Human other) {
+        this(
+                other.height,
+                new Date(other.birthday.getTime())
+        );
+    }
+
 
     @Override
     public String toString() {

@@ -1,19 +1,19 @@
 package com.example.input.commands;
 
-import com.example.controller.CollectionController;
+import com.example.service.CollectionService;
 
 public class PrintFieldDescendingGovernmentCommand implements ICommand {
 
-    private final CollectionController collectionController;
+    private final CollectionService collectionService;
 
     public PrintFieldDescendingGovernmentCommand(
-            CollectionController collectionController) {
-        this.collectionController = collectionController;
+            CollectionService collectionService) {
+        this.collectionService = collectionService;
     }
 
     @Override
     public void execute() {
-        collectionController.printFieldDescendingGovernment();
+        collectionService.printFieldDescendingGovernment();
     }
 
 }

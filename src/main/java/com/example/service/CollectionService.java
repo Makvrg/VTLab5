@@ -1,69 +1,22 @@
 package com.example.service;
 
-import com.example.CityValidationException;
-import com.example.controller.RawActionDataValidationException;
 import com.example.entity.City;
-import com.example.entity.Coordinates;
-import com.example.entity.Human;
 import com.example.event.IShutdownListener;
-import com.example.input.dto.CityTypedRequestDto;
-import com.example.input.dto.ParamRawData;
 import com.example.repository.CollectionRepository;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
+import java.util.Optional;
 
 public class CollectionService {
 
     private final CollectionRepository collectionRepository;
     private final List<IShutdownListener> listeners = new ArrayList<>();
-    private final CityTypedRequestDtoValidator cityTypedRequestDtoValidator;
     private Long id = 0L;
 
-    public CollectionService(CollectionRepository collectionRepository,
-                             CityTypedRequestDtoValidator cityTypedRequestDtoValidator) {
+    public CollectionService(CollectionRepository collectionRepository) {
         this.collectionRepository = collectionRepository;
-        this.cityTypedRequestDtoValidator = cityTypedRequestDtoValidator;
-    }
-
-    public void help() {
-        System.out.println("Справка по командам приложения:");
-        String helpText = """
-                help : вывести справку по доступным командам
-                
-                info : вывести в стандартный поток вывода информацию о коллекции (тип, дата инициализации, количество элементов и т.д.)
-                
-                show : вывести в стандартный поток вывода все элементы коллекции в строковом представлении
-                
-                add {element} : добавить новый элемент в коллекцию
-                
-                update id {element} : обновить значение элемента коллекции, id которого равен заданному
-                
-                remove_by_id id : удалить элемент из коллекции по его id
-                
-                clear : очистить коллекцию
-                
-                save : сохранить коллекцию в файл
-                
-                execute_script file_name : считать и исполнить скрипт из указанного файла. В скрипте содержатся команды в таком же виде, в котором их вводит пользователь в интерактивном режиме.
-                
-                exit : завершить программу (без сохранения в файл)
-                
-                head : вывести первый элемент коллекции
-                
-                remove_head : вывести первый элемент коллекции и удалить его
-                
-                add_if_max {element} : добавить новый элемент в коллекцию, если его значение превышает значение наибольшего элемента этой коллекции
-                
-                remove_all_by_population_density populationDensity : удалить из коллекции все элементы, значение поля populationDensity которого эквивалентно заданному
-                
-                filter_less_than_population_density populationDensity : вывести элементы, значение поля populationDensity которых меньше заданного
-                
-                print_field_descending_government : вывести значения поля government всех элементов в порядке убывания""";
-        System.out.println(helpText);
     }
 
     public void exit() {
@@ -71,130 +24,116 @@ public class CollectionService {
         shutdown();
     }
 
-    public void info() {
-        collectionRepository.info();
+    public String info() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Информация о коллекции:\n")
+          .append(String.format(
+                  "1. Тип коллекции: %s%n",
+                  collectionRepository.getCollectionType()
+                  )
+          )
+          .append(String.format(
+                  "2. Дата инициализации: %s%n",
+                  collectionRepository.getInitializationDate()
+                  )
+          )
+          .append(String.format(
+                  "3. Тип элементов: %s%n",
+                  collectionRepository.getElementsType()
+                  )
+          )
+          .append(String.format(
+                  "4. Количество элементов: %s%n",
+                  collectionRepository.getCountOfElements()
+                  )
+          );
+        return sb.toString();
     }
 
+    public boolean add(City city) {
+        city.setId(++id);
+        city.setCreationDate(new Date());
+        return collectionRepository.add(city);
+    }
 
-    // TODO Выделить в отдельный валидатор
-    public void servicingRawActionData(ParamRawData paramRawData)
-            throws RawActionDataValidationException {
-        if (paramRawData.getId() != null) {
-            if (Long.parseLong(paramRawData.getId()) < 0) {
-                throw new RawActionDataValidationException(
-                        "Аргумент id должен быть положительным числом"
-                );
-            }
+    public boolean addIfMax(City city) {
+        city.setId(++id);
+        city.setCreationDate(new Date());
+        Optional<City> maxCity = collectionRepository.findMaxCity();
+        if (maxCity.isPresent() && city.compareTo(maxCity.get()) > 0) {
+            return collectionRepository.add(city);
+        } else {
+            id--;
+            return false;
         }
     }
 
-    private void servicingInputCity(CityTypedRequestDto cityTypedRequestDto,
-                                    ParamTypedData paramTypedData,
-                                    Consumer<ParamTypedData> repoMethod)
-            throws CityValidationException {
+    public boolean updateById(City city,
+                         ParamTypedData paramTypedData) {
+        return collectionRepository.updateById(paramTypedData.getId(), city);
+    }
 
-        Map<String, String> errorsWithMessages =
-                cityTypedRequestDtoValidator.validate(cityTypedRequestDto);
-
-        if (errorsWithMessages.isEmpty()) {
-            City city = new City(
-                    (paramTypedData.getId() != null) ? paramTypedData.getId() : id++,
-                    cityTypedRequestDto.getName(),
-                    new Coordinates(
-                            cityTypedRequestDto.getCoordinates()
-                                    .getX(),
-                            cityTypedRequestDto.getCoordinates()
-                                    .getY()
-                    ),
-                    new Date(),
-                    cityTypedRequestDto.getArea(),
-                    cityTypedRequestDto.getPopulation(),
-                    cityTypedRequestDto.getMetersAboveSeaLevel(),
-                    cityTypedRequestDto.getPopulationDensity(),
-                    cityTypedRequestDto.getAgglomeration(),
-                    cityTypedRequestDto.getGovernment(),
-                    new Human(
-                            cityTypedRequestDto.getGovernor()
-                                    .getHeight(),
-                            cityTypedRequestDto.getGovernor()
-                                    .getBirthday()
-                    )
+    public String show() {
+        List<City> cityList = collectionRepository.findAll();
+        StringBuilder sb = new StringBuilder();
+        if (!cityList.isEmpty()) {
+            sb.append("Содержимые в коллекции объекты City:\n");
+            cityList.forEach(
+                    city -> sb.append(city.toString()).append("\n")
             );
-            paramTypedData.setCity(city);
-            repoMethod.accept(paramTypedData);
         } else {
-            throw new CityValidationException(errorsWithMessages);
+            sb.append("Коллекция пуста");
+        }
+        return sb.toString();
+    }
+
+    public ResponseTypes removeById(Long id) {
+        try {
+            if (collectionRepository.deleteById(id)) {
+                return ResponseTypes.SUCCESS;
+            } else {
+                return ResponseTypes.STANDARD_FAIL;
+            }
+        } catch (IllegalStateException e) {
+            return ResponseTypes.EXCEPTION.setMessage(e.getMessage());
         }
     }
 
+    public boolean clear() {
+        return collectionRepository.deleteAll();
+    }
 
-    public void add(CityTypedRequestDto cityTypedRequestDto,
-                    ParamTypedData paramTypedData) throws CityValidationException {
-        servicingInputCity(
-                cityTypedRequestDto,
-                paramTypedData,
-                paramTypedDataArg ->
-                        collectionRepository.add(paramTypedDataArg.getCity())
+    public String head() {
+        Optional<City> headCity = collectionRepository.findFirst();
+        return headCity.map(city -> "Первый элемент коллекции: " + city)
+                       .orElse("Коллекция пуста");
+    }
+
+    public String removeHead() {
+        Optional<City> removedCity = collectionRepository.removeHead();
+        return removedCity.map(city -> "Удалённый первый элемент коллекции: " + city)
+                          .orElse("Коллекция пуста");
+    }
+
+    public boolean removeAllByPopulationDensityCommand(long populationDensity) {
+        return collectionRepository.removeAllByPopulationDensityCommand(
+                populationDensity
         );
     }
 
-    public void addIfMax(CityTypedRequestDto cityTypedRequestDto,
-                    ParamTypedData paramTypedData) throws CityValidationException {
-        servicingInputCity(
-                cityTypedRequestDto,
-                paramTypedData,
-                paramTypedDataArg ->
-                        collectionRepository.addIfMax(paramTypedDataArg.getCity())
-        );
-    }
-
-    public void updateById(CityTypedRequestDto cityTypedRequestDto,
-                         ParamTypedData paramTypedData) throws CityValidationException {
-        servicingInputCity(
-                cityTypedRequestDto,
-                paramTypedData,
-                paramTypedDataArg ->
-                        collectionRepository.updateById(paramTypedData.getId(),
-                                                        paramTypedDataArg.getCity())
-        );
-    }
-
-    public void show() {
-        collectionRepository.show();
-    }
-
-    public void removeById(Long id) {
-        collectionRepository.removeById(id);
-    }
-
-    public void clear() {
-        collectionRepository.clear();
-    }
-
-    public void head() {
-        collectionRepository.head();
-    }
-
-    public void removeHead() {
-        collectionRepository.removeHead();
-    }
-
-    public void removeAllByPopulationDensityCommand(long populationDensity) {
-        if (populationDensity <= 0) {
-            System.out.println("Плотность населения города должна быть больше 0");
+    public String filterLessThanPopulationDensity(long populationDensity) {
+        List<City> filteredCityList =
+                collectionRepository.findAllByLessPopulationDensity(populationDensity);
+        StringBuilder sb = new StringBuilder();
+        if (!filteredCityList.isEmpty()) {
+            sb.append("Искомые объекты City:\n");
+            filteredCityList.forEach(
+                    city -> sb.append(city.toString()).append("\n")
+            );
         } else {
-            collectionRepository.removeAllByPopulationDensityCommand(
-                    populationDensity);
+            sb.append("Искомых элементов в коллекции не найдено");
         }
-    }
-
-    public void filterLessThanPopulationDensity(long populationDensity) {
-        if (populationDensity <= 0) {
-            System.out.println("Плотность населения города должна быть больше 0");
-        } else {
-            collectionRepository.filterLessThanPopulationDensity(
-                    populationDensity);
-        }
+        return sb.toString();
     }
 
     public void printFieldDescendingGovernment() {

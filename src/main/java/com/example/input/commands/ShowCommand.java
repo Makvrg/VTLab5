@@ -1,18 +1,18 @@
 package com.example.input.commands;
 
-import com.example.controller.CollectionController;
+import com.example.service.CollectionService;
 
 public class ShowCommand implements ICommand{
 
-    private final CollectionController collectionController;
+    private final CollectionService collectionService;
 
-    public ShowCommand(CollectionController collectionController) {
-        this.collectionController = collectionController;
+    public ShowCommand(CollectionService collectionService) {
+        this.collectionService = collectionService;
     }
 
     @Override
     public void execute() {
-        collectionController.show();
+        System.out.println(collectionService.show());
     }
 
 }

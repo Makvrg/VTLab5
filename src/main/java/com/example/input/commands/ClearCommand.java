@@ -1,18 +1,22 @@
 package com.example.input.commands;
 
-import com.example.controller.CollectionController;
+import com.example.service.CollectionService;
 
 public class ClearCommand implements ICommand {
 
-    private final CollectionController collectionController;
+    private final CollectionService collectionService;
 
-    public ClearCommand(CollectionController collectionController) {
-        this.collectionController = collectionController;
+    public ClearCommand(CollectionService collectionService) {
+        this.collectionService = collectionService;
     }
 
     @Override
     public void execute() {
-        collectionController.clear();
+        if (collectionService.clear()) {
+            System.out.println("Коллекция успешно очищена");
+        } else {
+            System.out.println("Коллекция уже пуста");
+        }
     }
 
 }
