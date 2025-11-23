@@ -12,7 +12,9 @@ public class ExitCommand implements ICommand {
 
     @Override
     public void execute() {
-        collectionService.exit();
+        if (collectionService.exit()) {
+            System.out.println("Закрытие приложения");
+        }
     }
 
 }

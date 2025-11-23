@@ -13,7 +13,7 @@ public class PrintFieldDescendingGovernmentCommand implements ICommand {
 
     @Override
     public void execute() {
-        collectionService.printFieldDescendingGovernment();
+        System.out.println(collectionService.printFieldDescendingGovernment());
     }
 
 }

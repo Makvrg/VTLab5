@@ -130,20 +130,8 @@ public class CollectionRepository {
                 .toList();
     }
 
-    public void printFieldDescendingGovernment() {
-        if (collectionWithInfo.getCountOfElements() > 0) {
-
-            List<Government> listOfGov = new ArrayList<>();
-            for (City city : collectionWithInfo.collection) {
-                listOfGov.add(city.getGovernment());
-            }
-            listOfGov.sort(null);
-            for (int i = collectionWithInfo.collection.size() - 1; i >= 0; i--) {
-                System.out.println(listOfGov.get(i));
-            }
-        } else {
-            System.out.println("Коллекция пуста");
-        }
+    public List<Government> findAllGovernment() {
+        return findAll().stream().map(City::getGovernment).toList();
     }
 
 }

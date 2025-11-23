@@ -1,6 +1,7 @@
 package com.example.service;
 
 import com.example.entity.City;
+import com.example.entity.Government;
 import com.example.event.IShutdownListener;
 import com.example.repository.CollectionRepository;
 
@@ -19,9 +20,9 @@ public class CollectionService {
         this.collectionRepository = collectionRepository;
     }
 
-    public void exit() {
-        System.out.println("Закрытие приложения");
+    public boolean exit() {
         shutdown();
+        return true;
     }
 
     public String info() {
@@ -87,15 +88,11 @@ public class CollectionService {
         return sb.toString();
     }
 
-    public ResponseTypes removeById(Long id) {
+    public boolean removeById(Long id) {
         try {
-            if (collectionRepository.deleteById(id)) {
-                return ResponseTypes.SUCCESS;
-            } else {
-                return ResponseTypes.STANDARD_FAIL;
-            }
+            return collectionRepository.deleteById(id);
         } catch (IllegalStateException e) {
-            return ResponseTypes.EXCEPTION.setMessage(e.getMessage());
+            throw new RemoveByIdIllegalStateException(e.getMessage());
         }
     }
 
@@ -136,8 +133,20 @@ public class CollectionService {
         return sb.toString();
     }
 
-    public void printFieldDescendingGovernment() {
-        collectionRepository.printFieldDescendingGovernment();
+    public String printFieldDescendingGovernment() {
+        List<Government> govList = collectionRepository.findAllGovernment();
+        govList.sort(null);
+        govList = govList.reversed();
+        StringBuilder sb = new StringBuilder();
+        if (!govList.isEmpty()) {
+            sb.append("Все упорядоченные по убыванию типы правления из коллекции:\n");
+            govList.forEach(
+                    city -> sb.append(city.toString()).append("\n")
+            );
+        } else {
+            sb.append("Коллекция пуста");
+        }
+        return sb.toString();
     }
 
 

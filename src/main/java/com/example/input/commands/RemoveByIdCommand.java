@@ -1,7 +1,7 @@
 package com.example.input.commands;
 
 import com.example.service.CollectionService;
-import com.example.service.ResponseTypes;
+import com.example.service.RemoveByIdIllegalStateException;
 import com.example.validator.CommandValidator;
 import com.example.validator.exceptions.RemoveByIdValidationException;
 
@@ -24,21 +24,19 @@ public class RemoveByIdCommand implements ICommand {
     public void execute() {
         try {
             commandValidator.validateRemoveById(id);
-
-            ResponseTypes response = collectionService.removeById(Long.valueOf(id));
-            if (response.isResult()) {
-                System.out.println(
-                        "Объект City успешно удалён из коллекции по заданному id");
-            } else {
-                if (response == ResponseTypes.STANDARD_FAIL) {
+            try {
+                if (collectionService.removeById(Long.valueOf(id))) {
                     System.out.println(
-                            "Объект City с заданным id не найден в коллекции");
+                            "Объект City успешно удалён из коллекции по заданному id");
                 } else {
                     System.out.println(
-                            "Объект не удалён, так как произошла ошибка во время работы: "
-                                    + response.getMessage()
-                    );
+                            "Объект City с заданным id не найден в коллекции");
                 }
+            } catch (RemoveByIdIllegalStateException e) {
+                System.out.println(
+                        "Объект не удалён, так как произошла ошибка во время работы: "
+                        + e.getMessage()
+                );
             }
         } catch (RemoveByIdValidationException e) {
             System.out.println(e.getMessage());
