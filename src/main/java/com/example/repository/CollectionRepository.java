@@ -70,9 +70,11 @@ public class CollectionRepository {
     }
 
     public List<City> findAll() {
-        return collectionWithInfo.collection.stream()
-                                            .map(City::new)
-                                            .toList();
+        return new ArrayList<>(
+                collectionWithInfo.collection.stream()
+                                             .map(City::new)
+                                             .toList()
+        );
     }
 
     public boolean deleteById(Long id) {
@@ -125,13 +127,17 @@ public class CollectionRepository {
     }
 
     public List<City> findAllByLessPopulationDensity(long populationDensity) {
-        return collectionWithInfo.collection.stream()
-                .filter(city -> city.getPopulationDensity() < populationDensity)
-                .toList();
+        return new ArrayList<>(
+                collectionWithInfo.collection.stream()
+                        .filter(city -> city.getPopulationDensity() < populationDensity)
+                        .toList()
+        );
     }
 
     public List<Government> findAllGovernment() {
-        return findAll().stream().map(City::getGovernment).toList();
+        return new ArrayList<>(
+                findAll().stream().map(City::getGovernment).toList()
+        );
     }
 
 }

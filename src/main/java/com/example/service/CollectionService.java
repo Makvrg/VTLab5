@@ -52,13 +52,13 @@ public class CollectionService {
     }
 
     public boolean add(City city) {
-        city.setId(++id);
+        city.setId(id++);
         city.setCreationDate(new Date());
         return collectionRepository.add(city);
     }
 
     public boolean addIfMax(City city) {
-        city.setId(++id);
+        city.setId(id++);
         city.setCreationDate(new Date());
         Optional<City> maxCity = collectionRepository.findMaxCity();
         if (maxCity.isPresent() && city.compareTo(maxCity.get()) > 0) {

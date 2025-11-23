@@ -21,7 +21,9 @@ public class Human {
     public Human(Human other) {
         this(
                 other.height,
-                new Date(other.birthday.getTime())
+                (other.birthday != null)
+                        ? new Date(other.birthday.getTime())
+                        : null
         );
     }
 
