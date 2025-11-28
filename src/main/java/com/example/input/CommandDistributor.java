@@ -6,30 +6,26 @@ import com.example.input.readers.IReader;
 import com.example.service.CollectionService;
 import com.example.typer.DataTyper;
 import com.example.validator.CommandValidator;
-import lombok.Setter;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class CommandDistributor {
 
     private final Map<String, Function<String[], ICommand>> commands;
 
-    @Setter
-    private IReader reader;
+    private final List<IReader> collectionInputReaders;
 
     public CommandDistributor(CollectionService collectionService,
                               CommandValidator commandValidator,
                               DataTyper dataTyper,
-                              IReader reader,
-                              Consumer<IReader> setCollectionInputReader) {
-        this.reader = reader;
+                              List<IReader> readers) {
+        this.collectionInputReaders = readers;
         commands = buildMapOfCommands(collectionService,
                                       commandValidator,
-                                      dataTyper,
-                                      setCollectionInputReader);
+                                      dataTyper);
     }
 
     public void distribute(String[] inputArgs) {
@@ -42,8 +38,7 @@ public class CommandDistributor {
     private Map<String, Function<String[], ICommand>> buildMapOfCommands(
             CollectionService collectionService,
             CommandValidator commandValidator,
-            DataTyper dataTyper,
-            Consumer<IReader> setCollectionInputReader) {
+            DataTyper dataTyper) {
         Map<String, Function<String[], ICommand>> commands = new HashMap<>();
 
         commands.put("help", _ -> new HelpCommand());
@@ -53,7 +48,7 @@ public class CommandDistributor {
                 collectionService,
                 commandValidator,
                 dataTyper,
-                reader,
+                collectionInputReaders.getLast(),
                 new ParamRawData())
         );
         commands.put("show", _ -> new ShowCommand(collectionService));
@@ -70,7 +65,7 @@ public class CommandDistributor {
                 collectionService,
                 commandValidator,
                 dataTyper,
-                reader,
+                collectionInputReaders.getLast(),
                 new ParamRawData())
         );
         commands.put("remove_all_by_population_density",
@@ -94,7 +89,7 @@ public class CommandDistributor {
                         collectionService,
                         commandValidator,
                         dataTyper,
-                        reader,
+                        collectionInputReaders.getLast(),
                         new ParamRawData()
                                 // TODO Можно реализовать Билдер
                                 .setId((args.length == 1 || args[1] == null)
@@ -105,8 +100,7 @@ public class CommandDistributor {
                 args -> new ExecuteScriptCommand(
                         commandValidator,
                         args,
-                        setCollectionInputReader,
-                        this::setReader)
+                        collectionInputReaders)
         );
         return commands;
     }

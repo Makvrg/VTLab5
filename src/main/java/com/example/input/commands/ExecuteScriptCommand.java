@@ -6,25 +6,22 @@ import com.example.input.readers.file.FileReader;
 import com.example.validator.CommandValidator;
 import com.example.validator.exceptions.ExecuteScriptValidateException;
 
-import java.util.function.Consumer;
+import java.util.List;
 
 
 public class ExecuteScriptCommand implements ICommand {
 
     private final CommandValidator commandValidator;
     private final String fileName;
-    private final Consumer<IReader> setReaderInCollectionInput;
-    private final Consumer<IReader> setReaderInCommandDistributor;
+    private final List<IReader> collectionInputReaders;
 
     public ExecuteScriptCommand(
             CommandValidator commandValidator,
             String[] args,
-            Consumer<IReader> setReaderInCollectionInput,
-            Consumer<IReader> setReaderInCommandDistributor) {
+            List<IReader> collectionInputReaders) {
         this.commandValidator = commandValidator;
         fileName = (args.length > 1) ? args[1] : null;
-        this.setReaderInCollectionInput = setReaderInCollectionInput;
-        this.setReaderInCommandDistributor = setReaderInCommandDistributor;
+        this.collectionInputReaders = collectionInputReaders;
     }
 
     @Override
@@ -35,12 +32,18 @@ public class ExecuteScriptCommand implements ICommand {
             System.out.println(e.getMessage());
             return;
         }
-
-        IReader fileReader = new FileReader(new FileInputStreamProvider(),
-                                            fileName);
-        setReaderInCollectionInput.accept(fileReader);
-        setReaderInCommandDistributor.accept(fileReader);
-        System.out.println("Активен режим чтения файла");
+        if (collectionInputReaders.size() < 10) {
+            IReader fileReader = new FileReader(new FileInputStreamProvider(),
+                    fileName);
+            collectionInputReaders.addLast(fileReader);
+            System.out.println("Активен режим чтения файла " + fileName);
+        } else {
+            System.out.println("Превышена глубина рекурсии execute_script, принудительное завершение всей цепочки");
+            while (collectionInputReaders.size() > 1) {
+                collectionInputReaders.removeLast();
+            }
+            System.out.println("Активен режим чтения терминала");
+        }
     }
 
 }

@@ -13,19 +13,15 @@ import com.example.input.readers.terminal.Processor;
 import com.example.service.CollectionService;
 import com.example.typer.DataTyper;
 import com.example.validator.CommandValidator;
-import lombok.Setter;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CollectionInput implements IRunnable, IShutdownListener {
 
-    @Setter
-    private IReader reader;
-
-    private final IReader terminalReader;
-
+    private final List<IReader> readers = new ArrayList<>();
     private final CollectionService collectionService;
     private final CommandValidator commandValidator;
     private final DataTyper dataTyper;
@@ -41,8 +37,7 @@ public class CollectionInput implements IRunnable, IShutdownListener {
                            EnvironmentProvider environmentProvider,
                            InputStreamProvider inputStreamProvider,
                            JsonParser<List<CityRawRequestDto>> parser) {
-        this.reader = reader;
-        terminalReader = reader;
+        this.readers.addLast(reader);
         this.collectionService = collectionService;
         this.commandValidator = commandValidator;
         this.dataTyper = dataTyper;
@@ -69,19 +64,17 @@ public class CollectionInput implements IRunnable, IShutdownListener {
                         collectionService,
                         commandValidator,
                         dataTyper,
-                        reader,
-                        this::setReader
+                        readers
                 );
 
         while (!shutdown) {
             System.out.print("> ");
             try {
-                String inputLine = reader.read();
+                String inputLine = readers.getLast().read();
 
                 if (inputLine == null) {
-                    reader = terminalReader;
-                    commandDistributor.setReader(terminalReader);
-                    System.out.println("Активен режим чтения терминала");
+                    readers.removeLast();
+                    System.out.println("Активен режим чтения предыдущего источника");
                     continue;
                 }
 
@@ -94,9 +87,8 @@ public class CollectionInput implements IRunnable, IShutdownListener {
                 System.out.println(
                         "Файл с указанным названием не найден или к нему нет доступа"
                 );
-                reader = terminalReader;
-                commandDistributor.setReader(terminalReader);
-                System.out.println("Активен режим чтения терминала");
+                readers.removeLast();
+                System.out.println("Активен режим предыдущего источника");
             }
         }
     }

@@ -122,9 +122,9 @@ public abstract class AbstractAddCityCommand implements ICommand {
     protected abstract boolean useService(City city,
                        ParamTypedData paramTypedData);
 
-    private void setDtoField(String explanation,
-                             String message,
-                             Consumer<String> setter) {
+    private void readInputAndSetDtoField(String explanation,
+                                         String message,
+                                         Consumer<String> setter) {
         if (explanation != null) {
             System.out.println(explanation);
         }
@@ -134,7 +134,7 @@ public abstract class AbstractAddCityCommand implements ICommand {
             setter.accept(Processor.processTerminalData(inputString));
         } catch (IOException e) {
             throw new ExecuteScriptValidateException(
-                    "Файл с указанным названием не найден или к нему нет доступа"
+                    "\nФайл с указанным названием не найден или к нему нет доступа"
             );
         } catch (NullPointerException e) {
             throw new ExecuteScriptValidateException(
@@ -148,7 +148,7 @@ public abstract class AbstractAddCityCommand implements ICommand {
 
         commands.put("name",
                 () ->
-                    setDtoField(
+                    readInputAndSetDtoField(
                             null,
                             "Введите название города",
                             cityRawRequestDto::setName
@@ -156,7 +156,7 @@ public abstract class AbstractAddCityCommand implements ICommand {
         );
         commands.put("x",
                 () ->
-                    setDtoField(
+                    readInputAndSetDtoField(
                             "x-координата - вещественное число, не превышающее 579",
                             "Введите x-координату города",
                             cityRawRequestDto.getCoordinates()::setX
@@ -164,7 +164,7 @@ public abstract class AbstractAddCityCommand implements ICommand {
         );
         commands.put("y",
                 () ->
-                    setDtoField(
+                    readInputAndSetDtoField(
                             "y-координата - вещественное число",
                             "Введите y-координату города",
                             cityRawRequestDto.getCoordinates()::setY
@@ -172,7 +172,7 @@ public abstract class AbstractAddCityCommand implements ICommand {
         );
         commands.put("area",
                 () ->
-                    setDtoField(
+                    readInputAndSetDtoField(
                             null,
                             "Введите целочисленную площадь города",
                             cityRawRequestDto::setArea
@@ -180,7 +180,7 @@ public abstract class AbstractAddCityCommand implements ICommand {
         );
         commands.put("population",
                 () ->
-                    setDtoField(
+                    readInputAndSetDtoField(
                             null,
                             "Введите численность населения города",
                             cityRawRequestDto::setPopulation
@@ -188,7 +188,7 @@ public abstract class AbstractAddCityCommand implements ICommand {
         );
         commands.put("metersAboveSeaLevel",
                 () ->
-                    setDtoField(
+                    readInputAndSetDtoField(
                             "Количество метров над уровнем моря - вещественное число",
                             "Введите количество метров над уровнем моря",
                             cityRawRequestDto::setMetersAboveSeaLevel
@@ -196,7 +196,7 @@ public abstract class AbstractAddCityCommand implements ICommand {
         );
         commands.put("populationDensity",
                 () ->
-                    setDtoField(
+                    readInputAndSetDtoField(
                             null,
                             "Введите целочисленную плотность населения города",
                             cityRawRequestDto::setPopulationDensity
@@ -204,7 +204,7 @@ public abstract class AbstractAddCityCommand implements ICommand {
         );
         commands.put("agglomeration",
                 () ->
-                    setDtoField(
+                    readInputAndSetDtoField(
                             null,
                             "Введите численность населения агломерации города",
                             cityRawRequestDto::setAgglomeration
@@ -219,7 +219,7 @@ public abstract class AbstractAddCityCommand implements ICommand {
         }
         commands.put("government",
                 () ->
-                    setDtoField(
+                    readInputAndSetDtoField(
                             governmentExplanation.toString(),
                             "Введите тип правления города",
                             cityRawRequestDto::setGovernment
@@ -227,7 +227,7 @@ public abstract class AbstractAddCityCommand implements ICommand {
         );
         commands.put("height",
                 () ->
-                    setDtoField(
+                    readInputAndSetDtoField(
                             "Рост губернатора - вещественное число в метрах",
                             "Введите рост губернатора города",
                             cityRawRequestDto.getGovernor()::setHeight
@@ -235,7 +235,7 @@ public abstract class AbstractAddCityCommand implements ICommand {
         );
         commands.put("birthday",
                 () ->
-                    setDtoField(
+                    readInputAndSetDtoField(
                             "Дата и время рождения губернатора имеют формат дд-ММ-гггг ЧЧ:мм:сс",
                             "Введите дату и время рождения губернатора города",
                             cityRawRequestDto.getGovernor()::setBirthday
