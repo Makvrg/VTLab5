@@ -10,6 +10,7 @@ import com.example.input.json.JsonParser;
 import com.example.input.readers.IReader;
 import com.example.input.readers.file.InputStreamProvider;
 import com.example.input.readers.terminal.Processor;
+import com.example.output.IPrinter;
 import com.example.service.CollectionService;
 import com.example.typer.DataTyper;
 import com.example.validator.CommandValidator;
@@ -22,6 +23,7 @@ import java.util.List;
 public class CollectionInput implements IRunnable, IShutdownListener {
 
     private final List<IReader> readers = new ArrayList<>();
+    private final IPrinter printer;
     private final CollectionService collectionService;
     private final CommandValidator commandValidator;
     private final DataTyper dataTyper;
@@ -31,6 +33,7 @@ public class CollectionInput implements IRunnable, IShutdownListener {
     private boolean shutdown = false;
 
     public CollectionInput(IReader reader,
+                           IPrinter printer,
                            CollectionService collectionService,
                            CommandValidator commandValidator,
                            DataTyper dataTyper,
@@ -38,6 +41,7 @@ public class CollectionInput implements IRunnable, IShutdownListener {
                            InputStreamProvider inputStreamProvider,
                            JsonParser<List<CityRawRequestDto>> parser) {
         this.readers.addLast(reader);
+        this.printer = printer;
         this.collectionService = collectionService;
         this.commandValidator = commandValidator;
         this.dataTyper = dataTyper;
@@ -49,6 +53,7 @@ public class CollectionInput implements IRunnable, IShutdownListener {
     @Override
     public void run() {
         System.out.println("Приложение запускается");
+        printer.on();
 
         try {
             initialize();

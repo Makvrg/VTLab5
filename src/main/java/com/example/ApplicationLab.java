@@ -11,6 +11,8 @@ import com.example.input.readers.IReader;
 import com.example.input.readers.file.FileInputStreamProvider;
 import com.example.input.readers.file.InputStreamProvider;
 import com.example.input.readers.terminal.TerminalReader;
+import com.example.output.IPrinter;
+import com.example.output.OutputPrinter;
 import com.example.repository.CollectionRepository;
 import com.example.service.CollectionService;
 import com.example.typer.DataTyper;
@@ -49,8 +51,12 @@ public class ApplicationLab {
         EnvironmentProvider environmentProvider = new EnvVariableProvider("CITY_FILE");
         InputStreamProvider inputStreamProvider = new FileInputStreamProvider();
         JsonParser<List<CityRawRequestDto>> parser = new CityJsonParser();
+
+        IPrinter printer = new OutputPrinter();
+
         CollectionInput collectionInput =
                 new CollectionInput(terminalReader,
+                                    printer,
                                     collectionService,
                                     commandValidator,
                                     dataTyper,
