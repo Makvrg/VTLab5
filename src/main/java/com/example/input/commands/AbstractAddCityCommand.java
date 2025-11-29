@@ -6,6 +6,7 @@ import com.example.entity.Government;
 import com.example.input.dto.*;
 import com.example.input.readers.IReader;
 import com.example.input.readers.terminal.Processor;
+import com.example.output.IPrinter;
 import com.example.service.CollectionService;
 import com.example.service.ParamTypedData;
 import com.example.typer.DataTyper;
@@ -24,6 +25,7 @@ public abstract class AbstractAddCityCommand implements ICommand {
     private final CommandValidator commandValidator;
     private final DataTyper dataTyper;
     private final IReader reader;
+    protected final IPrinter printer;
     private final Map<String, Runnable> readActions;
     protected final ParamRawData paramRawData;
     protected final CityRawRequestDto cityRawRequestDto;
@@ -33,11 +35,13 @@ public abstract class AbstractAddCityCommand implements ICommand {
                                   CommandValidator commandValidator,
                                   DataTyper dataTyper,
                                   IReader reader,
+                                  IPrinter printer,
                                   ParamRawData paramRawData) {
         this.collectionService = collectionService;
         this.commandValidator = commandValidator;
         this.dataTyper = dataTyper;
         this.reader = reader;
+        this.printer = printer;
         this.paramRawData = paramRawData;
         readActions = buildMapOfReadActions();
 
@@ -53,23 +57,23 @@ public abstract class AbstractAddCityCommand implements ICommand {
     @Override
     public void execute() {
         if (!paramRawData.containsEmpty().isEmpty()) {
-            System.out.println("Отсутствуют аргументы: ");
+            printer.forcePrintln("Отсутствуют аргументы команды: ");
             for (String emptyField : paramRawData.containsEmpty()) {
-                System.out.print(emptyField);
+                printer.forcePrintln(emptyField);
             }
-            System.out.println();
+            printer.forcePrintln("");
             return;
         }
         try {
             commandValidator.validateParamRawData(paramRawData);
         } catch (RawActionDataValidationException e) {
-            System.out.println(e.getMessage());
+            printer.forcePrintln(e.getMessage());
             return;
         }
         try {
             readManage();
         } catch (ExecuteScriptValidateException e) {
-            System.out.println(e.getMessage());
+            printer.forcePrintln(e.getMessage());
             return;
         }
 
@@ -97,48 +101,48 @@ public abstract class AbstractAddCityCommand implements ICommand {
 
     private void readManage() {
         if (errorsWithMessages.isEmpty()) {
-            System.out.println("Следуя указаниям, введите данные объекта City");
+            printer.printlnIfOn("Следуя указаниям, введите данные объекта City");
 
             readActions.keySet().forEach(
                     action -> readActions.get(action)
                                                .run()
             );
         } else {
-            System.out.println();
-            System.out.println("Некоторые данные были некорректными");
-            System.out.println("Пожалуйста, исправьте их:");
-            System.out.println();
-            errorsWithMessages.values().forEach(System.out::println);
+            printer.printlnIfOn("");
+            printer.printlnIfOn("Некоторые данные были некорректными");
+            printer.printlnIfOn("Пожалуйста, исправьте их:");
+            printer.printlnIfOn("");
+            errorsWithMessages.values().forEach(printer::printlnIfOn);
             errorsWithMessages.keySet().forEach(
                     action -> readActions.get(action)
                                                .run()
             );
-            System.out.println();
+            printer.printlnIfOn("");
         }
     }
 
     protected abstract void workWithPrintedText(boolean result);
 
     protected abstract boolean useService(City city,
-                       ParamTypedData paramTypedData);
+                                          ParamTypedData paramTypedData);
 
     private void readInputAndSetDtoField(String explanation,
                                          String message,
                                          Consumer<String> setter) {
         if (explanation != null) {
-            System.out.println(explanation);
+            printer.printlnIfOn(explanation);
         }
-        System.out.print(message + " > ");
+        printer.printIfOn(message + " > ");
         try {
             String inputString = reader.read();
             setter.accept(Processor.processTerminalData(inputString));
         } catch (IOException e) {
             throw new ExecuteScriptValidateException(
-                    "\nФайл с указанным названием не найден или к нему нет доступа"
+                    "Файл с указанным названием не найден или к нему нет доступа"
             );
         } catch (NullPointerException e) {
             throw new ExecuteScriptValidateException(
-                    "\nНеожиданное количество строк данных в файле"
+                    "Неожиданное количество строк данных в файле"
             );
         }
     }

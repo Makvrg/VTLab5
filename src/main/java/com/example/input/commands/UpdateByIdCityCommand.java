@@ -3,6 +3,7 @@ package com.example.input.commands;
 import com.example.entity.City;
 import com.example.input.dto.ParamRawData;
 import com.example.input.readers.IReader;
+import com.example.output.IPrinter;
 import com.example.service.CollectionService;
 import com.example.service.ParamTypedData;
 import com.example.typer.DataTyper;
@@ -14,23 +15,24 @@ public class UpdateByIdCityCommand extends AbstractAddCityCommand {
                                  CommandValidator commandValidator,
                                  DataTyper dataTyper,
                                  IReader inputReader,
+                                 IPrinter printer,
                                  ParamRawData paramRawData) {
         super(collectionService, commandValidator,
-              dataTyper, inputReader, paramRawData);
+              dataTyper, inputReader, printer, paramRawData);
     }
 
     @Override
     protected boolean useService(City city,
-                              ParamTypedData paramTypedData) {
+                                 ParamTypedData paramTypedData) {
         return collectionService.updateById(city, paramTypedData);
     }
 
     @Override
     protected void workWithPrintedText(boolean result) {
         if (result) {
-            System.out.println("Объект успешно обновлён");
+            super.printer.forcePrintln("Объект успешно обновлён");
         } else {
-            System.out.println(
+            super.printer.forcePrintln(
                     "Объект не был обновлён, так как в коллекции нет объекта с данным id");
         }
     }

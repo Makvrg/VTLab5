@@ -1,5 +1,6 @@
 package com.example.input.commands;
 
+import com.example.output.IPrinter;
 import com.example.service.CollectionService;
 import com.example.validator.CommandValidator;
 import com.example.validator.exceptions.FilterLessThanPopulationDensityValidationException;
@@ -8,14 +9,17 @@ public class FilterLessThanPopulationDensityCommand implements ICommand {
 
     private final CollectionService collectionService;
     private final CommandValidator commandValidator;
+    private final IPrinter printer;
     private final String populationDensity;
 
     public FilterLessThanPopulationDensityCommand(
             CollectionService collectionService,
             CommandValidator commandValidator,
+            IPrinter printer,
             String[] args) {
         this.collectionService = collectionService;
         this.commandValidator = commandValidator;
+        this.printer = printer;
         populationDensity = (args.length > 1) ? args[1] : null;
     }
 
@@ -25,12 +29,13 @@ public class FilterLessThanPopulationDensityCommand implements ICommand {
             commandValidator.validateFilterLessThanPopulationDensity(
                     populationDensity
             );
-            System.out.println(collectionService.filterLessThanPopulationDensity(
-                    Long.parseLong(populationDensity)
+            printer.forcePrint(
+                    collectionService.filterLessThanPopulationDensity(
+                            Long.parseLong(populationDensity)
                     )
             );
         } catch (FilterLessThanPopulationDensityValidationException e) {
-            System.out.println(e.getMessage());
+            printer.forcePrintln(e.getMessage());
         }
     }
 

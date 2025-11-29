@@ -1,7 +1,15 @@
 package com.example.input.commands;
 
 
+import com.example.output.IPrinter;
+
 public class HelpCommand implements ICommand {
+
+    private final IPrinter printer;
+
+    public HelpCommand(IPrinter printer) {
+        this.printer = printer;
+    }
 
     @Override
     public void execute() {
@@ -38,7 +46,7 @@ public class HelpCommand implements ICommand {
                 filter_less_than_population_density populationDensity : вывести элементы, значение поля populationDensity которых меньше заданного
                 
                 print_field_descending_government : вывести значения поля government всех элементов в порядке убывания""";
-        System.out.println(helpText);
+        printer.forcePrintln(helpText);
     }
 
 }

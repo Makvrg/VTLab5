@@ -52,13 +52,13 @@ public class CollectionInput implements IRunnable, IShutdownListener {
 
     @Override
     public void run() {
-        System.out.println("Приложение запускается");
         printer.on();
+        printer.forcePrintln("Приложение запускается");
 
         try {
             initialize();
         } catch (IOException e) {
-            System.out.println(
+            printer.forcePrintln(
                     "Произошла ошибка инициализации коллекции: "
                     + e.getMessage());
             collectionService.exit();
@@ -69,17 +69,22 @@ public class CollectionInput implements IRunnable, IShutdownListener {
                         collectionService,
                         commandValidator,
                         dataTyper,
-                        readers
+                        readers,
+                        printer
                 );
 
         while (!shutdown) {
-            System.out.print("> ");
+            printer.printIfOn("> ");
             try {
                 String inputLine = readers.getLast().read();
 
                 if (inputLine == null) {
                     readers.removeLast();
-                    System.out.println("Активен режим чтения предыдущего источника");
+                    printer.forcePrintln("Активен режим чтения предыдущего источника");
+
+                    if (readers.size() == 1) {
+                        printer.on();
+                    }
                     continue;
                 }
 
@@ -88,12 +93,17 @@ public class CollectionInput implements IRunnable, IShutdownListener {
                 );
                 commandDistributor.distribute(inputArgs);
             } catch (IOException e) {
-                System.out.println(e.getMessage());
-                System.out.println(
+                printer.forcePrintln(e.getMessage());
+                printer.forcePrintln(
                         "Файл с указанным названием не найден или к нему нет доступа"
                 );
                 readers.removeLast();
-                System.out.println("Активен режим предыдущего источника");
+                printer.forcePrintln("Активен режим чтения предыдущего источника");
+
+                if (readers.size() == 1) {
+                    printer.on();
+                }
+
             }
         }
     }
@@ -102,8 +112,7 @@ public class CollectionInput implements IRunnable, IShutdownListener {
         String fileName = environmentProvider.getFileName();
 
         if (fileName == null) {
-            System.out.println(
-                    "Не найдена переменная окружения с названием файла");
+            printer.forcePrintln("Не найдена переменная окружения с названием файла");
             collectionService.exit();
             return;
         }
@@ -120,21 +129,21 @@ public class CollectionInput implements IRunnable, IShutdownListener {
 
                     collectionService.add(city);
                 } catch (CityValidationException e) {
-                    System.out.println(
+                    printer.forcePrintln(
                             "При инициализации коллекции данными из файла "
                             + "произошла ошибка валидации объекта City с "
                             + "порядковым номером: " + counter
                     );
-                    System.out.println("Ошибки валидации в нём:");
+                    printer.forcePrintln("Ошибки валидации в нём:");
                     e.getErrorsWithMessages()
                      .values()
-                     .forEach(System.out::println);
+                     .forEach(printer::forcePrintln);
                     collectionService.exit();
                     return;
                 }
                 counter++;
             }
-            System.out.println(
+            printer.forcePrintln(
                     "Инициализация коллекции объектами City из файла завершена успешно");
         }
     }

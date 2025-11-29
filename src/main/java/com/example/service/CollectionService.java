@@ -44,7 +44,7 @@ public class CollectionService {
                   )
           )
           .append(String.format(
-                  "4. Количество элементов: %s%n",
+                  "4. Количество элементов: %s",
                   collectionRepository.getCountOfElements()
                   )
           );
@@ -83,7 +83,7 @@ public class CollectionService {
                     city -> sb.append(city.toString()).append("\n")
             );
         } else {
-            sb.append("Коллекция пуста");
+            sb.append("Коллекция пуста\n");
         }
         return sb.toString();
     }
@@ -128,7 +128,7 @@ public class CollectionService {
                     city -> sb.append(city.toString()).append("\n")
             );
         } else {
-            sb.append("Искомых элементов в коллекции не найдено");
+            sb.append("Искомых элементов в коллекции не найдено\n");
         }
         return sb.toString();
     }
@@ -144,7 +144,7 @@ public class CollectionService {
                     city -> sb.append(city.toString()).append("\n")
             );
         } else {
-            sb.append("Коллекция пуста");
+            sb.append("Коллекция пуста\n");
         }
         return sb.toString();
     }

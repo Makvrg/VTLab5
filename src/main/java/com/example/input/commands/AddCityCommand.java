@@ -3,6 +3,7 @@ package com.example.input.commands;
 import com.example.entity.City;
 import com.example.input.dto.ParamRawData;
 import com.example.input.readers.IReader;
+import com.example.output.IPrinter;
 import com.example.service.CollectionService;
 import com.example.service.ParamTypedData;
 import com.example.typer.DataTyper;
@@ -14,9 +15,10 @@ public class AddCityCommand extends AbstractAddCityCommand {
                                CommandValidator commandValidator,
                                DataTyper dataTyper,
                                IReader inputReader,
+                               IPrinter printer,
                                ParamRawData paramRawData) {
         super(collectionService, commandValidator,
-              dataTyper, inputReader, paramRawData);
+              dataTyper, inputReader, printer, paramRawData);
     }
 
     @Override
@@ -28,9 +30,11 @@ public class AddCityCommand extends AbstractAddCityCommand {
     @Override
     protected void workWithPrintedText(boolean result) {
         if (result) {
-            System.out.println("Новый объект успешно добавлен в коллекцию");
+            super.printer.forcePrintln(
+                    "Новый объект успешно добавлен в коллекцию");
         } else {
-            System.out.println("Новый объект не был добавлен в коллекцию");
+            super.printer.forcePrintln(
+                    "Новый объект не был добавлен в коллекцию");
         }
     }
 

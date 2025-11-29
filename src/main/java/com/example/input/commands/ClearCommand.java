@@ -1,21 +1,25 @@
 package com.example.input.commands;
 
+import com.example.output.IPrinter;
 import com.example.service.CollectionService;
 
 public class ClearCommand implements ICommand {
 
     private final CollectionService collectionService;
+    private final IPrinter printer;
 
-    public ClearCommand(CollectionService collectionService) {
+    public ClearCommand(CollectionService collectionService,
+                        IPrinter printer) {
         this.collectionService = collectionService;
+        this.printer = printer;
     }
 
     @Override
     public void execute() {
         if (collectionService.clear()) {
-            System.out.println("Коллекция успешно очищена");
+            printer.forcePrintln("Коллекция успешно очищена");
         } else {
-            System.out.println("Коллекция уже пуста");
+            printer.forcePrintln("Коллекция уже пуста");
         }
     }
 
