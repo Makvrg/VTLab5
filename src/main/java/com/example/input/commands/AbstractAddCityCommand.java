@@ -1,9 +1,11 @@
 package com.example.input.commands;
 
-import com.example.CityValidationException;
 import com.example.entity.City;
 import com.example.entity.Government;
-import com.example.input.dto.*;
+import com.example.input.dto.CityRawRequestDto;
+import com.example.input.dto.CoordRawRequestDto;
+import com.example.input.dto.HumanRawRequestDto;
+import com.example.input.dto.ParamRawData;
 import com.example.input.readers.IReader;
 import com.example.input.readers.terminal.Processor;
 import com.example.output.IPrinter;
@@ -12,12 +14,15 @@ import com.example.service.ParamTypedData;
 import com.example.typer.DataTyper;
 import com.example.validator.CommandValidator;
 import com.example.validator.exceptions.ExecuteScriptValidateException;
+import com.example.validator.exceptions.InputFieldValidationException;
 import com.example.validator.exceptions.RawActionDataValidationException;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public abstract class AbstractAddCityCommand implements ICommand {
 
@@ -26,10 +31,12 @@ public abstract class AbstractAddCityCommand implements ICommand {
     private final DataTyper dataTyper;
     private final IReader reader;
     protected final IPrinter printer;
-    private final Map<String, Runnable> readActions;
+    private final Map<String, Supplier<String>> readActions;
+    private boolean inputIsRepeated = false;
+    private final Map<String, Consumer<String>> inputValidateMethods;
+    Map<String, Consumer<String>> dtoFieldSetters;
     protected final ParamRawData paramRawData;
     protected final CityRawRequestDto cityRawRequestDto;
-    private Map<String, String> errorsWithMessages = new LinkedHashMap<>();
 
     public AbstractAddCityCommand(CollectionService collectionService,
                                   CommandValidator commandValidator,
@@ -44,6 +51,7 @@ public abstract class AbstractAddCityCommand implements ICommand {
         this.printer = printer;
         this.paramRawData = paramRawData;
         readActions = buildMapOfReadActions();
+        inputValidateMethods = buildMapOfInputValidateMethods();
 
         cityRawRequestDto = new CityRawRequestDto();
         cityRawRequestDto.setCoordinates(
@@ -52,6 +60,8 @@ public abstract class AbstractAddCityCommand implements ICommand {
         cityRawRequestDto.setGovernor(
                 new HumanRawRequestDto()
         );
+
+        dtoFieldSetters = buildMapOfDtoFieldSetters();
     }
 
     @Override
@@ -61,7 +71,6 @@ public abstract class AbstractAddCityCommand implements ICommand {
             for (String emptyField : paramRawData.containsEmpty()) {
                 printer.forcePrintln(emptyField);
             }
-            printer.forcePrintln("");
             return;
         }
         try {
@@ -77,47 +86,34 @@ public abstract class AbstractAddCityCommand implements ICommand {
             return;
         }
 
-        try {
-            commandValidator.validateCityRawRequestDto(cityRawRequestDto);
-            CityTypedRequestDto cityTypedRequestDto =
-                    dataTyper.typifyCityRawRequestDto(cityRawRequestDto);
-            commandValidator.validateCityTypedRequestDto(cityTypedRequestDto);
+        ParamTypedData paramTypedData =
+                dataTyper.typifyParamRawData(paramRawData);
+        City city = dataTyper.typifyCityRawRequestDtoToCity(cityRawRequestDto);
 
-            ParamTypedData paramTypedData =
-                    dataTyper.typifyParamRawData(paramRawData);
-            City city = dataTyper.typifyCityTypedRequestDtoToCity(cityTypedRequestDto);
-
-            workWithPrintedText(
-                    useService(
-                            city,
-                            paramTypedData
-                    )
-            );
-        } catch (CityValidationException e) {
-            errorsWithMessages = e.getErrorsWithMessages();
-            execute();
-        }
+        workWithPrintedText(
+                useService(
+                        city,
+                        paramTypedData
+                )
+        );
     }
 
     private void readManage() {
-        if (errorsWithMessages.isEmpty()) {
-            printer.printlnIfOn("Следуя указаниям, введите данные объекта City");
-
-            readActions.keySet().forEach(
-                    action -> readActions.get(action)
-                                               .run()
-            );
-        } else {
-            printer.printlnIfOn("");
-            printer.printlnIfOn("Некоторые данные были некорректными");
-            printer.printlnIfOn("Пожалуйста, исправьте их:");
-            printer.printlnIfOn("");
-            errorsWithMessages.values().forEach(printer::printlnIfOn);
-            errorsWithMessages.keySet().forEach(
-                    action -> readActions.get(action)
-                                               .run()
-            );
-            printer.printlnIfOn("");
+        printer.printlnIfOn("Следуя указаниям, введите данные объекта City");
+        for (String action : readActions.keySet()) {
+                while (true) {
+                    String input = readActions.get(action).get();
+                    try {
+                        inputValidateMethods.get(action).accept(input);
+                    } catch (InputFieldValidationException e) {
+                        printer.printlnIfOn(e.getMessage());
+                        inputIsRepeated = true;
+                        continue;
+                    }
+                    dtoFieldSetters.get(action).accept(input);
+                    inputIsRepeated = false;
+                    break;
+                }
         }
     }
 
@@ -126,16 +122,15 @@ public abstract class AbstractAddCityCommand implements ICommand {
     protected abstract boolean useService(City city,
                                           ParamTypedData paramTypedData);
 
-    private void readInputAndSetDtoField(String explanation,
-                                         String message,
-                                         Consumer<String> setter) {
-        if (explanation != null) {
+    private String readInput(String explanation,
+                             String message) {
+        if (explanation != null && !inputIsRepeated) {
             printer.printlnIfOn(explanation);
         }
         printer.printIfOn(message + " > ");
         try {
             String inputString = reader.read();
-            setter.accept(Processor.processTerminalData(inputString));
+            return Processor.processTerminalData(inputString);
         } catch (IOException e) {
             throw new ExecuteScriptValidateException(
                     "Файл с указанным названием не найден или к нему нет доступа"
@@ -147,71 +142,63 @@ public abstract class AbstractAddCityCommand implements ICommand {
         }
     }
 
-    private Map<String, Runnable> buildMapOfReadActions() {
-        Map<String, Runnable> commands = new LinkedHashMap<>();
+    private Map<String, Supplier<String>> buildMapOfReadActions() {
+        Map<String, Supplier<String>> commands = new LinkedHashMap<>();
 
         commands.put("name",
                 () ->
-                    readInputAndSetDtoField(
+                    readInput(
                             null,
-                            "Введите название города",
-                            cityRawRequestDto::setName
+                            "Введите название города"
                     )
         );
         commands.put("x",
                 () ->
-                    readInputAndSetDtoField(
-                            "x-координата - вещественное число, не превышающее 579",
-                            "Введите x-координату города",
-                            cityRawRequestDto.getCoordinates()::setX
+                    readInput(
+                            "x-координата города - вещественное число, не превышающее 579",
+                            "Введите координату x"
                     )
         );
         commands.put("y",
                 () ->
-                    readInputAndSetDtoField(
-                            "y-координата - вещественное число",
-                            "Введите y-координату города",
-                            cityRawRequestDto.getCoordinates()::setY
+                    readInput(
+                            "y-координата города - вещественное число",
+                            "Введите координату y"
                     )
         );
         commands.put("area",
                 () ->
-                    readInputAndSetDtoField(
+                    readInput(
                             null,
-                            "Введите целочисленную площадь города",
-                            cityRawRequestDto::setArea
+                            "Введите целочисленную площадь города"
                     )
         );
         commands.put("population",
                 () ->
-                    readInputAndSetDtoField(
+                    readInput(
                             null,
-                            "Введите численность населения города",
-                            cityRawRequestDto::setPopulation
+                            "Введите численность населения города"
                     )
         );
         commands.put("metersAboveSeaLevel",
                 () ->
-                    readInputAndSetDtoField(
+                    readInput(
                             "Количество метров над уровнем моря - вещественное число",
-                            "Введите количество метров над уровнем моря",
-                            cityRawRequestDto::setMetersAboveSeaLevel
+                            "Введите количество метров над уровнем моря"
                     )
         );
         commands.put("populationDensity",
                 () ->
-                    readInputAndSetDtoField(
+                    readInput(
                             null,
-                            "Введите целочисленную плотность населения города",
-                            cityRawRequestDto::setPopulationDensity
+                            "Введите целочисленную плотность населения города"
                         )
         );
         commands.put("agglomeration",
                 () ->
-                    readInputAndSetDtoField(
+                    readInput(
                             null,
-                            "Введите численность населения агломерации города",
-                            cityRawRequestDto::setAgglomeration
+                            "Введите численность населения агломерации города"
                     )
         );
         StringBuilder governmentExplanation = new StringBuilder();
@@ -223,29 +210,63 @@ public abstract class AbstractAddCityCommand implements ICommand {
         }
         commands.put("government",
                 () ->
-                    readInputAndSetDtoField(
+                    readInput(
                             governmentExplanation.toString(),
-                            "Введите тип правления города",
-                            cityRawRequestDto::setGovernment
+                            "Введите тип правления города"
                     )
         );
         commands.put("height",
                 () ->
-                    readInputAndSetDtoField(
-                            "Рост губернатора - вещественное число в метрах",
-                            "Введите рост губернатора города",
-                            cityRawRequestDto.getGovernor()::setHeight
+                    readInput(
+                            "Рост губернатора города - вещественное число в метрах",
+                            "Введите рост губернатора"
                     )
         );
         commands.put("birthday",
                 () ->
-                    readInputAndSetDtoField(
-                            "Дата и время рождения губернатора имеют формат дд-ММ-гггг ЧЧ:мм:сс",
-                            "Введите дату и время рождения губернатора города",
-                            cityRawRequestDto.getGovernor()::setBirthday
+                    readInput(
+                            "Дата и время рождения губернатора города имеют формат дд-ММ-гггг ЧЧ:мм:сс",
+                            "Введите дату и время рождения губернатора"
                     )
         );
         return commands;
     }
 
+    private Map<String, Consumer<String>> buildMapOfInputValidateMethods() {
+        Map<String, Consumer<String>> validateMethods = new HashMap<>();
+
+        validateMethods.put("name", commandValidator::validateNameInput);
+        validateMethods.put("x", commandValidator::validateXCoordInput);
+        validateMethods.put("y", commandValidator::validateYCoordInput);
+        validateMethods.put("area", commandValidator::validateAreaInput);
+        validateMethods.put("population", commandValidator::validatePopulationInput);
+        validateMethods.put("metersAboveSeaLevel",
+                commandValidator::validateMetersAboveSeaLevelInput);
+        validateMethods.put("populationDensity",
+                commandValidator::validatePopulationDensityInput);
+        validateMethods.put("agglomeration", commandValidator::validateAgglomerationInput);
+        validateMethods.put("government", commandValidator::validateGovernmentInput);
+        validateMethods.put("height", commandValidator::validateHeightInput);
+        validateMethods.put("birthday", commandValidator::validateBirthdayInput);
+
+        return validateMethods;
+    }
+
+    private Map<String, Consumer<String>> buildMapOfDtoFieldSetters() {
+        Map<String, Consumer<String>> dtoFieldSetters = new HashMap<>();
+
+        dtoFieldSetters.put("name", cityRawRequestDto::setName);
+        dtoFieldSetters.put("x", cityRawRequestDto.getCoordinates()::setX);
+        dtoFieldSetters.put("y", cityRawRequestDto.getCoordinates()::setY);
+        dtoFieldSetters.put("area", cityRawRequestDto::setArea);
+        dtoFieldSetters.put("population", cityRawRequestDto::setPopulation);
+        dtoFieldSetters.put("metersAboveSeaLevel", cityRawRequestDto::setMetersAboveSeaLevel);
+        dtoFieldSetters.put("populationDensity", cityRawRequestDto::setPopulationDensity);
+        dtoFieldSetters.put("agglomeration", cityRawRequestDto::setAgglomeration);
+        dtoFieldSetters.put("government", cityRawRequestDto::setGovernment);
+        dtoFieldSetters.put("height", cityRawRequestDto.getGovernor()::setHeight);
+        dtoFieldSetters.put("birthday", cityRawRequestDto.getGovernor()::setBirthday);
+
+        return dtoFieldSetters;
+    }
 }

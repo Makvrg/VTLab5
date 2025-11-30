@@ -4,7 +4,8 @@ import com.example.entity.City;
 import com.example.entity.Coordinates;
 import com.example.entity.Government;
 import com.example.entity.Human;
-import com.example.input.dto.*;
+import com.example.input.dto.CityRawRequestDto;
+import com.example.input.dto.ParamRawData;
 import com.example.service.ParamTypedData;
 import lombok.SneakyThrows;
 
@@ -14,23 +15,24 @@ import java.util.Date;
 public class DataTyper {
 
     @SneakyThrows
-    public CityTypedRequestDto typifyCityRawRequestDto(
-            CityRawRequestDto cityRawRequestDto) {
+    public City typifyCityRawRequestDtoToCity(CityRawRequestDto cityRawRequestDto) {
         Date birthday = null;
         if (cityRawRequestDto.getGovernor().getBirthday() != null) {
             SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
             sdf.setLenient(false);
             birthday = sdf.parse(cityRawRequestDto.getGovernor()
-                          .getBirthday());
+                    .getBirthday());
         }
-        return new CityTypedRequestDto(
+        return new City(
+                null,
                 cityRawRequestDto.getName(),
-                new CoordTypedRequestDto(
+                new Coordinates(
                         Double.parseDouble(cityRawRequestDto.getCoordinates()
                                 .getX()),
                         Float.parseFloat(cityRawRequestDto.getCoordinates()
                                 .getY())
                 ),
+                null,
                 Long.valueOf(cityRawRequestDto.getArea()),
                 Integer.valueOf(cityRawRequestDto.getPopulation()),
                 (cityRawRequestDto.getMetersAboveSeaLevel() == null)
@@ -41,7 +43,7 @@ public class DataTyper {
                         ? null
                         : Integer.valueOf(cityRawRequestDto.getAgglomeration()),
                 Government.fromString(cityRawRequestDto.getGovernment()),
-                new HumanTypedRequestDto(
+                new Human(
                         Double.parseDouble(cityRawRequestDto.getGovernor()
                                 .getHeight()),
                         birthday
@@ -56,32 +58,6 @@ public class DataTyper {
             paramTypedData.setId(Long.valueOf(paramRawData.getId()));
         }
         return paramTypedData;
-    }
-
-    public City typifyCityTypedRequestDtoToCity(CityTypedRequestDto cityTypedRequestDto) {
-        return new City(
-                null,
-                cityTypedRequestDto.getName(),
-                new Coordinates(
-                        cityTypedRequestDto.getCoordinates()
-                                .getX(),
-                        cityTypedRequestDto.getCoordinates()
-                                .getY()
-                ),
-                null,
-                cityTypedRequestDto.getArea(),
-                cityTypedRequestDto.getPopulation(),
-                cityTypedRequestDto.getMetersAboveSeaLevel(),
-                cityTypedRequestDto.getPopulationDensity(),
-                cityTypedRequestDto.getAgglomeration(),
-                cityTypedRequestDto.getGovernment(),
-                new Human(
-                        cityTypedRequestDto.getGovernor()
-                                .getHeight(),
-                        cityTypedRequestDto.getGovernor()
-                                .getBirthday()
-                )
-        );
     }
 
 }

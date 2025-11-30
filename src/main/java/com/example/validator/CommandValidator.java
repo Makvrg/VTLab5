@@ -1,152 +1,146 @@
 package com.example.validator;
 
-import com.example.CityValidationException;
 import com.example.entity.Government;
-import com.example.input.dto.CityRawRequestDto;
-import com.example.input.dto.CityTypedRequestDto;
 import com.example.input.dto.ParamRawData;
 import com.example.validator.exceptions.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 public class CommandValidator {
 
-    public void validateCityRawRequestDto(CityRawRequestDto cityRawRequestDto)
-            throws CityValidationException {
-        Map<String, String> errorsWithMessages = new LinkedHashMap<>();
+    public void validateNameInput(String name) {
+        if (name == null || name.isBlank()) {
+            throw new InputFieldValidationException(
+                    "Название города не должно быть пустым, повторите ввод");
+        }
+    }
 
-        if (cityRawRequestDto.getName() == null
-                || cityRawRequestDto.getName().isBlank()) {
-            errorsWithMessages.put("name", "Название города не должно быть пустым");
-        }
+    public void validateXCoordInput(String xCoord) {
+        double MAX_COORD_X = 579;
         try {
-            Double.parseDouble(cityRawRequestDto.getCoordinates()
-                    .getX());
+            Double.parseDouble(xCoord);
         } catch (NumberFormatException | NullPointerException e) {
-            errorsWithMessages.put("x",
-                    "Координата x должна быть вещественным числом");
+            throw new InputFieldValidationException(
+                    "Координата x должна быть вещественным числом, повторите ввод");
         }
+        if (Double.parseDouble(xCoord) > MAX_COORD_X) {
+            throw new InputFieldValidationException(
+                    "Координата x не должна быть больше "
+                            + MAX_COORD_X
+                            + " , повторите ввод");
+        }
+    }
+
+    public void validateYCoordInput(String yCoord) {
         try {
-            Float.parseFloat(cityRawRequestDto.getCoordinates()
-                    .getY());
+            Float.parseFloat(yCoord);
         } catch (NumberFormatException | NullPointerException e) {
-            errorsWithMessages.put("y",
-                    "Координата y должна быть вещественным числом");
+            throw new InputFieldValidationException(
+                    "Координата y должна быть вещественным числом, повторите ввод");
         }
-        if (cityRawRequestDto.getArea() == null) {
-            errorsWithMessages.put("area",
-                    "Площадь города должна быть целым числом");
-        } else {
-            try {
-                Long.valueOf(cityRawRequestDto.getArea());
-            } catch (NumberFormatException e) {
-                errorsWithMessages.put("area",
-                        "Площадь города должна быть целым числом");
-            }
-        }
-        if (cityRawRequestDto.getPopulation() == null) {
-            errorsWithMessages.put(
-                    "population",
-                    "Численность населения города должна быть целым числом");
-        } else {
-            try {
-                Integer.valueOf(cityRawRequestDto.getPopulation());
-            } catch (NumberFormatException e) {
-                errorsWithMessages.put(
-                        "population",
-                        "Численность населения города должна быть целым числом");
-            }
-        }
-        if (cityRawRequestDto.getMetersAboveSeaLevel() != null) {
-            try {
-                Float.valueOf(cityRawRequestDto.getMetersAboveSeaLevel());
-            } catch (NumberFormatException e) {
-                errorsWithMessages.put(
-                        "metersAboveSeaLevel",
-                        "Число метров над уровнем моря должно быть вещественным числом");
-            }
-        }
+    }
+
+    public void validateAreaInput(String area) {
         try {
-            Long.parseLong(cityRawRequestDto.getPopulationDensity());
+            Long.parseLong(area);
         } catch (NumberFormatException | NullPointerException e) {
-            errorsWithMessages.put(
-                    "populationDensity",
-                    "Плотность населения города должна быть целым числом");
+            throw new InputFieldValidationException(
+                    "Площадь города должна быть целым числом, повторите ввод");
         }
-        if (cityRawRequestDto.getAgglomeration() != null) {
+        if (Long.parseLong(area) <= 0) {
+            throw new InputFieldValidationException(
+                    "Площадь города должна быть больше 0, повторите ввод");
+        }
+    }
+
+    public void validatePopulationInput(String population) {
+        try {
+            Integer.parseInt(population);
+        } catch (NumberFormatException | NullPointerException e) {
+            throw new InputFieldValidationException(
+                    "Численность населения города должна быть целым числом, повторите ввод");
+        }
+        if (Integer.parseInt(population) <= 0) {
+            throw new InputFieldValidationException(
+                    "Численность населения города должна быть больше 0, повторите ввод");
+        }
+    }
+
+    public void validateMetersAboveSeaLevelInput(String metersAboveSeaLevel) {
+        if (metersAboveSeaLevel != null) {
             try {
-                Integer.valueOf(cityRawRequestDto.getAgglomeration());
+                Float.parseFloat(metersAboveSeaLevel);
             } catch (NumberFormatException e) {
-                errorsWithMessages.put(
-                        "agglomeration",
-                        "Численность населения агломерации должна быть целым числом");
+                throw new InputFieldValidationException(
+                        "Число метров над уровнем моря должно быть вещественным числом, повторите ввод");
             }
         }
-        if (cityRawRequestDto.getGovernment() == null
+    }
+
+    public void validatePopulationDensityInput(String populationDensity) {
+        try {
+            Long.parseLong(populationDensity);
+        } catch (NumberFormatException | NullPointerException e) {
+            throw new InputFieldValidationException(
+                    "Плотность населения города должна быть целым числом, повторите ввод");
+        }
+        if (Long.parseLong(populationDensity) <= 0) {
+            throw new InputFieldValidationException(
+                    "Плотность населения города должна быть больше 0, повторите ввод");
+        }
+    }
+
+    public void validateAgglomerationInput(String agglomeration) {
+        if (agglomeration != null) {
+            try {
+                Integer.parseInt(agglomeration);
+            } catch (NumberFormatException e) {
+                throw new InputFieldValidationException(
+                        "Численность населения агломерации города должна быть целым числом, повторите ввод");
+            }
+        }
+    }
+
+    public void validateGovernmentInput(String government) {
+        if (government == null
                 || !Arrays.stream(Government.values())
-                .map(Government::getTitle)
-                .toList()
-                .contains(cityRawRequestDto.getGovernment())) {
-            errorsWithMessages.put(
-                    "government",
-                    "Тип правления города должен быть одним из предложенных");
+                          .map(Government::getTitle)
+                          .toList()
+                          .contains(government)) {
+            throw new InputFieldValidationException(
+                    "Тип правления города должен быть одним из предложенных, повторите ввод");
         }
+    }
+
+    public void validateHeightInput(String height) {
         try {
-            Double.parseDouble(cityRawRequestDto.getGovernor()
-                    .getHeight());
+            Double.parseDouble(height);
         } catch (NumberFormatException | NullPointerException e) {
-            errorsWithMessages.put("height",
-                    "Рост губернатора должен быть вещественным числом в метрах");
+            throw new InputFieldValidationException(
+                    "Рост губернатора города должен быть вещественным числом в метрах, повторите ввод");
         }
-        if (cityRawRequestDto.getGovernor().getBirthday() != null) {
+        if (Double.parseDouble(height) <= 0) {
+            throw new InputFieldValidationException(
+                    "Рост губернатора города должен быть больше 0, повторите ввод");
+        }
+    }
+
+    public void validateBirthdayInput(String birthday) {
+        if (birthday != null) {
             try {
                 SimpleDateFormat sdf =
                         new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
                 sdf.setLenient(false);
-                sdf.parse(cityRawRequestDto.getGovernor().getBirthday());
+                sdf.parse(birthday);
             } catch (ParseException e) {
-                errorsWithMessages.put("birthday",
-                        "Дата и время рождения губернатора "
-                        + "должны иметь формат дд-ММ-гггг ЧЧ:мм:сс");
+                throw new InputFieldValidationException(
+                        "Дата и время рождения губернатора города "
+                                + "должны иметь формат дд-ММ-гггг ЧЧ:мм:сс"
+                                + " , повторите ввод"
+                );
             }
-        }
-
-        if (!errorsWithMessages.isEmpty()) {
-            throw new CityValidationException(errorsWithMessages);
-        }
-    }
-
-    public void validateCityTypedRequestDto(CityTypedRequestDto cityTypedRequestDto)
-            throws CityValidationException{
-        double MAX_COORD_X = 579;
-        Map<String, String> errorsWithMessages = new LinkedHashMap<>();
-
-        if (cityTypedRequestDto.getCoordinates().getX() > MAX_COORD_X) {
-            errorsWithMessages.put("x",
-                    "Координата x не должна быть больше " + MAX_COORD_X);
-        }
-        if (cityTypedRequestDto.getArea() <= 0) {
-            errorsWithMessages.put("area", "Площадь города должна быть больше 0");
-        }
-        if (cityTypedRequestDto.getPopulation() <= 0) {
-            errorsWithMessages.put("population",
-                    "Численность населения должна быть больше 0");
-        }
-        if (cityTypedRequestDto.getPopulationDensity() <= 0) {
-            errorsWithMessages.put("populationDensity",
-                    "Плотность населения должна быть больше 0");
-        }
-        if (cityTypedRequestDto.getGovernor().getHeight() <= 0) {
-            errorsWithMessages.put("height",
-                    "Рост губернатора города должен быть больше 0");
-        }
-
-        if (!errorsWithMessages.isEmpty()) {
-            throw new CityValidationException(errorsWithMessages);
         }
     }
 

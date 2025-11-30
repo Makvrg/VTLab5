@@ -18,9 +18,8 @@ public enum Government {
 
     public static Government fromString(String text) {
         if (text == null) {
-            return null;
+            throw new IllegalArgumentException("Передано пустое значение");
         }
-
         for (Government government : Government.values()) {
             if (government.title.equals(text)) {
                 return government;

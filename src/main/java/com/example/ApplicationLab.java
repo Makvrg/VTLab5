@@ -2,7 +2,7 @@ package com.example;
 
 import com.example.entity.City;
 import com.example.input.CollectionInput;
-import com.example.input.dto.CityRawRequestDto;
+import com.example.input.dto.json.CityFromJsonDto;
 import com.example.input.env.EnvVariableProvider;
 import com.example.input.env.EnvironmentProvider;
 import com.example.input.json.CityJsonParser;
@@ -50,7 +50,7 @@ public class ApplicationLab {
 
         EnvironmentProvider environmentProvider = new EnvVariableProvider("CITY_FILE");
         InputStreamProvider inputStreamProvider = new FileInputStreamProvider();
-        JsonParser<List<CityRawRequestDto>> parser = new CityJsonParser();
+        JsonParser<List<CityFromJsonDto>> parser = new CityJsonParser();
 
         IPrinter printer = new OutputPrinter();
 
