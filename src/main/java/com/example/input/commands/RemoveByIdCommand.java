@@ -2,7 +2,7 @@ package com.example.input.commands;
 
 import com.example.output.IPrinter;
 import com.example.service.CollectionService;
-import com.example.service.RemoveByIdIllegalStateException;
+import com.example.service.exceptions.RemoveByIdIllegalStateException;
 import com.example.validator.CommandValidator;
 import com.example.validator.exceptions.RemoveByIdValidationException;
 

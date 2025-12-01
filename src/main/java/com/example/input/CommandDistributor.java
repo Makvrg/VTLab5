@@ -15,7 +15,7 @@ import java.util.function.Function;
 
 public class CommandDistributor {
 
-    private final Map<String, Function<String[], ICommand>> commands;
+    private final Map<String, Function<String[], ICommand>> commandFactories;
 
     private final List<IReader> collectionInputReaders;
     private final IPrinter printer;
@@ -25,7 +25,7 @@ public class CommandDistributor {
                               DataTyper dataTyper,
                               List<IReader> readers,
                               IPrinter printer) {
-        commands = buildMapOfCommands(collectionService,
+        commandFactories = buildMapOfCommands(collectionService,
                                       commandValidator,
                                       dataTyper);
         this.collectionInputReaders = readers;
@@ -33,7 +33,7 @@ public class CommandDistributor {
     }
 
     public void distribute(String[] inputArgs) {
-        commands.getOrDefault(inputArgs[0],
+        commandFactories.getOrDefault(inputArgs[0],
                         args -> new UnknownCommand(args, printer))
                 .apply(inputArgs)
                 .execute();

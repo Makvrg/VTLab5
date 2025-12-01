@@ -4,17 +4,16 @@ import com.example.entity.City;
 import com.example.entity.Government;
 import com.example.event.IShutdownListener;
 import com.example.repository.CollectionRepository;
+import com.example.service.exceptions.CreationDateIsAfterNowException;
+import com.example.service.exceptions.NonUniqueIdException;
+import com.example.service.exceptions.RemoveByIdIllegalStateException;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class CollectionService {
 
     private final CollectionRepository collectionRepository;
     private final List<IShutdownListener> listeners = new ArrayList<>();
-    private Long id = 0L;
 
     public CollectionService(CollectionRepository collectionRepository) {
         this.collectionRepository = collectionRepository;
@@ -52,19 +51,31 @@ public class CollectionService {
     }
 
     public boolean add(City city) {
-        city.setId(id++);
+        city.setId(createNewId());
         city.setCreationDate(new Date());
         return collectionRepository.add(city);
     }
 
+    public boolean initializationAdd(City city) {
+        if (collectionRepository.existsById(city.getId())) {
+            throw new NonUniqueIdException("Передан уже существующий id");
+        }
+        if (city.getCreationDate().after(new Date())) {
+            throw new CreationDateIsAfterNowException("Переда дата и время из будущего");
+        }
+        return collectionRepository.add(city);
+    }
+
+    private Long createNewId() {
+        Optional<Long> maxId = collectionRepository.findMaxId();
+        return maxId.map(aLong -> aLong + 1).orElse(0L);
+    }
+
     public boolean addIfMax(City city) {
-        city.setId(id++);
-        city.setCreationDate(new Date());
         Optional<City> maxCity = collectionRepository.findMaxCity();
         if (maxCity.isPresent() && city.compareTo(maxCity.get()) > 0) {
             return collectionRepository.add(city);
         } else {
-            id--;
             return false;
         }
     }
@@ -75,11 +86,11 @@ public class CollectionService {
     }
 
     public String show() {
-        List<City> cityList = collectionRepository.findAll();
+        List<City> cities = collectionRepository.findAll();
         StringBuilder sb = new StringBuilder();
-        if (!cityList.isEmpty()) {
+        if (!cities.isEmpty()) {
             sb.append("Содержимые в коллекции объекты City:\n");
-            cityList.forEach(
+            cities.forEach(
                     city -> sb.append(city.toString()).append("\n")
             );
         } else {

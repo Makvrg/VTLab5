@@ -35,6 +35,24 @@ public class CollectionRepository {
         return collectionWithInfo.getCountOfElements();
     }
 
+    public boolean existsById(Long id) {
+        for (City city : collectionWithInfo.getCollection()) {
+            if (city.getId().equals(id)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Optional<Long> findMaxId() {
+        if (collectionWithInfo.getCountOfElements() > 0) {
+            return collectionWithInfo.collection.stream()
+                                                .map(City::getId)
+                                                .max(Long::compareTo);
+        }
+        return Optional.empty();
+    }
+
     public boolean add(City city) {
         return collectionWithInfo.collection.add(city);
     }

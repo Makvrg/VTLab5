@@ -106,7 +106,7 @@ public abstract class AbstractAddCityCommand implements ICommand {
                     try {
                         inputValidateMethods.get(action).accept(input);
                     } catch (InputFieldValidationException e) {
-                        printer.printlnIfOn(e.getMessage());
+                        printer.printlnIfOn(e.getMessage() + " повторите ввод");
                         inputIsRepeated = true;
                         continue;
                     }

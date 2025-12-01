@@ -10,10 +10,23 @@ import java.util.Arrays;
 
 public class CommandValidator {
 
+    public void validateIdInput(String id) {
+        try {
+            Long.parseLong(id);
+        } catch (NumberFormatException | NullPointerException e) {
+            throw new InputFieldValidationException(
+                    "Id города должен быть целым числом");
+        }
+        if (Long.parseLong(id) < 0) {
+            throw new InputFieldValidationException(
+                    "Id города должен быть неотрицательным");
+        }
+    }
+
     public void validateNameInput(String name) {
         if (name == null || name.isBlank()) {
             throw new InputFieldValidationException(
-                    "Название города не должно быть пустым, повторите ввод");
+                    "Название города не должно быть пустым");
         }
     }
 
@@ -23,13 +36,13 @@ public class CommandValidator {
             Double.parseDouble(xCoord);
         } catch (NumberFormatException | NullPointerException e) {
             throw new InputFieldValidationException(
-                    "Координата x должна быть вещественным числом, повторите ввод");
+                    "Координата x должна быть вещественным числом");
         }
         if (Double.parseDouble(xCoord) > MAX_COORD_X) {
             throw new InputFieldValidationException(
                     "Координата x не должна быть больше "
                             + MAX_COORD_X
-                            + " , повторите ввод");
+            );
         }
     }
 
@@ -38,7 +51,25 @@ public class CommandValidator {
             Float.parseFloat(yCoord);
         } catch (NumberFormatException | NullPointerException e) {
             throw new InputFieldValidationException(
-                    "Координата y должна быть вещественным числом, повторите ввод");
+                    "Координата y должна быть вещественным числом");
+        }
+    }
+
+    public void validateCreationDateInput(String creationDate) {
+        if (creationDate == null) {
+            throw new InputFieldValidationException("Дата основания города "
+                    + "должна иметь формат дд-ММ-гггг ЧЧ:мм:сс"
+            );
+        }
+        try {
+            SimpleDateFormat sdf =
+                    new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+            sdf.setLenient(false);
+            sdf.parse(creationDate);
+        } catch (ParseException e) {
+            throw new InputFieldValidationException("Дата основания города "
+                    + "должна иметь формат дд-ММ-гггг ЧЧ:мм:сс"
+            );
         }
     }
 
@@ -47,11 +78,11 @@ public class CommandValidator {
             Long.parseLong(area);
         } catch (NumberFormatException | NullPointerException e) {
             throw new InputFieldValidationException(
-                    "Площадь города должна быть целым числом, повторите ввод");
+                    "Площадь города должна быть целым числом");
         }
         if (Long.parseLong(area) <= 0) {
             throw new InputFieldValidationException(
-                    "Площадь города должна быть больше 0, повторите ввод");
+                    "Площадь города должна быть больше 0");
         }
     }
 
@@ -60,11 +91,11 @@ public class CommandValidator {
             Integer.parseInt(population);
         } catch (NumberFormatException | NullPointerException e) {
             throw new InputFieldValidationException(
-                    "Численность населения города должна быть целым числом, повторите ввод");
+                    "Численность населения города должна быть целым числом");
         }
         if (Integer.parseInt(population) <= 0) {
             throw new InputFieldValidationException(
-                    "Численность населения города должна быть больше 0, повторите ввод");
+                    "Численность населения города должна быть больше 0");
         }
     }
 
@@ -74,7 +105,7 @@ public class CommandValidator {
                 Float.parseFloat(metersAboveSeaLevel);
             } catch (NumberFormatException e) {
                 throw new InputFieldValidationException(
-                        "Число метров над уровнем моря должно быть вещественным числом, повторите ввод");
+                        "Число метров над уровнем моря должно быть вещественным числом");
             }
         }
     }
@@ -84,11 +115,11 @@ public class CommandValidator {
             Long.parseLong(populationDensity);
         } catch (NumberFormatException | NullPointerException e) {
             throw new InputFieldValidationException(
-                    "Плотность населения города должна быть целым числом, повторите ввод");
+                    "Плотность населения города должна быть целым числом");
         }
         if (Long.parseLong(populationDensity) <= 0) {
             throw new InputFieldValidationException(
-                    "Плотность населения города должна быть больше 0, повторите ввод");
+                    "Плотность населения города должна быть больше 0");
         }
     }
 
@@ -98,7 +129,7 @@ public class CommandValidator {
                 Integer.parseInt(agglomeration);
             } catch (NumberFormatException e) {
                 throw new InputFieldValidationException(
-                        "Численность населения агломерации города должна быть целым числом, повторите ввод");
+                        "Численность населения агломерации города должна быть целым числом");
             }
         }
     }
@@ -110,7 +141,7 @@ public class CommandValidator {
                           .toList()
                           .contains(government)) {
             throw new InputFieldValidationException(
-                    "Тип правления города должен быть одним из предложенных, повторите ввод");
+                    "Тип правления города должен быть одним из предложенных");
         }
     }
 
@@ -119,11 +150,11 @@ public class CommandValidator {
             Double.parseDouble(height);
         } catch (NumberFormatException | NullPointerException e) {
             throw new InputFieldValidationException(
-                    "Рост губернатора города должен быть вещественным числом в метрах, повторите ввод");
+                    "Рост губернатора города должен быть вещественным числом в метрах");
         }
         if (Double.parseDouble(height) <= 0) {
             throw new InputFieldValidationException(
-                    "Рост губернатора города должен быть больше 0, повторите ввод");
+                    "Рост губернатора города должен быть больше 0");
         }
     }
 
@@ -138,7 +169,6 @@ public class CommandValidator {
                 throw new InputFieldValidationException(
                         "Дата и время рождения губернатора города "
                                 + "должны иметь формат дд-ММ-гггг ЧЧ:мм:сс"
-                                + " , повторите ввод"
                 );
             }
         }

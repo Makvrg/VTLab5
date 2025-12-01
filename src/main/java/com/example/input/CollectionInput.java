@@ -2,7 +2,6 @@ package com.example.input;
 
 import com.example.entity.City;
 import com.example.event.IShutdownListener;
-import com.example.input.dto.CityRawRequestDto;
 import com.example.input.dto.json.CityFromJsonDto;
 import com.example.input.env.EnvironmentProvider;
 import com.example.input.json.JsonParser;
@@ -11,6 +10,8 @@ import com.example.input.readers.file.InputStreamProvider;
 import com.example.input.readers.terminal.Processor;
 import com.example.output.IPrinter;
 import com.example.service.CollectionService;
+import com.example.service.exceptions.CreationDateIsAfterNowException;
+import com.example.service.exceptions.NonUniqueIdException;
 import com.example.typer.DataTyper;
 import com.example.validator.CommandValidator;
 import com.example.validator.exceptions.InputFieldValidationException;
@@ -114,7 +115,6 @@ public class CollectionInput implements IRunnable, IShutdownListener {
 
         if (fileName == null) {
             printer.forcePrintln("Не найдена переменная окружения с названием файла");
-            collectionService.exit();
             return;
         }
         try (InputStreamReader reader = inputStreamProvider.open(fileName)) {
@@ -124,32 +124,60 @@ public class CollectionInput implements IRunnable, IShutdownListener {
             for (CityFromJsonDto cityFromJsonDto : cities) {
 
                 try {
-                    inputValidateMethods.get(0).accept(cityFromJsonDto.getName());
-                    inputValidateMethods.get(1).accept(cityFromJsonDto.getCoordinates().getX());
-                    inputValidateMethods.get(2).accept(cityFromJsonDto.getCoordinates().getY());
-                    inputValidateMethods.get(3).accept(cityFromJsonDto.getArea());
-                    inputValidateMethods.get(4).accept(cityFromJsonDto.getPopulation());
-                    inputValidateMethods.get(5).accept(cityFromJsonDto.getMetersAboveSeaLevel());
-                    inputValidateMethods.get(6).accept(cityFromJsonDto.getPopulationDensity());
-                    inputValidateMethods.get(7).accept(cityFromJsonDto.getAgglomeration());
-                    inputValidateMethods.get(8).accept(cityFromJsonDto.getGovernment());
-                    inputValidateMethods.get(9).accept(cityFromJsonDto.getGovernor().getHeight());
-                    inputValidateMethods.get(10).accept(cityFromJsonDto.getGovernor().getBirthday());
+                    inputValidateMethods.get(0).accept(cityFromJsonDto.getId());
+                    inputValidateMethods.get(1).accept(cityFromJsonDto.getName());
+                    inputValidateMethods.get(2).accept(cityFromJsonDto.getCoordinates().getX());
+                    inputValidateMethods.get(3).accept(cityFromJsonDto.getCoordinates().getY());
+                    inputValidateMethods.get(4).accept(cityFromJsonDto.getCreationDate());
+                    inputValidateMethods.get(5).accept(cityFromJsonDto.getArea());
+                    inputValidateMethods.get(6).accept(cityFromJsonDto.getPopulation());
+                    inputValidateMethods.get(7).accept(cityFromJsonDto.getMetersAboveSeaLevel());
+                    inputValidateMethods.get(8).accept(cityFromJsonDto.getPopulationDensity());
+                    inputValidateMethods.get(9).accept(cityFromJsonDto.getAgglomeration());
+                    inputValidateMethods.get(10).accept(cityFromJsonDto.getGovernment());
+                    inputValidateMethods.get(11).accept(cityFromJsonDto.getGovernor().getHeight());
+                    inputValidateMethods.get(12).accept(cityFromJsonDto.getGovernor().getBirthday());
                 } catch (InputFieldValidationException e) {
                     printer.forcePrintln(
-                            "При инициализации коллекции данными из файла "
-                            + "произошла ошибка валидации объекта City с "
-                            + "порядковым номером: " + counter
+                            new StringBuilder()
+                                    .append("При инициализации коллекции данными из файла ")
+                                    .append("произошла ошибка валидации объекта City с ")
+                                    .append("порядковым номером: ")
+                                    .append(counter)
+                                    .toString()
                     );
-                    printer.forcePrintln("Выявленная ошибка в нём:" + e.getMessage());
-                    collectionService.exit();
+                    printer.forcePrintln("Выявленная в нём ошибка: " + e.getMessage());
                     return;
                 }
-                CityRawRequestDto cityRawRequestDto = new CityRawRequestDto(cityFromJsonDto);
-                City city = dataTyper.typifyCityRawRequestDtoToCity(cityRawRequestDto);
+                City city = dataTyper.typifyCityFromJsonDtoToCity(cityFromJsonDto);
 
-                collectionService.add(city);
-                counter++;
+                try {
+                    if (collectionService.initializationAdd(city)) {
+                        counter++;
+                    } else {
+                        printer.forcePrintln(
+                                new StringBuilder()
+                                        .append("При инициализации коллекции данными из файла ")
+                                        .append("по неизвестной причине не удалось ")
+                                        .append("добавить в коллекцию объект City с ")
+                                        .append("порядковым номером: ")
+                                        .append(counter)
+                                        .toString()
+                        );
+                        return;
+                    }
+                } catch (NonUniqueIdException | CreationDateIsAfterNowException e) {
+                    printer.forcePrintln(
+                            new StringBuilder()
+                                    .append("При инициализации коллекции данными из файла ")
+                                    .append("произошла ошибка добавления объекта City с ")
+                                    .append("порядковым номером: ")
+                                    .append(counter)
+                                    .toString()
+                    );
+                    printer.forcePrintln("Ошибка добавления в коллекцию: " + e.getMessage());
+                    return;
+                }
             }
             printer.forcePrintln(
                     "Инициализация коллекции объектами City из файла завершена успешно");
@@ -159,9 +187,11 @@ public class CollectionInput implements IRunnable, IShutdownListener {
     private List<Consumer<String>> buildInputValidateMethods() {
         List<Consumer<String>> inputValidateMethods = new ArrayList<>();
 
+        inputValidateMethods.add(commandValidator::validateIdInput);
         inputValidateMethods.add(commandValidator::validateNameInput);
         inputValidateMethods.add(commandValidator::validateXCoordInput);
         inputValidateMethods.add(commandValidator::validateYCoordInput);
+        inputValidateMethods.add(commandValidator::validateCreationDateInput);
         inputValidateMethods.add(commandValidator::validateAreaInput);
         inputValidateMethods.add(commandValidator::validatePopulationInput);
         inputValidateMethods.add(commandValidator::validateMetersAboveSeaLevelInput);

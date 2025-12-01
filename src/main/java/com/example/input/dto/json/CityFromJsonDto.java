@@ -7,8 +7,10 @@ import lombok.Setter;
 @Setter
 public class CityFromJsonDto {
 
+    private String id;
     private String name;
     private CoordFromJsonDto coordinates;
+    private String creationDate;
     private String area;
     private String population;
     private String metersAboveSeaLevel;
