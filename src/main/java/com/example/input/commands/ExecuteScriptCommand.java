@@ -13,23 +13,21 @@ import java.util.List;
 public class ExecuteScriptCommand implements ICommand {
 
     private final CommandValidator commandValidator;
-    private final String fileName;
     private final List<IReader> collectionInputReaders;
     private final IPrinter printer;
 
     public ExecuteScriptCommand(
             CommandValidator commandValidator,
-            String[] args,
             List<IReader> collectionInputReaders,
             IPrinter printer) {
         this.commandValidator = commandValidator;
-        fileName = (args.length > 1) ? args[1] : null;
         this.collectionInputReaders = collectionInputReaders;
         this.printer = printer;
     }
 
     @Override
-    public void execute() {
+    public void execute(String[] inputArgs, IReader ignoredReader) {
+        String fileName = (inputArgs.length > 1) ? inputArgs[1] : null;
         try {
             commandValidator.validateExecuteScript(fileName);
         } catch (ExecuteScriptValidateException e) {

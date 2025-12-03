@@ -1,7 +1,6 @@
 package com.example.input;
 
 import com.example.input.commands.*;
-import com.example.input.dto.ParamRawData;
 import com.example.input.readers.IReader;
 import com.example.output.IPrinter;
 import com.example.service.CollectionService;
@@ -11,12 +10,16 @@ import com.example.validator.CommandValidator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class CommandDistributor {
 
-    private final Map<String, Function<String[], ICommand>> commandFactories;
+    private final Map<String, Supplier<ICommand>> commandFactories;
+    private final Map<String, ICommand> commands = new HashMap<>();
 
+    private final CollectionService collectionService;
+    private final CommandValidator commandValidator;
+    private final DataTyper dataTyper;
     private final List<IReader> collectionInputReaders;
     private final IPrinter printer;
 
@@ -25,95 +28,97 @@ public class CommandDistributor {
                               DataTyper dataTyper,
                               List<IReader> readers,
                               IPrinter printer) {
-        commandFactories = buildMapOfCommands(collectionService,
-                                      commandValidator,
-                                      dataTyper);
+        this.collectionService = collectionService;
+        this.commandValidator = commandValidator;
+        this.dataTyper = dataTyper;
+        commandFactories = buildMapOfCommandFactories();
         this.collectionInputReaders = readers;
         this.printer = printer;
     }
 
     public void distribute(String[] inputArgs) {
-        commandFactories.getOrDefault(inputArgs[0],
-                        args -> new UnknownCommand(args, printer))
-                .apply(inputArgs)
-                .execute();
+        if (commandFactories.containsKey(inputArgs[0])) {
+            if (!commands.containsKey(inputArgs[0])) {
+                commands.put(inputArgs[0], commandFactories.get(inputArgs[0]).get());
+            }
+            commands.get(inputArgs[0])
+                    .execute(inputArgs, collectionInputReaders.getLast());
+        } else {
+            if (!commands.containsKey("unknown")) {
+                commands.put("unknown", commandFactories.get("unknown").get());
+            }
+            commands.get("unknown")
+                    .execute(inputArgs, null);
+        }
     }
 
-    private Map<String, Function<String[], ICommand>> buildMapOfCommands(
-            CollectionService collectionService,
-            CommandValidator commandValidator,
-            DataTyper dataTyper) {
-        Map<String, Function<String[], ICommand>> commands = new HashMap<>();
+    private Map<String, Supplier<ICommand>> buildMapOfCommandFactories() {
+        Map<String, Supplier<ICommand>> commands = new HashMap<>();
 
-        commands.put("help", _ -> new HelpCommand(printer));
-        commands.put("exit", _ -> new ExitCommand(collectionService, printer));
-        commands.put("info", _ -> new InfoCommand(collectionService, printer));
-        commands.put("add", _ -> new AddCityCommand(
+        commands.put("unknown", () -> new UnknownCommand(printer));
+        commands.put("help", () -> new HelpCommand(printer));
+        commands.put("exit", () -> new ExitCommand(collectionService, printer));
+        commands.put("info", () -> new InfoCommand(collectionService, printer));
+        commands.put("add", () -> new AddCityCommand(
                 collectionService,
                 commandValidator,
                 dataTyper,
-                collectionInputReaders.getLast(),
-                printer,
-                new ParamRawData())
+                printer
+                )
         );
-        commands.put("show", _ -> new ShowCommand(collectionService, printer));
-        commands.put("remove_by_id",
-                     args -> new RemoveByIdCommand(
-                             collectionService,
-                             commandValidator,
-                             printer,
-                             args)
+        commands.put("show", () -> new ShowCommand(collectionService, printer));
+        commands.put("remove_by_id", () -> new RemoveByIdCommand(
+                collectionService,
+                commandValidator,
+                printer
+                )
         );
-        commands.put("clear", _ -> new ClearCommand(collectionService, printer));
-        commands.put("head", _ -> new HeadCommand(collectionService, printer));
-        commands.put("remove_head", _ -> new RemoveHeadCommand(collectionService,
-                                                               printer));
-        commands.put("add_if_max", _ -> new AddIfMaxCityCommand(
+        commands.put("clear", () -> new ClearCommand(collectionService, printer));
+        commands.put("head", () -> new HeadCommand(collectionService, printer));
+        commands.put("remove_head", () -> new RemoveHeadCommand(
+                collectionService,
+                printer
+                )
+        );
+        commands.put("add_if_max", () -> new AddIfMaxCityCommand(
                 collectionService,
                 commandValidator,
                 dataTyper,
-                collectionInputReaders.getLast(),
-                printer,
-                new ParamRawData())
+                printer
+                )
         );
         commands.put("remove_all_by_population_density",
-                     args -> new RemoveAllByPopulationDensityCommand(
-                             collectionService,
-                             commandValidator,
-                             printer,
-                             args)
+                () -> new RemoveAllByPopulationDensityCommand(
+                        collectionService,
+                        commandValidator,
+                        printer
+                )
         );
         commands.put("filter_less_than_population_density",
-                args -> new FilterLessThanPopulationDensityCommand(
+                () -> new FilterLessThanPopulationDensityCommand(
                         collectionService,
                         commandValidator,
-                        printer,
-                        args)
+                        printer
+                )
         );
         commands.put("print_field_descending_government",
-                _ -> new PrintFieldDescendingGovernmentCommand(
+                () -> new PrintFieldDescendingGovernmentCommand(
                         collectionService,
-                        printer)
+                        printer
+                )
         );
-        commands.put("update",
-                args -> new UpdateByIdCityCommand(
-                        collectionService,
-                        commandValidator,
-                        dataTyper,
-                        collectionInputReaders.getLast(),
-                        printer,
-                        new ParamRawData()
-                                // TODO Можно реализовать Билдер
-                                .setId((args.length == 1 || args[1] == null)
-                                        ? ""
-                                        : args[1]))
+        commands.put("update", () -> new UpdateByIdCityCommand(
+                collectionService,
+                commandValidator,
+                dataTyper,
+                printer
+                )
         );
-        commands.put("execute_script",
-                args -> new ExecuteScriptCommand(
-                        commandValidator,
-                        args,
-                        collectionInputReaders,
-                        printer)
+        commands.put("execute_script", () -> new ExecuteScriptCommand(
+                commandValidator,
+                collectionInputReaders,
+                printer
+                )
         );
         return commands;
     }

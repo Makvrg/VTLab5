@@ -179,12 +179,12 @@ public class CommandValidator {
             try {
                 Long.parseLong(paramRawData.getId());
             } catch (NumberFormatException e) {
-                throw new RawActionDataValidationException(
+                throw new ParamRawDataValidationException(
                         "Аргумент id должен быть целым числом"
                 );
             }
             if (Long.parseLong(paramRawData.getId()) < 0) {
-                throw new RawActionDataValidationException(
+                throw new ParamRawDataValidationException(
                         "Аргумент id должен быть положительным числом"
                 );
             }

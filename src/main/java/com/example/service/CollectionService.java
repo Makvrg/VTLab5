@@ -8,7 +8,10 @@ import com.example.service.exceptions.CreationDateIsAfterNowException;
 import com.example.service.exceptions.NonUniqueIdException;
 import com.example.service.exceptions.RemoveByIdIllegalStateException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 public class CollectionService {
 

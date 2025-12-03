@@ -1,19 +1,16 @@
 package com.example.input.dto;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
+@Setter
 public class ParamRawData {
 
     private String id;
-
-    public ParamRawData setId(String id) {
-        this.id = id;
-        return this;
-    }
 
     public List<String> containsEmpty() {
         List<String> listOfEmptyFields = new ArrayList<>();

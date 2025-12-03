@@ -1,5 +1,6 @@
 package com.example.input.commands;
 
+import com.example.input.readers.IReader;
 import com.example.output.IPrinter;
 import com.example.service.CollectionService;
 
@@ -15,7 +16,7 @@ public class InfoCommand implements ICommand {
     }
 
     @Override
-    public void execute() {
+    public void execute(String[] ignoredArgs, IReader ignoredReader) {
         printer.forcePrintln(collectionService.info());
     }
 

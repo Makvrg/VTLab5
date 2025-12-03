@@ -15,7 +15,7 @@ import com.example.typer.DataTyper;
 import com.example.validator.CommandValidator;
 import com.example.validator.exceptions.ExecuteScriptValidateException;
 import com.example.validator.exceptions.InputFieldValidationException;
-import com.example.validator.exceptions.RawActionDataValidationException;
+import com.example.validator.exceptions.ParamRawDataValidationException;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -26,30 +26,26 @@ import java.util.function.Supplier;
 
 public abstract class AbstractAddCityCommand implements ICommand {
 
+    private IReader reader;
+
     protected final CollectionService collectionService;
     private final CommandValidator commandValidator;
     private final DataTyper dataTyper;
-    private final IReader reader;
     protected final IPrinter printer;
     private final Map<String, Supplier<String>> readActions;
     private boolean inputIsRepeated = false;
     private final Map<String, Consumer<String>> inputValidateMethods;
     Map<String, Consumer<String>> dtoFieldSetters;
-    protected final ParamRawData paramRawData;
     protected final CityRawRequestDto cityRawRequestDto;
 
     public AbstractAddCityCommand(CollectionService collectionService,
                                   CommandValidator commandValidator,
                                   DataTyper dataTyper,
-                                  IReader reader,
-                                  IPrinter printer,
-                                  ParamRawData paramRawData) {
+                                  IPrinter printer) {
         this.collectionService = collectionService;
         this.commandValidator = commandValidator;
         this.dataTyper = dataTyper;
-        this.reader = reader;
         this.printer = printer;
-        this.paramRawData = paramRawData;
         readActions = buildMapOfReadActions();
         inputValidateMethods = buildMapOfInputValidateMethods();
 
@@ -65,7 +61,10 @@ public abstract class AbstractAddCityCommand implements ICommand {
     }
 
     @Override
-    public void execute() {
+    public void execute(String[] inputArgs, IReader reader) {
+        this.reader = reader;
+        ParamRawData paramRawData = makeParamRawData(inputArgs);
+
         if (!paramRawData.containsEmpty().isEmpty()) {
             printer.forcePrintln("Отсутствуют аргументы команды: ");
             for (String emptyField : paramRawData.containsEmpty()) {
@@ -75,7 +74,7 @@ public abstract class AbstractAddCityCommand implements ICommand {
         }
         try {
             commandValidator.validateParamRawData(paramRawData);
-        } catch (RawActionDataValidationException e) {
+        } catch (ParamRawDataValidationException e) {
             printer.forcePrintln(e.getMessage());
             return;
         }
@@ -106,7 +105,7 @@ public abstract class AbstractAddCityCommand implements ICommand {
                     try {
                         inputValidateMethods.get(action).accept(input);
                     } catch (InputFieldValidationException e) {
-                        printer.printlnIfOn(e.getMessage() + " повторите ввод");
+                        printer.printlnIfOn(e.getMessage() + ", повторите ввод");
                         inputIsRepeated = true;
                         continue;
                     }
@@ -116,6 +115,8 @@ public abstract class AbstractAddCityCommand implements ICommand {
                 }
         }
     }
+
+    protected abstract ParamRawData makeParamRawData(String[] inputArgs);
 
     protected abstract void workWithPrintedText(boolean result);
 

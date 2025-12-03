@@ -1,5 +1,6 @@
 package com.example.input.commands;
 
+import com.example.input.readers.IReader;
 import com.example.output.IPrinter;
 import com.example.service.CollectionService;
 import com.example.service.exceptions.RemoveByIdIllegalStateException;
@@ -11,21 +12,19 @@ public class RemoveByIdCommand implements ICommand {
     private final CollectionService collectionService;
     private final CommandValidator commandValidator;
     private final IPrinter printer;
-    private final String id;
 
     public RemoveByIdCommand(
             CollectionService collectionService,
             CommandValidator commandValidator,
-            IPrinter printer,
-            String[] args) {
+            IPrinter printer) {
         this.collectionService = collectionService;
         this.commandValidator = commandValidator;
         this.printer = printer;
-        id = (args.length > 1) ? args[1] : null;
     }
 
     @Override
-    public void execute() {
+    public void execute(String[] inputArgs, IReader ignoredReader) {
+        String id = (inputArgs.length > 1) ? inputArgs[1] : null;
         try {
             commandValidator.validateRemoveById(id);
             try {

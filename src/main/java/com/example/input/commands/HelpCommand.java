@@ -1,6 +1,6 @@
 package com.example.input.commands;
 
-
+import com.example.input.readers.IReader;
 import com.example.output.IPrinter;
 
 public class HelpCommand implements ICommand {
@@ -12,7 +12,7 @@ public class HelpCommand implements ICommand {
     }
 
     @Override
-    public void execute() {
+    public void execute(String[] ignoredArgs, IReader ignoredReader) {
         String helpText = "Справка по командам приложения:";
         helpText += """
                 help : вывести справку по доступным командам

@@ -1,5 +1,6 @@
 package com.example.input.commands;
 
+import com.example.input.readers.IReader;
 import com.example.output.IPrinter;
 import com.example.service.CollectionService;
 import com.example.validator.CommandValidator;
@@ -10,21 +11,19 @@ public class RemoveAllByPopulationDensityCommand implements ICommand {
     private final CollectionService collectionService;
     private final CommandValidator commandValidator;
     private final IPrinter printer;
-    private final String populationDensity;
 
     public RemoveAllByPopulationDensityCommand(
             CollectionService collectionService,
             CommandValidator commandValidator,
-            IPrinter printer,
-            String[] args) {
+            IPrinter printer) {
         this.collectionService = collectionService;
         this.commandValidator = commandValidator;
         this.printer = printer;
-        populationDensity = (args.length > 1) ? args[1] : null;
     }
 
     @Override
-    public void execute() {
+    public void execute(String[] inputArgs, IReader ignoredReader) {
+        String populationDensity = (inputArgs.length > 1) ? inputArgs[1] : null;
         try {
             commandValidator.validateRemoveAllByPopulationDensity(
                     populationDensity
