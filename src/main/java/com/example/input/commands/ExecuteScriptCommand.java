@@ -6,11 +6,20 @@ import com.example.input.readers.file.FileReader;
 import com.example.output.IPrinter;
 import com.example.validator.CommandValidator;
 import com.example.validator.exceptions.ExecuteScriptValidateException;
+import lombok.Getter;
 
 import java.util.List;
 
 
 public class ExecuteScriptCommand implements ICommand {
+
+    @Getter
+    private final String commandSignature = "execute_script file_name";
+    @Getter
+    private final String commandDescription =
+            "считать и исполнить скрипт из указанного файла. В скрипте содержатся "
+                    + "команды в таком же виде, в котором их вводит пользователь "
+                    + "в интерактивном режиме.";
 
     private final CommandValidator commandValidator;
     private final List<IReader> collectionInputReaders;

@@ -146,8 +146,10 @@ public class CollectionRepository {
 
     public List<City> findAllByLessPopulationDensity(long populationDensity) {
         return new ArrayList<>(
-                collectionWithInfo.collection.stream()
+                collectionWithInfo.collection
+                        .stream()
                         .filter(city -> city.getPopulationDensity() < populationDensity)
+                        .map(City::new)
                         .toList()
         );
     }

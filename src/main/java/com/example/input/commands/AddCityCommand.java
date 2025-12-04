@@ -14,8 +14,9 @@ public class AddCityCommand extends AbstractAddCityCommand {
                                CommandValidator commandValidator,
                                DataTyper dataTyper,
                                IPrinter printer) {
-        super(collectionService, commandValidator,
-              dataTyper, printer);
+        super("add {element}", "добавить новый элемент в коллекцию",
+              collectionService, commandValidator, dataTyper, printer
+        );
     }
 
     @Override

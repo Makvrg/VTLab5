@@ -14,8 +14,10 @@ public class UpdateByIdCityCommand extends AbstractAddCityCommand {
                                  CommandValidator commandValidator,
                                  DataTyper dataTyper,
                                  IPrinter printer) {
-        super(collectionService, commandValidator,
-              dataTyper, printer);
+        super("update id {element}",
+              "обновить значение элемента коллекции, id которого равен заданному",
+              collectionService, commandValidator, dataTyper, printer)
+        ;
     }
 
     @Override

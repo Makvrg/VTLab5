@@ -8,7 +8,7 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
 
-public class CityJsonParser implements JsonParser<List<CityFromJsonDto>> {
+public class CityJsonParser implements IJsonParser<List<CityFromJsonDto>> {
 
     private final ObjectMapper mapper = new ObjectMapper();
 

@@ -1,6 +1,6 @@
 package com.example.input.env;
 
-public interface EnvironmentProvider {
+public interface IEnvironmentProvider {
 
     String getFileName();
 

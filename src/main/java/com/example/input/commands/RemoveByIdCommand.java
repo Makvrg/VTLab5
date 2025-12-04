@@ -6,8 +6,15 @@ import com.example.service.CollectionService;
 import com.example.service.exceptions.RemoveByIdIllegalStateException;
 import com.example.validator.CommandValidator;
 import com.example.validator.exceptions.RemoveByIdValidationException;
+import lombok.Getter;
 
 public class RemoveByIdCommand implements ICommand {
+
+    @Getter
+    private final String commandSignature = "remove_by_id id";
+    @Getter
+    private final String commandDescription =
+            "удалить элемент из коллекции по его id";
 
     private final CollectionService collectionService;
     private final CommandValidator commandValidator;

@@ -3,6 +3,7 @@ package com.example.service;
 import com.example.entity.City;
 import com.example.entity.Government;
 import com.example.event.IShutdownListener;
+import com.example.output.dto.CityForJsonDto;
 import com.example.repository.CollectionRepository;
 import com.example.service.exceptions.CreationDateIsAfterNowException;
 import com.example.service.exceptions.NonUniqueIdException;
@@ -112,6 +113,13 @@ public class CollectionService {
 
     public boolean clear() {
         return collectionRepository.deleteAll();
+    }
+
+    public List<CityForJsonDto> getCitiesForSave() {
+        return collectionRepository.findAll()
+                                   .stream()
+                                   .map(CityForJsonDto::new)
+                                   .toList();
     }
 
     public String head() {

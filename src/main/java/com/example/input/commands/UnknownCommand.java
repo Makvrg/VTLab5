@@ -2,8 +2,15 @@ package com.example.input.commands;
 
 import com.example.input.readers.IReader;
 import com.example.output.IPrinter;
+import lombok.Getter;
 
 public class UnknownCommand implements ICommand {
+
+    @Getter
+    private final String commandSignature = "unknown";
+    @Getter
+    private final String commandDescription =
+            "вызывается автоматически при вводе команды, которая не поддерживается программой";
 
     private final IPrinter printer;
 

@@ -1,6 +1,6 @@
 package com.example.input.env;
 
-public class EnvVariableProvider implements EnvironmentProvider {
+public class EnvVariableProvider implements IEnvironmentProvider {
 
     private final String envName;
 

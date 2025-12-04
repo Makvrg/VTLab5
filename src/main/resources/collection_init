@@ -1,78 +1,109 @@
-[
-{
-  "id": 8,
-  "name": "New York",
-  "coordinates": {
-    "x": 123.45,
-    "y": 67.89
+[ {
+  "id" : 8,
+  "name" : "New York",
+  "coordinates" : {
+    "x" : 123.45,
+    "y" : 67.89
   },
-  "creationDate": "17-02-2007 08:30:11",
-  "area": 468,
-  "population": 8537673,
-  "metersAboveSeaLevel": 10.2,
-  "populationDensity": 10000,
-  "agglomeration": 20000000,
-  "government": "Тоталитаризм",
-  "governor": {
-    "height": 1.89,
-    "birthday": "15-03-1990 12:30:00"
+  "creationDate" : 1171690211000,
+  "area" : 468,
+  "population" : 8537673,
+  "metersAboveSeaLevel" : 10.2,
+  "populationDensity" : 10000,
+  "agglomeration" : 20000000,
+  "government" : "TOTALITARIANISM",
+  "governor" : {
+    "height" : 1.89,
+    "birthday" : 637493400000
   }
-},
-{
-  "id": 110,
-  "name": "Paris",
-  "coordinates": {
-    "x": 48.85,
-    "y": 2.35
+}, {
+  "id" : 110,
+  "name" : "Paris",
+  "coordinates" : {
+    "x" : 48.85,
+    "y" : 2.35
   },
-  "creationDate": "28-10-1967 23:32:13",
-  "area": 105,
-  "population": 2148000,
-  "metersAboveSeaLevel": 35,
-  "populationDensity": 20000,
-  "agglomeration": 11000000,
-  "government": "Олигархия",
-  "governor": {
-    "height": 1.74,
-    "birthday": "22-06-1980 09:20:00"
+  "creationDate" : -68700467000,
+  "area" : 105,
+  "population" : 2148000,
+  "metersAboveSeaLevel" : 35.0,
+  "populationDensity" : 20000,
+  "agglomeration" : 11000000,
+  "government" : "OLIGARCHY",
+  "governor" : {
+    "height" : 1.74,
+    "birthday" : 330502800000
   }
-},
-{
-  "id": 2,
-  "name": "Воткинск",
-  "coordinates": {
-    "x": 10.5,
-    "y": 20.5
+}, {
+  "id" : 2,
+  "name" : "Воткинск",
+  "coordinates" : {
+    "x" : 10.5,
+    "y" : 20.5
   },
-  "creationDate": "09-12-2016 17:13:56",
-  "area": 250,
-  "population": 1000000,
-  "metersAboveSeaLevel": 50,
-  "populationDensity": 2000,
-  "agglomeration": 4000000,
-  "government": "Монархия",
-  "governor": {
-    "height": 1.80,
-    "birthday": "01-01-1990 12:00:00"
+  "creationDate" : 1481292836000,
+  "area" : 250,
+  "population" : 1000000,
+  "metersAboveSeaLevel" : 50.0,
+  "populationDensity" : 2000,
+  "agglomeration" : 4000000,
+  "government" : "MONARCHY",
+  "governor" : {
+    "height" : 1.8,
+    "birthday" : 631184400000
   }
-},
-{
-  "id": 123,
-  "name": "Москва",
-  "coordinates": {
-    "x": 13.45,
-    "y": 7.89
+}, {
+  "id" : 123,
+  "name" : "Москва",
+  "coordinates" : {
+    "x" : 13.45,
+    "y" : 7.89
   },
-  "creationDate": "17-02-2007 08:30:11",
-  "area": 4898,
-  "population": 9053763,
-  "metersAboveSeaLevel": -1.2,
-  "populationDensity": 693920,
-  "agglomeration": null,
-  "government": "Тоталитаризм",
-  "governor": {
-    "height": 1.77,
-    "birthday": null
+  "creationDate" : 1171690211000,
+  "area" : 4898,
+  "population" : 9053763,
+  "metersAboveSeaLevel" : -1.2,
+  "populationDensity" : 693920,
+  "agglomeration" : null,
+  "government" : "TOTALITARIANISM",
+  "governor" : {
+    "height" : 1.77,
+    "birthday" : null
   }
-}
-]
+}, {
+  "id" : 124,
+  "name" : "Владивосток",
+  "coordinates" : {
+    "x" : 376.0,
+    "y" : -200.0
+  },
+  "creationDate" : 1764879165730,
+  "area" : 1100,
+  "population" : 200000,
+  "metersAboveSeaLevel" : null,
+  "populationDensity" : 300,
+  "agglomeration" : 60000,
+  "government" : "MONARCHY",
+  "governor" : {
+    "height" : 1.71,
+    "birthday" : null
+  }
+}, {
+  "id" : 125,
+  "name" : "Ижевск",
+  "coordinates" : {
+    "x" : 10.0,
+    "y" : 78.0
+  },
+  "creationDate" : 1764879165731,
+  "area" : 789,
+  "population" : 600000,
+  "metersAboveSeaLevel" : 13.8,
+  "populationDensity" : 489,
+  "agglomeration" : 100000,
+  "government" : "TOTALITARIANISM",
+  "governor" : {
+    "height" : 1.69,
+    "birthday" : 288614759000
+  }
+} ]

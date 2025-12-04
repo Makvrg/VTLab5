@@ -7,12 +7,12 @@ import java.io.InputStreamReader;
 
 public class FileReader implements IReader {
 
-    private final InputStreamProvider inputStreamProvider;
+    private final IInputStreamProvider inputStreamProvider;
     private final String fileName;
     private InputStreamReader inputStreamReader;
     private boolean lastIsNewLine = false;
 
-    public FileReader(InputStreamProvider inputStreamProvider,
+    public FileReader(IInputStreamProvider inputStreamProvider,
                       String fileName) {
         this.inputStreamProvider = inputStreamProvider;
         this.fileName = fileName;

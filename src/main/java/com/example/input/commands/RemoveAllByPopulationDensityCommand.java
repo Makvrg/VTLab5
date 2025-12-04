@@ -5,8 +5,17 @@ import com.example.output.IPrinter;
 import com.example.service.CollectionService;
 import com.example.validator.CommandValidator;
 import com.example.validator.exceptions.RemoveAllByPopulationDensityValidationException;
+import lombok.Getter;
 
 public class RemoveAllByPopulationDensityCommand implements ICommand {
+
+    @Getter
+    private final String commandSignature =
+            "remove_all_by_population_density populationDensity";
+    @Getter
+    private final String commandDescription =
+            "удалить из коллекции все элементы, значение поля "
+                    + "populationDensity которого эквивалентно заданному";
 
     private final CollectionService collectionService;
     private final CommandValidator commandValidator;

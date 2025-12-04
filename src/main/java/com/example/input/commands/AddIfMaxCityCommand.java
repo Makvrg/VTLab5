@@ -14,8 +14,11 @@ public class AddIfMaxCityCommand extends AbstractAddCityCommand {
                                CommandValidator commandValidator,
                                DataTyper dataTyper,
                                IPrinter printer) {
-        super(collectionService, commandValidator,
-              dataTyper, printer);
+        super("add_if_max {element}",
+              "добавить новый элемент в коллекцию, если его значение превышает "
+                      + "значение наибольшего элемента этой коллекции",
+              collectionService, commandValidator, dataTyper, printer
+        );
     }
 
     @Override

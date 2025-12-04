@@ -3,7 +3,7 @@ package com.example.input.readers.file;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public interface InputStreamProvider {
+public interface IInputStreamProvider {
 
     InputStreamReader open(String fileName) throws IOException;
 

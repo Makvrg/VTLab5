@@ -5,8 +5,16 @@ import com.example.output.IPrinter;
 import com.example.service.CollectionService;
 import com.example.validator.CommandValidator;
 import com.example.validator.exceptions.FilterLessThanPopulationDensityValidationException;
+import lombok.Getter;
 
 public class FilterLessThanPopulationDensityCommand implements ICommand {
+
+    @Getter
+    private final String commandSignature =
+            "filter_less_than_population_density populationDensity";
+    @Getter
+    private final String commandDescription =
+            "вывести элементы, значение поля populationDensity которых меньше заданного";
 
     private final CollectionService collectionService;
     private final CommandValidator commandValidator;

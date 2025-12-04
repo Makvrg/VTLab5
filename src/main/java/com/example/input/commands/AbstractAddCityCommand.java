@@ -16,6 +16,7 @@ import com.example.validator.CommandValidator;
 import com.example.validator.exceptions.ExecuteScriptValidateException;
 import com.example.validator.exceptions.InputFieldValidationException;
 import com.example.validator.exceptions.ParamRawDataValidationException;
+import lombok.Getter;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -25,6 +26,11 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public abstract class AbstractAddCityCommand implements ICommand {
+
+    @Getter
+    private final String commandSignature;
+    @Getter
+    private final String commandDescription;
 
     private IReader reader;
 
@@ -38,10 +44,14 @@ public abstract class AbstractAddCityCommand implements ICommand {
     Map<String, Consumer<String>> dtoFieldSetters;
     protected final CityRawRequestDto cityRawRequestDto;
 
-    public AbstractAddCityCommand(CollectionService collectionService,
+    public AbstractAddCityCommand(String commandSignature,
+                                  String commandDescription,
+                                  CollectionService collectionService,
                                   CommandValidator commandValidator,
                                   DataTyper dataTyper,
                                   IPrinter printer) {
+        this.commandSignature = commandSignature;
+        this.commandDescription = commandDescription;
         this.collectionService = collectionService;
         this.commandValidator = commandValidator;
         this.dataTyper = dataTyper;

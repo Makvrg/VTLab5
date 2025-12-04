@@ -3,12 +3,14 @@ package com.example.input;
 import com.example.entity.City;
 import com.example.event.IShutdownListener;
 import com.example.input.dto.json.CityFromJsonDto;
-import com.example.input.env.EnvironmentProvider;
-import com.example.input.json.JsonParser;
+import com.example.input.env.IEnvironmentProvider;
+import com.example.input.json.IJsonParser;
 import com.example.input.readers.IReader;
-import com.example.input.readers.file.InputStreamProvider;
+import com.example.input.readers.file.IInputStreamProvider;
 import com.example.input.readers.terminal.Processor;
 import com.example.output.IPrinter;
+import com.example.output.dto.CityForJsonDto;
+import com.example.output.json.IJsonWriter;
 import com.example.service.CollectionService;
 import com.example.service.exceptions.CreationDateIsAfterNowException;
 import com.example.service.exceptions.NonUniqueIdException;
@@ -29,9 +31,10 @@ public class CollectionInput implements IRunnable, IShutdownListener {
     private final CollectionService collectionService;
     private final CommandValidator commandValidator;
     private final DataTyper dataTyper;
-    private final EnvironmentProvider environmentProvider;
-    private final InputStreamProvider inputStreamProvider;
-    private final JsonParser<List<CityFromJsonDto>> parser;
+    private final IEnvironmentProvider environmentProvider;
+    private final IJsonWriter<List<CityForJsonDto>> fileWriter;
+    private final IInputStreamProvider inputStreamProvider;
+    private final IJsonParser<List<CityFromJsonDto>> initCitiesParser;
     private boolean shutdown = false;
 
     public CollectionInput(IReader reader,
@@ -39,17 +42,19 @@ public class CollectionInput implements IRunnable, IShutdownListener {
                            CollectionService collectionService,
                            CommandValidator commandValidator,
                            DataTyper dataTyper,
-                           EnvironmentProvider environmentProvider,
-                           InputStreamProvider inputStreamProvider,
-                           JsonParser<List<CityFromJsonDto>> parser) {
+                           IEnvironmentProvider environmentProvider,
+                           IJsonWriter<List<CityForJsonDto>> fileWriter,
+                           IInputStreamProvider inputStreamProvider,
+                           IJsonParser<List<CityFromJsonDto>> initCitiesParser) {
         this.readers.addLast(reader);
         this.printer = printer;
         this.collectionService = collectionService;
         this.commandValidator = commandValidator;
         this.dataTyper = dataTyper;
         this.environmentProvider = environmentProvider;
+        this.fileWriter = fileWriter;
         this.inputStreamProvider = inputStreamProvider;
-        this.parser = parser;
+        this.initCitiesParser = initCitiesParser;
     }
 
     @Override
@@ -63,7 +68,6 @@ public class CollectionInput implements IRunnable, IShutdownListener {
             printer.forcePrintln(
                     "Произошла ошибка инициализации коллекции: "
                     + e.getMessage());
-            collectionService.exit();
         }
 
         CommandDistributor commandDistributor =
@@ -72,7 +76,9 @@ public class CollectionInput implements IRunnable, IShutdownListener {
                         commandValidator,
                         dataTyper,
                         readers,
-                        printer
+                        printer,
+                        environmentProvider,
+                        fileWriter
                 );
 
         while (!shutdown) {
@@ -118,7 +124,7 @@ public class CollectionInput implements IRunnable, IShutdownListener {
             return;
         }
         try (InputStreamReader reader = inputStreamProvider.open(fileName)) {
-            List<CityFromJsonDto> cities = parser.parse(reader);
+            List<CityFromJsonDto> cities = initCitiesParser.parse(reader);
             List<Consumer<String>> inputValidateMethods = buildInputValidateMethods();
             int counter = 1;
             for (CityFromJsonDto cityFromJsonDto : cities) {
