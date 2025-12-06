@@ -65,7 +65,11 @@ public class CollectionService {
             throw new NonUniqueIdException("Передан уже существующий id");
         }
         if (city.getCreationDate().after(new Date())) {
-            throw new CreationDateIsAfterNowException("Переда дата и время из будущего");
+            throw new CreationDateIsAfterNowException("Передана дата и время создания объекта City из будущего");
+        }
+        if (city.getGovernor().getBirthday() != null
+                && city.getGovernor().getBirthday().after(new Date())) {
+            throw new CreationDateIsAfterNowException("Передана дата и время рождения губернатора из будущего");
         }
         return collectionRepository.add(city);
     }
@@ -93,10 +97,11 @@ public class CollectionService {
         List<City> cities = collectionRepository.findAll();
         StringBuilder sb = new StringBuilder();
         if (!cities.isEmpty()) {
-            sb.append("Содержимые в коллекции объекты City:\n");
+            sb.append("Содержимые в коллекции объекты City:\n\n");
             cities.forEach(
-                    city -> sb.append(city.toString()).append("\n")
+                    city -> sb.append(city.toString()).append("\n\n")
             );
+            sb.delete(sb.length() - 1, sb.length());
         } else {
             sb.append("Коллекция пуста\n");
         }

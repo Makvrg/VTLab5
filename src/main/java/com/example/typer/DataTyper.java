@@ -52,47 +52,6 @@ public class DataTyper {
         );
     }
 
-    @SneakyThrows
-    public City typifyCityFromJsonDtoToCity(CityFromJsonDto cityFromJsonDto) {
-        SimpleDateFormat sdfCreationDate = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-        sdfCreationDate.setLenient(false);
-        Date creationDate = sdfCreationDate.parse(cityFromJsonDto.getCreationDate());
-
-        Date birthday = null;
-        if (cityFromJsonDto.getGovernor().getBirthday() != null) {
-            SimpleDateFormat sdfBirth = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-            sdfBirth.setLenient(false);
-            birthday = sdfBirth.parse(cityFromJsonDto.getGovernor()
-                                                .getBirthday());
-        }
-        return new City(
-                Long.valueOf(cityFromJsonDto.getId()),
-                cityFromJsonDto.getName(),
-                new Coordinates(
-                        Double.parseDouble(cityFromJsonDto.getCoordinates()
-                                .getX()),
-                        Float.parseFloat(cityFromJsonDto.getCoordinates()
-                                .getY())
-                ),
-                creationDate,
-                Long.valueOf(cityFromJsonDto.getArea()),
-                Integer.valueOf(cityFromJsonDto.getPopulation()),
-                (cityFromJsonDto.getMetersAboveSeaLevel() == null)
-                        ? null
-                        : Float.valueOf(cityFromJsonDto.getMetersAboveSeaLevel()),
-                Long.parseLong(cityFromJsonDto.getPopulationDensity()),
-                (cityFromJsonDto.getAgglomeration() == null)
-                        ? null
-                        : Integer.valueOf(cityFromJsonDto.getAgglomeration()),
-                Government.fromString(cityFromJsonDto.getGovernment()),
-                new Human(
-                        Double.parseDouble(cityFromJsonDto.getGovernor()
-                                .getHeight()),
-                        birthday
-                )
-        );
-    }
-
     public ParamTypedData typifyParamRawData(ParamRawData paramRawData) {
         ParamTypedData paramTypedData = new ParamTypedData();
 

@@ -1,10 +1,13 @@
 package com.example.input;
 
 import com.example.entity.City;
+import com.example.entity.Coordinates;
+import com.example.entity.Human;
 import com.example.event.IShutdownListener;
 import com.example.input.dto.json.CityFromJsonDto;
 import com.example.input.env.IEnvironmentProvider;
 import com.example.input.json.IJsonParser;
+import com.example.input.json.JsonValidationException;
 import com.example.input.readers.IReader;
 import com.example.input.readers.file.IInputStreamProvider;
 import com.example.input.readers.terminal.Processor;
@@ -66,7 +69,7 @@ public class CollectionInput implements IRunnable, IShutdownListener {
             initialize();
         } catch (IOException e) {
             printer.forcePrintln(
-                    "Произошла ошибка инициализации коллекции: "
+                    "Произошла ошибка открытия файла при инициализации коллекции: "
                     + e.getMessage());
         }
 
@@ -124,25 +127,42 @@ public class CollectionInput implements IRunnable, IShutdownListener {
             return;
         }
         try (InputStreamReader reader = inputStreamProvider.open(fileName)) {
-            List<CityFromJsonDto> cities = initCitiesParser.parse(reader);
-            List<Consumer<String>> inputValidateMethods = buildInputValidateMethods();
+            List<CityFromJsonDto> cities;
+            try {
+                cities = initCitiesParser.parse(reader);
+            } catch (JsonValidationException e) {
+                printer.forcePrintln("Произошла ошибка инициализации коллекции:");
+                printer.forcePrintln(e.getMessage());
+                return;
+            }
             int counter = 1;
             for (CityFromJsonDto cityFromJsonDto : cities) {
 
                 try {
-                    inputValidateMethods.get(0).accept(cityFromJsonDto.getId());
-                    inputValidateMethods.get(1).accept(cityFromJsonDto.getName());
-                    inputValidateMethods.get(2).accept(cityFromJsonDto.getCoordinates().getX());
-                    inputValidateMethods.get(3).accept(cityFromJsonDto.getCoordinates().getY());
-                    inputValidateMethods.get(4).accept(cityFromJsonDto.getCreationDate());
-                    inputValidateMethods.get(5).accept(cityFromJsonDto.getArea());
-                    inputValidateMethods.get(6).accept(cityFromJsonDto.getPopulation());
-                    inputValidateMethods.get(7).accept(cityFromJsonDto.getMetersAboveSeaLevel());
-                    inputValidateMethods.get(8).accept(cityFromJsonDto.getPopulationDensity());
-                    inputValidateMethods.get(9).accept(cityFromJsonDto.getAgglomeration());
-                    inputValidateMethods.get(10).accept(cityFromJsonDto.getGovernment());
-                    inputValidateMethods.get(11).accept(cityFromJsonDto.getGovernor().getHeight());
-                    inputValidateMethods.get(12).accept(cityFromJsonDto.getGovernor().getBirthday());
+                    commandValidator.validateTypedIdInput(
+                            cityFromJsonDto.getId()
+                    );
+                    commandValidator.validateTypedXCoordInput(
+                            cityFromJsonDto.getCoordinates().getX()
+                    );
+                    commandValidator.validateTypedYCoordInput(
+                            cityFromJsonDto.getCoordinates().getY()
+                    );
+                    commandValidator.validateTypedAreaInput(
+                            cityFromJsonDto.getArea()
+                    );
+                    commandValidator.validateTypedPopulationInput(
+                            cityFromJsonDto.getPopulation()
+                    );
+                    commandValidator.validateTypedMetersAboveSeaLevelInput(
+                            cityFromJsonDto.getMetersAboveSeaLevel()
+                    );
+                    commandValidator.validateTypedPopulationDensityInput(
+                            cityFromJsonDto.getPopulationDensity()
+                    );
+                    commandValidator.validateTypedHeightInput(
+                            cityFromJsonDto.getGovernor().getHeight()
+                    );
                 } catch (InputFieldValidationException e) {
                     printer.forcePrintln(
                             new StringBuilder()
@@ -155,7 +175,7 @@ public class CollectionInput implements IRunnable, IShutdownListener {
                     printer.forcePrintln("Выявленная в нём ошибка: " + e.getMessage());
                     return;
                 }
-                City city = dataTyper.typifyCityFromJsonDtoToCity(cityFromJsonDto);
+                City city = new City(cityFromJsonDto);
 
                 try {
                     if (collectionService.initializationAdd(city)) {
@@ -188,26 +208,6 @@ public class CollectionInput implements IRunnable, IShutdownListener {
             printer.forcePrintln(
                     "Инициализация коллекции объектами City из файла завершена успешно");
         }
-    }
-
-    private List<Consumer<String>> buildInputValidateMethods() {
-        List<Consumer<String>> inputValidateMethods = new ArrayList<>();
-
-        inputValidateMethods.add(commandValidator::validateIdInput);
-        inputValidateMethods.add(commandValidator::validateNameInput);
-        inputValidateMethods.add(commandValidator::validateXCoordInput);
-        inputValidateMethods.add(commandValidator::validateYCoordInput);
-        inputValidateMethods.add(commandValidator::validateCreationDateInput);
-        inputValidateMethods.add(commandValidator::validateAreaInput);
-        inputValidateMethods.add(commandValidator::validatePopulationInput);
-        inputValidateMethods.add(commandValidator::validateMetersAboveSeaLevelInput);
-        inputValidateMethods.add(commandValidator::validatePopulationDensityInput);
-        inputValidateMethods.add(commandValidator::validateAgglomerationInput);
-        inputValidateMethods.add(commandValidator::validateGovernmentInput);
-        inputValidateMethods.add(commandValidator::validateHeightInput);
-        inputValidateMethods.add(commandValidator::validateBirthdayInput);
-
-        return inputValidateMethods;
     }
 
     @Override

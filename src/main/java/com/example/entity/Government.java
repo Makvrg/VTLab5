@@ -16,16 +16,24 @@ public enum Government {
         this.title = title;
     }
 
-    public static Government fromString(String text) {
-        if (text == null) {
+    public static Government fromString(String russianName) {
+        if (russianName == null) {
             throw new IllegalArgumentException("Передано пустое значение");
         }
         for (Government government : Government.values()) {
-            if (government.title.equals(text)) {
+            if (government.title.equals(russianName)) {
                 return government;
             }
         }
-        throw new IllegalArgumentException("Неизвестное значение: " + text);
+        throw new IllegalArgumentException("Неизвестное значение: " + russianName);
+    }
+
+    public static Government safeValueOf(String engName) {
+        try {
+            return Government.valueOf(engName);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.example.output.dto;
 
 import com.example.entity.Human;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,6 +12,7 @@ import java.util.Date;
 public class HumanForJsonDto {
 
     private double height;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Europe/Moscow")
     private Date birthday;
 
     public HumanForJsonDto(Human human) {

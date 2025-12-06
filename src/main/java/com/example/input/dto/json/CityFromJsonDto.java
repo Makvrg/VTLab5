@@ -1,22 +1,27 @@
 package com.example.input.dto.json;
 
+import com.example.entity.Government;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Date;
 
 @Getter
 @Setter
 public class CityFromJsonDto {
 
-    private String id;
+    private Long id;
     private String name;
     private CoordFromJsonDto coordinates;
-    private String creationDate;
-    private String area;
-    private String population;
-    private String metersAboveSeaLevel;
-    private String populationDensity;
-    private String agglomeration;
-    private String government;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Europe/Moscow")
+    private Date creationDate;
+    private Long area;
+    private Integer population;
+    private Float metersAboveSeaLevel;
+    private long populationDensity;
+    private Integer agglomeration;
+    private Government government;
     private HumanFromJsonDto governor;
 
 }

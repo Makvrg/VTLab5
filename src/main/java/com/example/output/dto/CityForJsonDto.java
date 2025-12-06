@@ -2,6 +2,7 @@ package com.example.output.dto;
 
 import com.example.entity.City;
 import com.example.entity.Government;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,6 +15,7 @@ public class CityForJsonDto {
     private Long id;
     private String name;
     private CoordinatesForJsonDto coordinates;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Europe/Moscow")
     private Date creationDate;
     private Long area;
     private Integer population;

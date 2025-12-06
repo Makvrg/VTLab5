@@ -1,83 +1,11 @@
 [ {
-  "id" : 8,
-  "name" : "New York",
-  "coordinates" : {
-    "x" : 123.45,
-    "y" : 67.89
-  },
-  "creationDate" : 1171690211000,
-  "area" : 468,
-  "population" : 8537673,
-  "metersAboveSeaLevel" : 10.2,
-  "populationDensity" : 10000,
-  "agglomeration" : 20000000,
-  "government" : "TOTALITARIANISM",
-  "governor" : {
-    "height" : 1.89,
-    "birthday" : 637493400000
-  }
-}, {
-  "id" : 110,
-  "name" : "Paris",
-  "coordinates" : {
-    "x" : 48.85,
-    "y" : 2.35
-  },
-  "creationDate" : -68700467000,
-  "area" : 105,
-  "population" : 2148000,
-  "metersAboveSeaLevel" : 35.0,
-  "populationDensity" : 20000,
-  "agglomeration" : 11000000,
-  "government" : "OLIGARCHY",
-  "governor" : {
-    "height" : 1.74,
-    "birthday" : 330502800000
-  }
-}, {
-  "id" : 2,
-  "name" : "Воткинск",
-  "coordinates" : {
-    "x" : 10.5,
-    "y" : 20.5
-  },
-  "creationDate" : 1481292836000,
-  "area" : 250,
-  "population" : 1000000,
-  "metersAboveSeaLevel" : 50.0,
-  "populationDensity" : 2000,
-  "agglomeration" : 4000000,
-  "government" : "MONARCHY",
-  "governor" : {
-    "height" : 1.8,
-    "birthday" : 631184400000
-  }
-}, {
-  "id" : 123,
-  "name" : "Москва",
-  "coordinates" : {
-    "x" : 13.45,
-    "y" : 7.89
-  },
-  "creationDate" : 1171690211000,
-  "area" : 4898,
-  "population" : 9053763,
-  "metersAboveSeaLevel" : -1.2,
-  "populationDensity" : 693920,
-  "agglomeration" : null,
-  "government" : "TOTALITARIANISM",
-  "governor" : {
-    "height" : 1.77,
-    "birthday" : null
-  }
-}, {
-  "id" : 124,
+  "id" : 3,
   "name" : "Владивосток",
   "coordinates" : {
     "x" : 376.0,
     "y" : -200.0
   },
-  "creationDate" : 1764879165730,
+  "creationDate" : "06-12-2025 11:41:47",
   "area" : 1100,
   "population" : 200000,
   "metersAboveSeaLevel" : null,
@@ -89,13 +17,13 @@
     "birthday" : null
   }
 }, {
-  "id" : 125,
+  "id" : 4,
   "name" : "Ижевск",
   "coordinates" : {
     "x" : 10.0,
     "y" : 78.0
   },
-  "creationDate" : 1764879165731,
+  "creationDate" : "06-12-2025 11:41:47",
   "area" : 789,
   "population" : 600000,
   "metersAboveSeaLevel" : 13.8,
@@ -104,6 +32,6 @@
   "government" : "TOTALITARIANISM",
   "governor" : {
     "height" : 1.69,
-    "birthday" : 288614759000
+    "birthday" : "23-02-1979 13:45:59"
   }
 } ]

@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class CoordFromJsonDto {
 
-    private String x;
-    private String y;
+    private double x;
+    private float y;
 
 }

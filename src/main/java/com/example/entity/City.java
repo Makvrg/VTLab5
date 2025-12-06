@@ -1,5 +1,6 @@
 package com.example.entity;
 
+import com.example.input.dto.json.CityFromJsonDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -53,6 +54,28 @@ public class City implements Comparable<City> {
                 other.agglomeration,
                 other.government,
                 new Human(other.governor)
+        );
+    }
+
+    public City(CityFromJsonDto cityFromJsonDto) {
+        this(
+                cityFromJsonDto.getId(),
+                cityFromJsonDto.getName(),
+                new Coordinates(
+                        cityFromJsonDto.getCoordinates().getX(),
+                        cityFromJsonDto.getCoordinates().getY()
+                ),
+                cityFromJsonDto.getCreationDate(),
+                cityFromJsonDto.getArea(),
+                cityFromJsonDto.getPopulation(),
+                cityFromJsonDto.getMetersAboveSeaLevel(),
+                cityFromJsonDto.getPopulationDensity(),
+                cityFromJsonDto.getAgglomeration(),
+                cityFromJsonDto.getGovernment(),
+                new Human(
+                        cityFromJsonDto.getGovernor().getHeight(),
+                        cityFromJsonDto.getGovernor().getBirthday()
+                )
         );
     }
 

@@ -256,7 +256,7 @@ public abstract class AbstractAddCityCommand implements ICommand {
         validateMethods.put("populationDensity",
                 commandValidator::validatePopulationDensityInput);
         validateMethods.put("agglomeration", commandValidator::validateAgglomerationInput);
-        validateMethods.put("government", commandValidator::validateGovernmentInput);
+        validateMethods.put("government", commandValidator::validateRusGovernmentInput);
         validateMethods.put("height", commandValidator::validateHeightInput);
         validateMethods.put("birthday", commandValidator::validateBirthdayInput);
 
