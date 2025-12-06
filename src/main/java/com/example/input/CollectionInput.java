@@ -1,8 +1,6 @@
 package com.example.input;
 
 import com.example.entity.City;
-import com.example.entity.Coordinates;
-import com.example.entity.Human;
 import com.example.event.IShutdownListener;
 import com.example.input.dto.json.CityFromJsonDto;
 import com.example.input.env.IEnvironmentProvider;
@@ -25,7 +23,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class CollectionInput implements IRunnable, IShutdownListener {
 
@@ -49,7 +46,7 @@ public class CollectionInput implements IRunnable, IShutdownListener {
                            IJsonWriter<List<CityForJsonDto>> fileWriter,
                            IInputStreamProvider inputStreamProvider,
                            IJsonParser<List<CityFromJsonDto>> initCitiesParser) {
-        this.readers.addLast(reader);
+        this.readers.add(reader);
         this.printer = printer;
         this.collectionService = collectionService;
         this.commandValidator = commandValidator;
@@ -87,10 +84,10 @@ public class CollectionInput implements IRunnable, IShutdownListener {
         while (!shutdown) {
             printer.printIfOn("> ");
             try {
-                String inputLine = readers.getLast().read();
+                String inputLine = readers.get(readers.size() - 1).read();
 
                 if (inputLine == null) {
-                    readers.removeLast();
+                    readers.remove(readers.size() - 1);
                     printer.forcePrintln("Активен режим чтения предыдущего источника");
 
                     if (readers.size() == 1) {
@@ -108,7 +105,7 @@ public class CollectionInput implements IRunnable, IShutdownListener {
                 printer.forcePrintln(
                         "Файл с указанным названием не найден или к нему нет доступа"
                 );
-                readers.removeLast();
+                readers.remove(readers.size() - 1);
                 printer.forcePrintln("Активен режим чтения предыдущего источника");
 
                 if (readers.size() == 1) {

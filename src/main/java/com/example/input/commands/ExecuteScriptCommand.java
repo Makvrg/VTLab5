@@ -46,14 +46,14 @@ public class ExecuteScriptCommand implements ICommand {
         if (collectionInputReaders.size() < 10) {
             IReader fileReader = new FileReader(new FileInputStreamProvider(),
                     fileName);
-            collectionInputReaders.addLast(fileReader);
+            collectionInputReaders.add(fileReader);
             printer.forcePrintln("Активен режим чтения файла " + fileName);
             printer.off();
         } else {
             printer.forcePrintln(
                     "Превышена глубина рекурсии execute_script, принудительное завершение всей цепочки");
             while (collectionInputReaders.size() > 1) {
-                collectionInputReaders.removeLast();
+                collectionInputReaders.remove(collectionInputReaders.size() - 1);
             }
             printer.forcePrintln("Активен режим чтения терминала");
             printer.on();

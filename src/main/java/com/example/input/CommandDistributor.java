@@ -45,7 +45,11 @@ public class CommandDistributor {
     public void distribute(String[] inputArgs) {
         if (commands.containsKey(inputArgs[0])) {
             commands.get(inputArgs[0])
-                    .execute(inputArgs, collectionInputReaders.getLast());
+                    .execute(inputArgs,
+                             collectionInputReaders.get(
+                                     collectionInputReaders.size() - 1
+                             )
+                    );
         } else {
             commands.get("unknown")
                     .execute(inputArgs, null);

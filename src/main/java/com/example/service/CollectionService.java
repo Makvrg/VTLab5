@@ -9,10 +9,7 @@ import com.example.service.exceptions.CreationDateIsAfterNowException;
 import com.example.service.exceptions.NonUniqueIdException;
 import com.example.service.exceptions.RemoveByIdIllegalStateException;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class CollectionService {
 
@@ -163,7 +160,7 @@ public class CollectionService {
     public String printFieldDescendingGovernment() {
         List<Government> govList = collectionRepository.findAllGovernment();
         govList.sort(null);
-        govList = govList.reversed();
+        Collections.reverse(govList);
         StringBuilder sb = new StringBuilder();
         if (!govList.isEmpty()) {
             sb.append("Все упорядоченные по убыванию типы правления из коллекции:\n");

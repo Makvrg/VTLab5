@@ -118,7 +118,7 @@ public class CollectionRepository {
         if (collectionWithInfo.getCountOfElements() > 0) {
             return Optional.of(
                     new City(
-                            collectionWithInfo.collection.getFirst()
+                            collectionWithInfo.collection.get(0)
                     )
             );
         } else {
@@ -130,7 +130,7 @@ public class CollectionRepository {
         if (collectionWithInfo.getCountOfElements() > 0) {
             return Optional.of(
                     new City(
-                            collectionWithInfo.collection.removeFirst()
+                            collectionWithInfo.collection.remove(0)
                     )
             );
         } else {

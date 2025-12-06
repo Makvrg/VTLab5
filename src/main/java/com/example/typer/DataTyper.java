@@ -6,7 +6,6 @@ import com.example.entity.Government;
 import com.example.entity.Human;
 import com.example.input.dto.CityRawRequestDto;
 import com.example.input.dto.ParamRawData;
-import com.example.input.dto.json.CityFromJsonDto;
 import com.example.service.ParamTypedData;
 import lombok.SneakyThrows;
 

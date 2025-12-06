@@ -1,3 +1,11 @@
-`mkdir -p bin`
-`javac -d bin $(find src -name "*.java")`
-`jar cvef main.java.com.example.laba.Lab1 Laba1.jar -C bin .`
+Лабораторная работа по программированию номер 5, вариант 54229
+
+При запуске программы используется переменная окружения CITY_FILE, там должен хранится JSON с объектами City для инициализации коллекции
+
+Предложенный от меня файл имеет путь /home/studs/s501393/programming/VTLab5/collection_init
+
+Команда для создания переменной окружения `export CITY_FILE=/home/studs/s501393/programming/VTLab5/collection_init`
+
+Запуск приложения командой `java -jar VTLab5-1.0-SNAPSHOT.jar`
+
+Все необходимые права выданы
