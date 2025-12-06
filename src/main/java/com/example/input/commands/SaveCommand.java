@@ -39,7 +39,7 @@ public class SaveCommand implements ICommand {
         try {
             fileWriter.write(fileName, collectionService.getCitiesForSave());
             printer.forcePrintln("Сохранение коллекции прошло успешно");
-        } catch (IOException e) {
+        } catch (IOException | NullPointerException e) {
             printer.forcePrintln(
                     "При сохранении коллекции возникла ошибка, возможно, "
                             + "файл не найден или к нему нет прав:");
