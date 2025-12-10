@@ -58,7 +58,7 @@
                         <configuration>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>ru.ifmo.se.App</mainClass>
+                                    <mainClass>ru.ifmo.se.application.App</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>

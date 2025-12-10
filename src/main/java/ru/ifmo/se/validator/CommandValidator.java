@@ -7,6 +7,7 @@ import ru.ifmo.se.validator.exceptions.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 
 public class CommandValidator {
 
@@ -14,6 +15,14 @@ public class CommandValidator {
         if (id < 0) {
             throw new InputFieldValidationException(
                     "Id города должен быть неотрицательным");
+        }
+    }
+
+    public void validateTypedCreationDateInput(Date creationDate) {
+        if (creationDate == null) {
+            throw new InputFieldValidationException(
+                    "Дата и время основания города "
+                            + "должны иметь формат дд-ММ-гггг ЧЧ:мм:сс");
         }
     }
 
@@ -77,6 +86,13 @@ public class CommandValidator {
         if (populationDensity <= 0) {
             throw new InputFieldValidationException(
                     "Плотность населения города должна быть больше 0");
+        }
+    }
+
+    public void validateTypedGovernmentInput(Government government) {
+        if (government == null) {
+            throw new InputFieldValidationException(
+                    "Тип правления города должен быть одним из предложенных");
         }
     }
 

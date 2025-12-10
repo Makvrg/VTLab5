@@ -1,9 +1,10 @@
 package ru.ifmo.se.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.ifmo.se.io.input.dto.json.CityFromJsonDto;
 
 import java.util.Date;
 import java.util.Objects;
@@ -11,11 +12,13 @@ import java.util.Objects;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class City implements Comparable<City> {
 
     private Long id;
     private String name;
     private Coordinates coordinates;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Europe/Moscow")
     private Date creationDate;
     private Long area;
     private Integer population;
@@ -24,28 +27,6 @@ public class City implements Comparable<City> {
     private Integer agglomeration;
     private Government government;
     private Human governor;
-
-    public City(CityFromJsonDto cityFromJsonDto) {
-        this(
-                cityFromJsonDto.getId(),
-                cityFromJsonDto.getName(),
-                new Coordinates(
-                        cityFromJsonDto.getCoordinates().getX(),
-                        cityFromJsonDto.getCoordinates().getY()
-                ),
-                cityFromJsonDto.getCreationDate(),
-                cityFromJsonDto.getArea(),
-                cityFromJsonDto.getPopulation(),
-                cityFromJsonDto.getMetersAboveSeaLevel(),
-                cityFromJsonDto.getPopulationDensity(),
-                cityFromJsonDto.getAgglomeration(),
-                cityFromJsonDto.getGovernment(),
-                new Human(
-                        cityFromJsonDto.getGovernor().getHeight(),
-                        cityFromJsonDto.getGovernor().getBirthday()
-                )
-        );
-    }
 
     @Override
     public int compareTo(City city) {

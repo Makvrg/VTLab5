@@ -13,8 +13,8 @@ public class CollectionWithInfo {
 
     public final List<City> collection;
     private final Date initializationDate = new Date();
-    private final String collectionType;
-    private final String elementsType;
+    private final Class<?> collectionType;
+    private final Class<?> elementsType;
 
     public int getCountOfElements() {
         return collection.size();

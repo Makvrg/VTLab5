@@ -2,9 +2,13 @@ package ru.ifmo.se.commands;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import ru.ifmo.se.entity.Government;
 import ru.ifmo.se.io.input.readers.Reader;
 import ru.ifmo.se.io.output.Printer;
+import ru.ifmo.se.io.output.formatter.OutputStringFormatter;
 import ru.ifmo.se.service.CollectionService;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 public class PrintFieldDescendingGovernmentCommand implements Command {
@@ -17,10 +21,18 @@ public class PrintFieldDescendingGovernmentCommand implements Command {
 
     private final CollectionService collectionService;
     private final Printer printer;
+    private final OutputStringFormatter formatter;
 
     @Override
     public void execute(String[] ignoredArgs, Reader ignoredReader) {
-        printer.forcePrint(collectionService.printFieldDescendingGovernment());
+        List<Government> govList = collectionService.printFieldDescendingGovernment();
+        if (!govList.isEmpty()) {
+            printer.forcePrintln("Все упорядоченные по убыванию типы правления из коллекции:\n"
+                    + formatter.formatGovernmentList(govList)
+            );
+        } else {
+            printer.forcePrintln("Коллекция пуста");
+        }
     }
 
 }

@@ -1,10 +1,11 @@
 package ru.ifmo.se.io.input;
 
 import ru.ifmo.se.commands.*;
+import ru.ifmo.se.entity.City;
 import ru.ifmo.se.io.input.env.EnvironmentProvider;
 import ru.ifmo.se.io.input.readers.Reader;
 import ru.ifmo.se.io.output.Printer;
-import ru.ifmo.se.io.output.dto.CityForJsonDto;
+import ru.ifmo.se.io.output.formatter.OutputStringFormatter;
 import ru.ifmo.se.io.output.json.JsonWriter;
 import ru.ifmo.se.service.CollectionService;
 import ru.ifmo.se.typer.DataTyper;
@@ -17,16 +18,19 @@ import java.util.Map;
 public class CommandInvoker {
 
     private final List<Reader> collectionInputReaders;
+    private final OutputStringFormatter formatter;
     private final Map<String, Command> commands;
 
     public CommandInvoker(CollectionService collectionService,
                           CommandValidator commandValidator,
                           DataTyper dataTyper,
                           List<Reader> readers,
+                          OutputStringFormatter formatter,
                           Printer printer,
                           EnvironmentProvider environmentProvider,
-                          JsonWriter<List<CityForJsonDto>> fileWriter) {
+                          JsonWriter<List<City>> fileWriter) {
         this.collectionInputReaders = readers;
+        this.formatter = formatter;
         commands = buildMapOfCommands(
                 collectionService,
                 commandValidator,
@@ -57,7 +61,7 @@ public class CommandInvoker {
             DataTyper dataTyper,
             Printer printer,
             EnvironmentProvider environmentProvider,
-            JsonWriter<List<CityForJsonDto>> fileWriter) {
+            JsonWriter<List<City>> fileWriter) {
         Map<String, Command> commands = new LinkedHashMap<>();
 
         commands.put("unknown", new UnknownCommand(printer));
@@ -75,7 +79,12 @@ public class CommandInvoker {
                 printer
                 )
         );
-        commands.put("show", new ShowCommand(collectionService, printer));
+        commands.put("show", new ShowCommand(
+                collectionService,
+                printer,
+                formatter
+                )
+        );
         commands.put("remove_by_id", new RemoveByIdCommand(
                 collectionService,
                 commandValidator,
@@ -90,10 +99,16 @@ public class CommandInvoker {
                 fileWriter
                 )
         );
-        commands.put("head", new HeadCommand(collectionService, printer));
+        commands.put("head", new HeadCommand(
+                collectionService,
+                printer,
+                formatter
+                )
+        );
         commands.put("remove_head", new RemoveHeadCommand(
                 collectionService,
-                printer
+                printer,
+                formatter
                 )
         );
         commands.put("add_if_max", new AddIfMaxCityCommand(
@@ -114,13 +129,15 @@ public class CommandInvoker {
                 new FilterLessThanPopulationDensityCommand(
                         collectionService,
                         commandValidator,
-                        printer
+                        printer,
+                        formatter
                 )
         );
         commands.put("print_field_descending_government",
                 new PrintFieldDescendingGovernmentCommand(
                         collectionService,
-                        printer
+                        printer,
+                        formatter
                 )
         );
         commands.put("update", new UpdateByIdCityCommand(

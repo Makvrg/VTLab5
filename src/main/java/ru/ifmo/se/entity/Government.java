@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum Government {
+
     ARISTOCRACY("Аристократия"),
     ANARCHY("Анархия"),
     MONARCHY("Монархия"),
@@ -24,14 +25,6 @@ public enum Government {
             }
         }
         throw new IllegalArgumentException("Неизвестное значение: " + russianName);
-    }
-
-    public static Government safeValueOf(String engName) {
-        try {
-            return Government.valueOf(engName);
-        } catch (IllegalArgumentException e) {
-            return null;
-        }
     }
 
     @Override

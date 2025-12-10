@@ -13,7 +13,7 @@ public class CollectionRepository {
 
     private final CollectionWithInfo collectionWithInfo;
 
-    public String getCollectionType() {
+    public Class<?> getCollectionType() {
         return collectionWithInfo.getCollectionType();
     }
 
@@ -21,7 +21,7 @@ public class CollectionRepository {
         return collectionWithInfo.getInitializationDate();
     }
 
-    public String getElementsType() {
+    public Class<?> getElementsType() {
         return collectionWithInfo.getElementsType();
     }
 
@@ -60,23 +60,26 @@ public class CollectionRepository {
         return Optional.empty();
     }
 
-    public boolean updateById(Long id, City city) {
-        for (int i = 0; i < collectionWithInfo.getCountOfElements(); i++) {
-            if (collectionWithInfo.collection.get(i).getId().equals(id)) {
-                City updatedCity = collectionWithInfo.collection.get(i);
-                updatedCity.setName(city.getName());
-                updatedCity.setCoordinates(city.getCoordinates());
-                updatedCity.setArea(city.getArea());
-                updatedCity.setPopulation(city.getPopulation());
-                updatedCity.setMetersAboveSeaLevel(city.getMetersAboveSeaLevel());
-                updatedCity.setPopulationDensity(city.getPopulationDensity());
-                updatedCity.setAgglomeration(city.getAgglomeration());
-                updatedCity.setGovernment(city.getGovernment());
-                updatedCity.setGovernor(city.getGovernor());
+    public boolean updateById(Long id, City newData) {
+        for (City city : collectionWithInfo.collection) {
+            if (city.getId().equals(id)) {
+                updateCity(city, newData);
                 return true;
             }
         }
         return false;
+    }
+
+    private void updateCity(City targetCity, City newData) {
+        targetCity.setName(newData.getName());
+        targetCity.setCoordinates(newData.getCoordinates());
+        targetCity.setArea(newData.getArea());
+        targetCity.setPopulation(newData.getPopulation());
+        targetCity.setMetersAboveSeaLevel(newData.getMetersAboveSeaLevel());
+        targetCity.setPopulationDensity(newData.getPopulationDensity());
+        targetCity.setAgglomeration(newData.getAgglomeration());
+        targetCity.setGovernment(newData.getGovernment());
+        targetCity.setGovernor(newData.getGovernor());
     }
 
     public List<City> findAll() {
