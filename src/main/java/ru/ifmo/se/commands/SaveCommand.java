@@ -2,15 +2,13 @@ package ru.ifmo.se.commands;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import ru.ifmo.se.entity.City;
 import ru.ifmo.se.io.input.env.EnvironmentProvider;
 import ru.ifmo.se.io.input.readers.Reader;
-import ru.ifmo.se.io.output.Printer;
-import ru.ifmo.se.io.output.json.JsonWriter;
+import ru.ifmo.se.io.output.json.CityJsonWriter;
+import ru.ifmo.se.io.output.print.Printer;
 import ru.ifmo.se.service.CollectionService;
 
 import java.io.IOException;
-import java.util.List;
 
 @RequiredArgsConstructor
 public class SaveCommand implements Command {
@@ -23,7 +21,7 @@ public class SaveCommand implements Command {
     private final CollectionService collectionService;
     private final Printer printer;
     private final EnvironmentProvider environmentProvider;
-    private final JsonWriter<List<City>> fileWriter;
+    private final CityJsonWriter fileWriter;
 
     @Override
     public void execute(String[] ignoredArgs, Reader ignoredReader) {

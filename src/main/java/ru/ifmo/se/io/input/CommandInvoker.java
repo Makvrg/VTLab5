@@ -1,12 +1,11 @@
 package ru.ifmo.se.io.input;
 
 import ru.ifmo.se.commands.*;
-import ru.ifmo.se.entity.City;
 import ru.ifmo.se.io.input.env.EnvironmentProvider;
 import ru.ifmo.se.io.input.readers.Reader;
-import ru.ifmo.se.io.output.Printer;
 import ru.ifmo.se.io.output.formatter.OutputStringFormatter;
-import ru.ifmo.se.io.output.json.JsonWriter;
+import ru.ifmo.se.io.output.json.CityJsonWriter;
+import ru.ifmo.se.io.output.print.Printer;
 import ru.ifmo.se.service.CollectionService;
 import ru.ifmo.se.typer.DataTyper;
 import ru.ifmo.se.validator.CommandValidator;
@@ -28,7 +27,7 @@ public class CommandInvoker {
                           OutputStringFormatter formatter,
                           Printer printer,
                           EnvironmentProvider environmentProvider,
-                          JsonWriter<List<City>> fileWriter) {
+                          CityJsonWriter fileWriter) {
         this.collectionInputReaders = readers;
         this.formatter = formatter;
         commands = buildMapOfCommands(
@@ -61,7 +60,7 @@ public class CommandInvoker {
             DataTyper dataTyper,
             Printer printer,
             EnvironmentProvider environmentProvider,
-            JsonWriter<List<City>> fileWriter) {
+            CityJsonWriter fileWriter) {
         Map<String, Command> commands = new LinkedHashMap<>();
 
         commands.put("unknown", new UnknownCommand(printer));

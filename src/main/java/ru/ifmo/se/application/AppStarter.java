@@ -16,7 +16,8 @@ public class AppStarter implements Starter {
             appCompositionRoot.getCommandInput().initialize();
         } catch (IOException e) {
             appCompositionRoot.getPrinter().forcePrintln(
-                    "Произошла ошибка открытия файла при инициализации коллекции: " + e.getMessage()
+                    "Произошла ошибка открытия файла при инициализации коллекции: "
+                            + e.getMessage()
             );
         }
         appCompositionRoot.getCommandInput().run();

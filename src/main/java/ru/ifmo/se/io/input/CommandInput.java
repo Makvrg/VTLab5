@@ -3,14 +3,15 @@ package ru.ifmo.se.io.input;
 import ru.ifmo.se.entity.City;
 import ru.ifmo.se.event.ShutdownListener;
 import ru.ifmo.se.io.input.env.EnvironmentProvider;
-import ru.ifmo.se.io.input.json.JsonParser;
+import ru.ifmo.se.io.input.json.CityJsonParser;
 import ru.ifmo.se.io.input.json.JsonValidationException;
 import ru.ifmo.se.io.input.readers.InputTextHandler;
 import ru.ifmo.se.io.input.readers.Reader;
 import ru.ifmo.se.io.input.readers.file.InputStreamProvider;
-import ru.ifmo.se.io.output.Printer;
 import ru.ifmo.se.io.output.formatter.OutputStringFormatter;
-import ru.ifmo.se.io.output.json.JsonWriter;
+import ru.ifmo.se.io.output.json.CityJsonWriter;
+import ru.ifmo.se.io.output.print.Messages;
+import ru.ifmo.se.io.output.print.Printer;
 import ru.ifmo.se.service.CollectionService;
 import ru.ifmo.se.service.exceptions.CreationDateIsAfterNowException;
 import ru.ifmo.se.service.exceptions.NonUniqueIdException;
@@ -31,7 +32,7 @@ public class CommandInput implements Runnable, ShutdownListener {
     private final CommandValidator commandValidator;
     private final EnvironmentProvider environmentProvider;
     private final InputStreamProvider inputStreamProvider;
-    private final JsonParser<List<City>> initCitiesParser;
+    private final CityJsonParser initCitiesParser;
     private final CommandInvoker commandInvoker;
     private boolean shutdown = false;
 
@@ -42,9 +43,9 @@ public class CommandInput implements Runnable, ShutdownListener {
                         DataTyper dataTyper,
                         OutputStringFormatter formatter,
                         EnvironmentProvider environmentProvider,
-                        JsonWriter<List<City>> fileWriter,
+                        CityJsonWriter fileWriter,
                         InputStreamProvider inputStreamProvider,
-                        JsonParser<List<City>> initCitiesParser) {
+                        CityJsonParser initCitiesParser) {
         this.readers.add(reader);
         this.printer = printer;
         this.collectionService = collectionService;
@@ -162,14 +163,8 @@ public class CommandInput implements Runnable, ShutdownListener {
                 );
             } catch (InputFieldValidationException e) {
                 printer.forcePrintln(
-                        new StringBuilder()
-                                .append("При инициализации коллекции данными из файла ")
-                                .append("произошла ошибка валидации объекта City с id: ")
-                                .append(city.getId())
-                                .append("\n")
-                                .append("и порядковым номером: ")
-                                .append(counter)
-                                .toString()
+                        String.format(Messages.CITY_INIT_VALID_EXC,
+                                city.getId(), counter)
                 );
                 printer.forcePrintln("Выявленная в нём ошибка: " + e.getMessage());
                 return false;
@@ -186,28 +181,14 @@ public class CommandInput implements Runnable, ShutdownListener {
                     counter++;
                 } else {
                     printer.forcePrintln(
-                            new StringBuilder()
-                                    .append("При инициализации коллекции данными из файла ")
-                                    .append("по неизвестной причине не удалось ")
-                                    .append("добавить в коллекцию объект City с id: ")
-                                    .append(city.getId())
-                                    .append("\n")
-                                    .append("и порядковым номером: ")
-                                    .append(counter)
-                                    .toString()
+                            String.format(Messages.CITY_INIT_UNKNOWN_EXC,
+                                    city.getId(), counter)
                     );
                     return false;
                 }
             } catch (NonUniqueIdException | CreationDateIsAfterNowException e) {
                 printer.forcePrintln(
-                        new StringBuilder()
-                                .append("При инициализации коллекции данными из файла ")
-                                .append("произошла ошибка добавления объекта City с id: ")
-                                .append(city.getId())
-                                .append("\n")
-                                .append("и порядковым номером: ")
-                                .append(counter)
-                                .toString()
+                        String.format(Messages.CITY_INIT_ADD_EXC, city.getId(), counter)
                 );
                 printer.forcePrintln("Ошибка добавления в коллекцию: " + e.getMessage());
                 return false;

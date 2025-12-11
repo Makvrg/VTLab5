@@ -2,7 +2,7 @@ package ru.ifmo.se.io.output.json;
 
 import java.io.IOException;
 
-public interface JsonWriter<T> {
+public interface FileWriter<T> {
 
     void write(String fileName, T data) throws IOException;
 

@@ -7,16 +7,14 @@ import ru.ifmo.se.io.input.CommandInput;
 import ru.ifmo.se.io.input.env.EnvVariableProvider;
 import ru.ifmo.se.io.input.env.EnvironmentProvider;
 import ru.ifmo.se.io.input.json.CityJsonParser;
-import ru.ifmo.se.io.input.json.JsonParser;
 import ru.ifmo.se.io.input.readers.Reader;
 import ru.ifmo.se.io.input.readers.file.FileInputStreamProvider;
 import ru.ifmo.se.io.input.readers.file.InputStreamProvider;
 import ru.ifmo.se.io.input.readers.terminal.TerminalReader;
-import ru.ifmo.se.io.output.OutputPrinter;
-import ru.ifmo.se.io.output.Printer;
 import ru.ifmo.se.io.output.formatter.OutputStringFormatter;
 import ru.ifmo.se.io.output.json.CityJsonWriter;
-import ru.ifmo.se.io.output.json.JsonWriter;
+import ru.ifmo.se.io.output.print.OutputPrinter;
+import ru.ifmo.se.io.output.print.Printer;
 import ru.ifmo.se.repository.CollectionRepository;
 import ru.ifmo.se.service.CollectionService;
 import ru.ifmo.se.typer.DataTyper;
@@ -49,11 +47,11 @@ public final class AppCompositionRoot {
 
     private final EnvironmentProvider environmentProvider =
             new EnvVariableProvider(ENV_VAR_NAME);
-    private final JsonWriter<List<City>> jsonWriter =
+    private final CityJsonWriter jsonWriter =
             new CityJsonWriter(BACKUP_FILE_NAME);
     private final InputStreamProvider inputStreamProvider =
             new FileInputStreamProvider();
-    private final JsonParser<List<City>> jsonParser =
+    private final CityJsonParser jsonParser =
             new CityJsonParser();
 
     private final CollectionRepository collectionRepository =

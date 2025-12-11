@@ -2,14 +2,13 @@ package ru.ifmo.se.commands;
 
 import lombok.Getter;
 import ru.ifmo.se.entity.City;
+import ru.ifmo.se.entity.Coordinates;
 import ru.ifmo.se.entity.Government;
-import ru.ifmo.se.io.input.dto.CityRawRequestDto;
-import ru.ifmo.se.io.input.dto.CoordRawRequestDto;
-import ru.ifmo.se.io.input.dto.HumanRawRequestDto;
+import ru.ifmo.se.entity.Human;
 import ru.ifmo.se.io.input.dto.ParamRawData;
 import ru.ifmo.se.io.input.readers.InputTextHandler;
 import ru.ifmo.se.io.input.readers.Reader;
-import ru.ifmo.se.io.output.Printer;
+import ru.ifmo.se.io.output.print.Printer;
 import ru.ifmo.se.service.CollectionService;
 import ru.ifmo.se.service.ParamTypedData;
 import ru.ifmo.se.typer.DataTyper;
@@ -19,6 +18,9 @@ import ru.ifmo.se.validator.exceptions.InputFieldValidationException;
 import ru.ifmo.se.validator.exceptions.ParamRawDataValidationException;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -40,9 +42,10 @@ public abstract class AbstractAddCityCommand implements Command {
     protected final Printer printer;
     private final Map<String, Supplier<String>> readActions = buildMapOfReadActions();
     private boolean inputIsRepeated = false;
+    private City city;
     private final Map<String, Consumer<String>> inputValidateMethods;
-    Map<String, Consumer<String>> dtoFieldSetters;
-    protected final CityRawRequestDto cityRawRequestDto;
+    private final Map<String, Consumer<String>> dtoFieldSetters;
+
 
     public AbstractAddCityCommand(String commandSignature,
                                   String commandDescription,
@@ -56,15 +59,10 @@ public abstract class AbstractAddCityCommand implements Command {
         this.commandValidator = commandValidator;
         this.dataTyper = dataTyper;
         this.printer = printer;
+        city = new City();
+        city.setCoordinates(new Coordinates());
+        city.setGovernor(new Human());
         inputValidateMethods = buildMapOfInputValidateMethods();
-
-        cityRawRequestDto = new CityRawRequestDto();
-        cityRawRequestDto.setCoordinates(
-                new CoordRawRequestDto()
-        );
-        cityRawRequestDto.setGovernor(
-                new HumanRawRequestDto()
-        );
         dtoFieldSetters = buildMapOfDtoFieldSetters();
     }
 
@@ -86,6 +84,10 @@ public abstract class AbstractAddCityCommand implements Command {
             printer.forcePrintln(e.getMessage());
             return;
         }
+
+        city = new City();
+        city.setCoordinates(new Coordinates());
+        city.setGovernor(new Human());
         try {
             readManage();
         } catch (ExecuteScriptValidateException e) {
@@ -95,7 +97,6 @@ public abstract class AbstractAddCityCommand implements Command {
 
         ParamTypedData paramTypedData =
                 dataTyper.typifyParamRawData(paramRawData);
-        City city = dataTyper.typifyCityRawRequestDtoToCity(cityRawRequestDto);
 
         workWithPrintedText(
                 useService(
@@ -112,12 +113,12 @@ public abstract class AbstractAddCityCommand implements Command {
                     String input = readActions.get(action).get();
                     try {
                         inputValidateMethods.get(action).accept(input);
+                        dtoFieldSetters.get(action).accept(input);
                     } catch (InputFieldValidationException e) {
                         printer.printlnIfOn(e.getMessage() + ", повторите ввод");
                         inputIsRepeated = true;
                         continue;
                     }
-                    dtoFieldSetters.get(action).accept(input);
                     inputIsRepeated = false;
                     break;
                 }
@@ -264,17 +265,44 @@ public abstract class AbstractAddCityCommand implements Command {
     private Map<String, Consumer<String>> buildMapOfDtoFieldSetters() {
         Map<String, Consumer<String>> dtoFieldSetters = new HashMap<>();
 
-        dtoFieldSetters.put("name", cityRawRequestDto::setName);
-        dtoFieldSetters.put("x", cityRawRequestDto.getCoordinates()::setX);
-        dtoFieldSetters.put("y", cityRawRequestDto.getCoordinates()::setY);
-        dtoFieldSetters.put("area", cityRawRequestDto::setArea);
-        dtoFieldSetters.put("population", cityRawRequestDto::setPopulation);
-        dtoFieldSetters.put("metersAboveSeaLevel", cityRawRequestDto::setMetersAboveSeaLevel);
-        dtoFieldSetters.put("populationDensity", cityRawRequestDto::setPopulationDensity);
-        dtoFieldSetters.put("agglomeration", cityRawRequestDto::setAgglomeration);
-        dtoFieldSetters.put("government", cityRawRequestDto::setGovernment);
-        dtoFieldSetters.put("height", cityRawRequestDto.getGovernor()::setHeight);
-        dtoFieldSetters.put("birthday", cityRawRequestDto.getGovernor()::setBirthday);
+        dtoFieldSetters.put("name", city::setName);
+        dtoFieldSetters.put("x",
+                x -> city.getCoordinates().setX(Double.parseDouble(x)));
+        dtoFieldSetters.put("y",
+                y -> city.getCoordinates().setY(Float.parseFloat(y)));
+        dtoFieldSetters.put("area", area -> city.setArea(Long.valueOf(area)));
+        dtoFieldSetters.put("population",
+                popul -> city.setPopulation(Integer.valueOf(popul)));
+        dtoFieldSetters.put("metersAboveSeaLevel",
+                meters -> city.setMetersAboveSeaLevel(Float.valueOf(meters)));
+        dtoFieldSetters.put("populationDensity",
+                popDens -> city.setPopulationDensity(Long.parseLong(popDens)));
+        dtoFieldSetters.put("agglomeration",
+                aggl -> city.setAgglomeration(Integer.valueOf(aggl)));
+        dtoFieldSetters.put("government",
+                gov -> city.setGovernment(Government.fromRussianString(gov)));
+        dtoFieldSetters.put("height",
+                height -> city.getGovernor().setHeight(Double.parseDouble(height)));
+        dtoFieldSetters.put("birthday",
+                birthday ->
+                {
+                    if (birthday != null) {
+                        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+                        sdf.setLenient(false);
+                        try {
+                            Date typedBirth = sdf.parse(birthday);
+                            city.getGovernor().setBirthday(typedBirth);
+                        } catch (ParseException e) {
+                            throw new InputFieldValidationException(
+                                    "Дата и время рождения губернатора города "
+                                            + "должны иметь формат дд-ММ-гггг ЧЧ:мм:сс"
+                            );
+                        }
+                    } else {
+                        city.getGovernor().setBirthday(null);
+                    }
+                }
+                );
 
         return dtoFieldSetters;
     }

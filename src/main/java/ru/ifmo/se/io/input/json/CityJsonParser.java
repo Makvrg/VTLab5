@@ -11,7 +11,7 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
 
-public class CityJsonParser implements JsonParser<List<City>> {
+public class CityJsonParser implements FileParser<List<City>> {
 
     private final ObjectMapper mapper = new ObjectMapper();
 

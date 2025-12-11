@@ -15,7 +15,7 @@ public enum Government {
 
     private final String title;
 
-    public static Government fromString(String russianName) {
+    public static Government fromRussianString(String russianName) {
         if (russianName == null) {
             throw new IllegalArgumentException("Передано пустое значение");
         }

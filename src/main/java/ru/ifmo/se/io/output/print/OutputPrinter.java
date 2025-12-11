@@ -1,4 +1,4 @@
-package ru.ifmo.se.io.output;
+package ru.ifmo.se.io.output.print;
 
 public class OutputPrinter implements Printer {
 

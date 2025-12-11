@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import ru.ifmo.se.io.input.readers.Reader;
 import ru.ifmo.se.io.input.readers.file.FileInputStreamProvider;
 import ru.ifmo.se.io.input.readers.file.FileReader;
-import ru.ifmo.se.io.output.Printer;
+import ru.ifmo.se.io.output.print.Printer;
 import ru.ifmo.se.validator.CommandValidator;
 import ru.ifmo.se.validator.exceptions.ExecuteScriptValidateException;
 

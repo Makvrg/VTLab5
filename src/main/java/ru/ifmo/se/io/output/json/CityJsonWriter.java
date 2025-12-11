@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RequiredArgsConstructor
-public class CityJsonWriter implements JsonWriter<List<City>> {
+public class CityJsonWriter implements FileWriter<List<City>> {
 
     private final ObjectMapper mapper = new ObjectMapper().enable(
             SerializationFeature.INDENT_OUTPUT

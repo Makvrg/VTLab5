@@ -3,7 +3,7 @@ package ru.ifmo.se.commands;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import ru.ifmo.se.io.input.readers.Reader;
-import ru.ifmo.se.io.output.Printer;
+import ru.ifmo.se.io.output.print.Printer;
 import ru.ifmo.se.service.CollectionService;
 
 @RequiredArgsConstructor
