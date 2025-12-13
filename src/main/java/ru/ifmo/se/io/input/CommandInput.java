@@ -7,6 +7,7 @@ import ru.ifmo.se.io.input.json.CityJsonParser;
 import ru.ifmo.se.io.input.json.JsonValidationException;
 import ru.ifmo.se.io.input.readers.InputTextHandler;
 import ru.ifmo.se.io.input.readers.Reader;
+import ru.ifmo.se.io.input.readers.factory.ReaderFactory;
 import ru.ifmo.se.io.input.readers.file.InputStreamProvider;
 import ru.ifmo.se.io.output.formatter.OutputStringFormatter;
 import ru.ifmo.se.io.output.json.CityJsonWriter;
@@ -30,6 +31,7 @@ public class CommandInput implements Runnable, ShutdownListener {
     private final Printer printer;
     private final CollectionService collectionService;
     private final CommandValidator commandValidator;
+    private final OutputStringFormatter formatter;
     private final EnvironmentProvider environmentProvider;
     private final InputStreamProvider inputStreamProvider;
     private final CityJsonParser initCitiesParser;
@@ -37,6 +39,7 @@ public class CommandInput implements Runnable, ShutdownListener {
     private boolean shutdown = false;
 
     public CommandInput(Reader reader,
+                        ReaderFactory readerFactory,
                         Printer printer,
                         CollectionService collectionService,
                         CommandValidator commandValidator,
@@ -50,11 +53,14 @@ public class CommandInput implements Runnable, ShutdownListener {
         this.printer = printer;
         this.collectionService = collectionService;
         this.commandValidator = commandValidator;
+        this.formatter = formatter;
         this.environmentProvider = environmentProvider;
         this.inputStreamProvider = inputStreamProvider;
         this.initCitiesParser = initCitiesParser;
         this.commandInvoker =
                 new CommandInvoker(
+                        inputStreamProvider,
+                        readerFactory,
                         collectionService,
                         commandValidator,
                         dataTyper,
@@ -75,11 +81,12 @@ public class CommandInput implements Runnable, ShutdownListener {
 
                 if (inputLine == null) {
                     readers.remove(readers.size() - 1);
-                    printer.forcePrintln("Активен режим чтения предыдущего источника");
-
                     if (readers.size() == 1) {
                         printer.on();
                     }
+                    printer.forcePrintln(
+                            formatter.formatCurrentReaderInfo(List.copyOf(readers))
+                    );
                     continue;
                 }
 
@@ -93,12 +100,12 @@ public class CommandInput implements Runnable, ShutdownListener {
                         "Файл с указанным названием не найден или к нему нет доступа"
                 );
                 readers.remove(readers.size() - 1);
-                printer.forcePrintln("Активен режим чтения предыдущего источника");
-
                 if (readers.size() == 1) {
                     printer.on();
                 }
-
+                printer.forcePrintln(
+                        formatter.formatCurrentReaderInfo(List.copyOf(readers))
+                );
             }
         }
     }

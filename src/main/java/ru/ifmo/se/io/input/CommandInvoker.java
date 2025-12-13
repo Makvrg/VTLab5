@@ -3,6 +3,8 @@ package ru.ifmo.se.io.input;
 import ru.ifmo.se.commands.*;
 import ru.ifmo.se.io.input.env.EnvironmentProvider;
 import ru.ifmo.se.io.input.readers.Reader;
+import ru.ifmo.se.io.input.readers.factory.ReaderFactory;
+import ru.ifmo.se.io.input.readers.file.InputStreamProvider;
 import ru.ifmo.se.io.output.formatter.OutputStringFormatter;
 import ru.ifmo.se.io.output.json.CityJsonWriter;
 import ru.ifmo.se.io.output.print.Printer;
@@ -16,11 +18,15 @@ import java.util.Map;
 
 public class CommandInvoker {
 
-    private final List<Reader> collectionInputReaders;
+    private final InputStreamProvider inputStreamProvider;
+    private final ReaderFactory readerFactory;
+    private final List<Reader> commandInputReaders;
     private final OutputStringFormatter formatter;
     private final Map<String, Command> commands;
 
-    public CommandInvoker(CollectionService collectionService,
+    public CommandInvoker(InputStreamProvider inputStreamProvider,
+                          ReaderFactory readerFactory,
+                          CollectionService collectionService,
                           CommandValidator commandValidator,
                           DataTyper dataTyper,
                           List<Reader> readers,
@@ -28,7 +34,9 @@ public class CommandInvoker {
                           Printer printer,
                           EnvironmentProvider environmentProvider,
                           CityJsonWriter fileWriter) {
-        this.collectionInputReaders = readers;
+        this.inputStreamProvider = inputStreamProvider;
+        this.readerFactory = readerFactory;
+        this.commandInputReaders = readers;
         this.formatter = formatter;
         commands = buildMapOfCommands(
                 collectionService,
@@ -44,8 +52,8 @@ public class CommandInvoker {
         if (commands.containsKey(inputArgs[0])) {
             commands.get(inputArgs[0])
                     .execute(inputArgs,
-                             collectionInputReaders.get(
-                                     collectionInputReaders.size() - 1
+                             commandInputReaders.get(
+                                     commandInputReaders.size() - 1
                              )
                     );
         } else {
@@ -148,7 +156,9 @@ public class CommandInvoker {
         );
         commands.put("execute_script", new ExecuteScriptCommand(
                 commandValidator,
-                collectionInputReaders,
+                inputStreamProvider,
+                readerFactory,
+                commandInputReaders,
                 printer
                 )
         );

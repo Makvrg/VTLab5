@@ -3,8 +3,9 @@ package ru.ifmo.se.commands;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import ru.ifmo.se.io.input.readers.Reader;
-import ru.ifmo.se.io.input.readers.file.FileInputStreamProvider;
-import ru.ifmo.se.io.input.readers.file.FileReader;
+import ru.ifmo.se.io.input.readers.factory.ReaderCreateException;
+import ru.ifmo.se.io.input.readers.factory.ReaderFactory;
+import ru.ifmo.se.io.input.readers.file.InputStreamProvider;
 import ru.ifmo.se.io.output.print.Printer;
 import ru.ifmo.se.validator.CommandValidator;
 import ru.ifmo.se.validator.exceptions.ExecuteScriptValidateException;
@@ -23,7 +24,9 @@ public class ExecuteScriptCommand implements Command {
                     + "в интерактивном режиме.";
 
     private final CommandValidator commandValidator;
-    private final List<Reader> collectionInputReaders;
+    private final InputStreamProvider inputStreamProvider;
+    private final ReaderFactory readerFactory;
+    private final List<Reader> commandInputReaders;
     private final Printer printer;
 
     @Override
@@ -35,21 +38,35 @@ public class ExecuteScriptCommand implements Command {
             printer.forcePrintln(e.getMessage());
             return;
         }
-        if (collectionInputReaders.size() < 10) {
-            Reader fileReader = new FileReader(new FileInputStreamProvider(),
-                    fileName);
-            collectionInputReaders.add(fileReader);
-            printer.forcePrintln("Активен режим чтения файла " + fileName);
-            printer.off();
-        } else {
+        Reader currentFileReader;
+        try {
+            currentFileReader = readerFactory.createFileReader(
+                    fileName,
+                    inputStreamProvider
+            );
+        } catch (ReaderCreateException e) {
             printer.forcePrintln(
-                    "Превышена глубина рекурсии execute_script, принудительное завершение всей цепочки");
-            while (collectionInputReaders.size() > 1) {
-                collectionInputReaders.remove(collectionInputReaders.size() - 1);
-            }
-            printer.forcePrintln("Активен режим чтения терминала");
-            printer.on();
+                    "Файл с указанным названием не найден или к нему нет доступа");
+            return;
         }
+
+        for (Reader reader : commandInputReaders) {
+            if (reader.getName().equals(currentFileReader.getName())) {
+                printer.forcePrintln(
+                    "Во избежание рекурсии выполняется "
+                            + "принудительное завершение всей цепочки скриптов");
+                while (commandInputReaders.size() > 1) {
+                    commandInputReaders.remove(commandInputReaders.size() - 1);
+                }
+                printer.forcePrintln("Активен режим чтения терминала");
+                printer.on();
+                return;
+            }
+        }
+
+        commandInputReaders.add(currentFileReader);
+        printer.forcePrintln("Активен режим чтения файла " + currentFileReader.getName());
+        printer.off();
     }
 
 }

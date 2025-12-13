@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 @RequiredArgsConstructor
 public class FileReader implements Reader {
 
+    private final String name;
     private final InputStreamProvider inputStreamProvider;
     private final String fileName;
     private InputStreamReader inputStreamReader;
@@ -44,6 +45,11 @@ public class FileReader implements Reader {
             }
         }
         return sb.toString();
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
 }

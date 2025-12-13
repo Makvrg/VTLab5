@@ -1,1 +1,1 @@
-head
+execute_script src/main/resources/scripts/test_execute_script

@@ -8,9 +8,9 @@ import ru.ifmo.se.io.input.env.EnvVariableProvider;
 import ru.ifmo.se.io.input.env.EnvironmentProvider;
 import ru.ifmo.se.io.input.json.CityJsonParser;
 import ru.ifmo.se.io.input.readers.Reader;
+import ru.ifmo.se.io.input.readers.factory.ReaderFactory;
 import ru.ifmo.se.io.input.readers.file.FileInputStreamProvider;
 import ru.ifmo.se.io.input.readers.file.InputStreamProvider;
-import ru.ifmo.se.io.input.readers.terminal.TerminalReader;
 import ru.ifmo.se.io.output.formatter.OutputStringFormatter;
 import ru.ifmo.se.io.output.json.CityJsonWriter;
 import ru.ifmo.se.io.output.print.OutputPrinter;
@@ -40,7 +40,9 @@ public final class AppCompositionRoot {
 
     @Getter
     private final Printer printer = new OutputPrinter();
-    private final Reader reader = new TerminalReader();
+
+    private final ReaderFactory readerFactory = new ReaderFactory();
+    private final Reader reader = readerFactory.createTerminalReader("Main Terminal");
 
     private final CommandValidator validator = new CommandValidator();
     private final DataTyper dataTyper = new DataTyper();
@@ -65,6 +67,7 @@ public final class AppCompositionRoot {
     @Getter
     private final CommandInput commandInput = new CommandInput(
             reader,
+            readerFactory,
             printer,
             collectionService,
             validator,

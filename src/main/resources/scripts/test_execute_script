@@ -25,7 +25,7 @@ add
 Тоталитаризм
 1.69
 23-02-1979 13:45:59
-execute_script test_exe_script_2
+execute_script src/main/resources/scripts/test_exe_script_2
 
 rt
 rbr

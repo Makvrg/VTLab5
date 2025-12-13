@@ -6,6 +6,6 @@ public interface Reader {
 
     String readLine() throws IOException;
 
-    // TODO Integer getId();
+    String getName();
 
 }

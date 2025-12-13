@@ -265,7 +265,7 @@ public abstract class AbstractAddCityCommand implements Command {
     private Map<String, Consumer<String>> buildMapOfDtoFieldSetters() {
         Map<String, Consumer<String>> dtoFieldSetters = new HashMap<>();
 
-        dtoFieldSetters.put("name", city::setName);
+        dtoFieldSetters.put("name", name -> city.setName(name));
         dtoFieldSetters.put("x",
                 x -> city.getCoordinates().setX(Double.parseDouble(x)));
         dtoFieldSetters.put("y",
@@ -274,11 +274,17 @@ public abstract class AbstractAddCityCommand implements Command {
         dtoFieldSetters.put("population",
                 popul -> city.setPopulation(Integer.valueOf(popul)));
         dtoFieldSetters.put("metersAboveSeaLevel",
-                meters -> city.setMetersAboveSeaLevel(Float.valueOf(meters)));
+                meters -> city.setMetersAboveSeaLevel(
+                        (meters != null) ? Float.valueOf(meters) : null
+                )
+        );
         dtoFieldSetters.put("populationDensity",
                 popDens -> city.setPopulationDensity(Long.parseLong(popDens)));
         dtoFieldSetters.put("agglomeration",
-                aggl -> city.setAgglomeration(Integer.valueOf(aggl)));
+                aggl -> city.setAgglomeration(
+                        (aggl != null) ? Integer.valueOf(aggl) : null
+                )
+        );
         dtoFieldSetters.put("government",
                 gov -> city.setGovernment(Government.fromRussianString(gov)));
         dtoFieldSetters.put("height",

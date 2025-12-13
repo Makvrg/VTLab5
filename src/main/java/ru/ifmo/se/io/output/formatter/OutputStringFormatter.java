@@ -2,6 +2,7 @@ package ru.ifmo.se.io.output.formatter;
 
 import ru.ifmo.se.entity.City;
 import ru.ifmo.se.entity.Government;
+import ru.ifmo.se.io.input.readers.Reader;
 
 import java.util.Date;
 import java.util.List;
@@ -76,6 +77,22 @@ public class OutputStringFormatter {
                         countOfElements
                         )
                 );
+        return sb.toString();
+    }
+
+    public String formatCurrentReaderInfo(List<Reader> readers) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Активен режим чтения ");
+        if (readers.size() == 1) {
+            sb.append("терминала");
+        } else {
+            sb.append(
+                    String.format(
+                            "файла %s",
+                            readers.get(readers.size() - 1).getName()
+                    )
+            );
+        }
         return sb.toString();
     }
 
