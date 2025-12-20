@@ -18,7 +18,10 @@ public class City implements Comparable<City> {
     private Long id;
     private String name;
     private Coordinates coordinates;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Europe/Moscow")
+    @JsonFormat(shape = JsonFormat.Shape.STRING,
+            pattern = "dd-MM-yyyy HH:mm:ss",
+            timezone = "Europe/Moscow"
+    )
     private Date creationDate;
     private Long area;
     private Integer population;
@@ -41,18 +44,18 @@ public class City implements Comparable<City> {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("City{")
-          .append("id=").append(id)
-          .append(", name='").append(name).append('\'')
-          .append(", coordinates=").append(coordinates)
-          .append(", creationDate=").append(creationDate)
-          .append(", area=").append(area)
-          .append(", population=").append(population)
-          .append(", metersAboveSeaLevel=").append(metersAboveSeaLevel)
-          .append(", populationDensity=").append(populationDensity)
-          .append(", agglomeration=").append(agglomeration)
-          .append(", government=").append(government)
-          .append(", governor=").append(governor)
-          .append('}');
+                .append("id=").append(id)
+                .append(", name='").append(name).append('\'')
+                .append(", coordinates=").append(coordinates)
+                .append(", creationDate=").append(creationDate)
+                .append(", area=").append(area)
+                .append(", population=").append(population)
+                .append(", metersAboveSeaLevel=").append(metersAboveSeaLevel)
+                .append(", populationDensity=").append(populationDensity)
+                .append(", agglomeration=").append(agglomeration)
+                .append(", government=").append(government)
+                .append(", governor=").append(governor)
+                .append('}');
         return sb.toString();
     }
 
@@ -65,15 +68,15 @@ public class City implements Comparable<City> {
             return false;
         }
         return populationDensity == city.populationDensity
-               && Objects.equals(name, city.name)
-               && Objects.equals(coordinates, city.coordinates)
-               && Objects.equals(creationDate, city.creationDate)
-               && Objects.equals(area, city.area)
-               && Objects.equals(population, city.population)
-               && Objects.equals(metersAboveSeaLevel, city.metersAboveSeaLevel)
-               && Objects.equals(agglomeration, city.agglomeration)
-               && government == city.government
-               && Objects.equals(governor, city.governor);
+                && Objects.equals(name, city.name)
+                && Objects.equals(coordinates, city.coordinates)
+                && Objects.equals(creationDate, city.creationDate)
+                && Objects.equals(area, city.area)
+                && Objects.equals(population, city.population)
+                && Objects.equals(metersAboveSeaLevel, city.metersAboveSeaLevel)
+                && Objects.equals(agglomeration, city.agglomeration)
+                && government == city.government
+                && Objects.equals(governor, city.governor);
     }
 
     @Override

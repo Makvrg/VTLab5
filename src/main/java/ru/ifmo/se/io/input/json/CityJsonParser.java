@@ -20,21 +20,16 @@ public class CityJsonParser implements FileParser<List<City>> {
         try {
             City[] cities = mapper.readValue(reader, City[].class);
             return Arrays.asList(cities);
-
         } catch (InvalidFormatException e) {
             throw new JsonValidationException("Неверный формат поля: "
                     + e.getPathReference() + " - " + e.getValue(), e);
-
         } catch (MismatchedInputException e) {
             throw new JsonValidationException("Структура JSON не совпадает с ожидаемой: "
                     + e.getPathReference(), e);
-
         } catch (JsonParseException e) {
             throw new JsonValidationException("JSON повреждён или синтаксически неверен", e);
-
         } catch (IOException e) {
             throw new JsonValidationException("Ошибка чтения файла JSON", e);
         }
     }
-
 }

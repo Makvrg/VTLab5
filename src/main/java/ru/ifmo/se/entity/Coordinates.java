@@ -30,7 +30,7 @@ public class Coordinates {
             return false;
         }
         return Double.compare(x, that.x) == 0
-               && Float.compare(y, that.y) == 0;
+                && Float.compare(y, that.y) == 0;
     }
 
     @Override

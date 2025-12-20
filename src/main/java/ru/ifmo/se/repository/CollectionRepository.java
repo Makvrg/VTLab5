@@ -40,7 +40,7 @@ public class CollectionRepository {
 
     public Optional<Long> findMaxId() {
         if (collectionWithInfo.getCountOfElements() > 0) {
-            return collectionWithInfo.collection.stream()
+            return collectionWithInfo.getCollection().stream()
                                                 .map(City::getId)
                                                 .max(Long::compareTo);
         }
@@ -48,20 +48,20 @@ public class CollectionRepository {
     }
 
     public boolean add(City city) {
-        return collectionWithInfo.collection.add(city);
+        return collectionWithInfo.getCollection().add(city);
     }
 
     public Optional<City> findMaxCity() {
         if (collectionWithInfo.getCountOfElements() > 0) {
             return Optional.of(
-                    Collections.max(collectionWithInfo.collection)
+                    Collections.max(collectionWithInfo.getCollection())
             );
         }
         return Optional.empty();
     }
 
     public boolean updateById(Long id, City newData) {
-        for (City city : collectionWithInfo.collection) {
+        for (City city : collectionWithInfo.getCollection()) {
             if (city.getId().equals(id)) {
                 updateCity(city, newData);
                 return true;
@@ -83,11 +83,11 @@ public class CollectionRepository {
     }
 
     public List<City> findAll() {
-        return new ArrayList<>(collectionWithInfo.collection);
+        return new ArrayList<>(collectionWithInfo.getCollection());
     }
 
     public boolean deleteById(Long id) {
-        for (Iterator<City> itr = collectionWithInfo.collection.iterator(); itr.hasNext(); ) {
+        for (Iterator<City> itr = collectionWithInfo.getCollection().iterator(); itr.hasNext(); ) {
             if (itr.next().getId().equals(id)) {
                 itr.remove();
                 return true;
@@ -98,7 +98,7 @@ public class CollectionRepository {
 
     public boolean deleteAll() {
         if (collectionWithInfo.getCountOfElements() > 0) {
-            collectionWithInfo.collection.clear();
+            collectionWithInfo.getCollection().clear();
             return true;
         } else {
             return false;
@@ -108,7 +108,7 @@ public class CollectionRepository {
     public Optional<City> findFirst() {
         if (collectionWithInfo.getCountOfElements() > 0) {
             return Optional.of(
-                    collectionWithInfo.collection.get(0)
+                    collectionWithInfo.getCollection().get(0)
             );
         } else {
             return Optional.empty();
@@ -118,7 +118,7 @@ public class CollectionRepository {
     public Optional<City> removeHead() {
         if (collectionWithInfo.getCountOfElements() > 0) {
             return Optional.of(
-                    collectionWithInfo.collection.remove(0)
+                    collectionWithInfo.getCollection().remove(0)
             );
         } else {
             return Optional.empty();
@@ -126,23 +126,22 @@ public class CollectionRepository {
     }
 
     public boolean removeAllByPopulationDensityCommand(long populationDensity) {
-        return collectionWithInfo.collection.removeIf(
+        return collectionWithInfo.getCollection().removeIf(
                 city -> city.getPopulationDensity() == populationDensity
         );
     }
 
     public List<City> findAllByLessPopulationDensity(long populationDensity) {
-        return collectionWithInfo.collection.stream()
+        return collectionWithInfo.getCollection().stream()
                 .filter(city -> city.getPopulationDensity() < populationDensity)
                 .collect(Collectors.toCollection(ArrayList::new)
                 );
     }
 
     public List<Government> findAllGovernment() {
-        return collectionWithInfo.collection.stream()
+        return collectionWithInfo.getCollection().stream()
                 .map(City::getGovernment)
                 .collect(Collectors.toCollection(ArrayList::new)
                 );
     }
-
 }

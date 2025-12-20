@@ -37,5 +37,4 @@ public class OutputPrinter implements Printer {
     public void off() {
         onOff = false;
     }
-
 }

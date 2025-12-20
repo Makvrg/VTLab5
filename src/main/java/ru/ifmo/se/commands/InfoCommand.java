@@ -23,5 +23,4 @@ public class InfoCommand implements Command {
     public void execute(String[] ignoredArgs, Reader ignoredReader) {
         printer.forcePrintln(collectionService.info());
     }
-
 }

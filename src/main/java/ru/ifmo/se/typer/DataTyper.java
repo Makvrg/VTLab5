@@ -13,5 +13,4 @@ public class DataTyper {
         }
         return paramTypedData;
     }
-
 }

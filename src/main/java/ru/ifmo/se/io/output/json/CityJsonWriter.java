@@ -21,8 +21,15 @@ public class CityJsonWriter implements FileWriter<List<City>> {
     public void write(String fileName, List<City> cities)
             throws IOException {
         File file = new File(fileName);
-        file.createNewFile();
-        mapper.writeValue(file, cities);
+        if (file.createNewFile() && file.canWrite()) {
+            mapper.writeValue(file, cities);
+        } else {
+            if (file.canWrite()) {
+                mapper.writeValue(file, cities);
+            } else {
+                throw new IOException();
+            }
+        }
     }
 
     @Override
@@ -30,5 +37,4 @@ public class CityJsonWriter implements FileWriter<List<City>> {
             throws IOException {
         write(backupFileName, cities);
     }
-
 }

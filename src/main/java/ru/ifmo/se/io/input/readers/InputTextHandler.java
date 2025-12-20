@@ -12,5 +12,4 @@ public class InputTextHandler {
         }
         return line.strip();
     }
-
 }

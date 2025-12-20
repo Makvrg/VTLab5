@@ -45,5 +45,4 @@ public class RemoveByIdCommand implements Command {
             printer.printlnIfOn(e.getMessage());
         }
     }
-
 }

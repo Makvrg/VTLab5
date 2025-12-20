@@ -5,5 +5,4 @@ public class RemoveByIdValidationException extends RuntimeException {
     public RemoveByIdValidationException(String message) {
         super(message);
     }
-
 }

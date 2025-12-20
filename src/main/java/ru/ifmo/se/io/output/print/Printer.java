@@ -13,5 +13,4 @@ public interface Printer {
     void on();
 
     void off();
-
 }

@@ -11,5 +11,4 @@ public class EnvVariableProvider implements EnvironmentProvider {
     public String getFileName() {
         return System.getenv(envName);
     }
-
 }

@@ -9,5 +9,4 @@ public interface Command {
     String getCommandDescription();
 
     void execute(String[] inputArgs, Reader reader);
-
 }

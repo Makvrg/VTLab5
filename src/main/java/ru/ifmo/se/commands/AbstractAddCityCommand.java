@@ -46,7 +46,6 @@ public abstract class AbstractAddCityCommand implements Command {
     private final Map<String, Consumer<String>> inputValidateMethods;
     private final Map<String, Consumer<String>> dtoFieldSetters;
 
-
     public AbstractAddCityCommand(String commandSignature,
                                   String commandDescription,
                                   CollectionService collectionService,
@@ -108,20 +107,20 @@ public abstract class AbstractAddCityCommand implements Command {
 
     private void readManage() {
         printer.printlnIfOn("Следуя указаниям, введите данные объекта City");
-        for (String action : readActions.keySet()) {
-                while (true) {
-                    String input = readActions.get(action).get();
-                    try {
-                        inputValidateMethods.get(action).accept(input);
-                        dtoFieldSetters.get(action).accept(input);
-                    } catch (InputFieldValidationException e) {
-                        printer.printlnIfOn(e.getMessage() + ", повторите ввод");
-                        inputIsRepeated = true;
-                        continue;
-                    }
-                    inputIsRepeated = false;
-                    break;
+        for (Map.Entry<String, Supplier<String>> actionEntry : readActions.entrySet()) {
+            while (true) {
+                String input = actionEntry.getValue().get();
+                try {
+                    inputValidateMethods.get(actionEntry.getKey()).accept(input);
+                    dtoFieldSetters.get(actionEntry.getKey()).accept(input);
+                } catch (InputFieldValidationException e) {
+                    printer.printlnIfOn(e.getMessage() + ", повторите ввод");
+                    inputIsRepeated = true;
+                    continue;
                 }
+                inputIsRepeated = false;
+                break;
+            }
         }
     }
 
@@ -140,14 +139,15 @@ public abstract class AbstractAddCityCommand implements Command {
         printer.printIfOn(message + " > ");
         try {
             String inputString = reader.readLine();
+            if (inputString == null) {
+                throw new ExecuteScriptValidateException(
+                        "Неожиданное количество строк данных в файле"
+                );
+            }
             return InputTextHandler.stripOrNullField(inputString);
         } catch (IOException e) {
             throw new ExecuteScriptValidateException(
                     "Файл с указанным названием не найден или к нему нет доступа"
-            );
-        } catch (NullPointerException e) {
-            throw new ExecuteScriptValidateException(
-                    "Неожиданное количество строк данных в файле"
             );
         }
     }
@@ -235,7 +235,8 @@ public abstract class AbstractAddCityCommand implements Command {
         commands.put("birthday",
                 () ->
                     readInput(
-                            "Дата и время рождения губернатора города имеют формат дд-ММ-гггг ЧЧ:мм:сс",
+                            "Дата и время рождения губернатора "
+                                    + "города имеют формат дд-ММ-гггг ЧЧ:мм:сс",
                             "Введите дату и время рождения губернатора"
                     )
         );
@@ -308,7 +309,7 @@ public abstract class AbstractAddCityCommand implements Command {
                         city.getGovernor().setBirthday(null);
                     }
                 }
-                );
+        );
 
         return dtoFieldSetters;
     }

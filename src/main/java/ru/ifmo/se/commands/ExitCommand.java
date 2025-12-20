@@ -24,5 +24,4 @@ public class ExitCommand implements Command {
             printer.forcePrintln("Закрытие приложения");
         }
     }
-
 }

@@ -15,9 +15,9 @@ public class AddIfMaxCityCommand extends AbstractAddCityCommand {
                                DataTyper dataTyper,
                                Printer printer) {
         super("add_if_max {element}",
-              "добавить новый элемент в коллекцию, если его значение превышает "
-                      + "значение наибольшего элемента этой коллекции",
-              collectionService, commandValidator, dataTyper, printer
+                "добавить новый элемент в коллекцию, если его значение превышает "
+                        + "значение наибольшего элемента этой коллекции",
+                collectionService, commandValidator, dataTyper, printer
         );
     }
 
@@ -40,5 +40,4 @@ public class AddIfMaxCityCommand extends AbstractAddCityCommand {
             super.printer.forcePrintln("Новый объект не был добавлен в коллекцию");
         }
     }
-
 }

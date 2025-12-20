@@ -34,5 +34,4 @@ public class ShowCommand implements Command {
             printer.forcePrintln("Коллекция пуста");
         }
     }
-
 }

@@ -31,5 +31,4 @@ public enum Government {
     public String toString() {
         return title;
     }
-
 }

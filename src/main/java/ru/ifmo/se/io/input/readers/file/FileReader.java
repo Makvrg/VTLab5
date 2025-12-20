@@ -51,5 +51,4 @@ public class FileReader implements Reader {
     public String getName() {
         return name;
     }
-
 }

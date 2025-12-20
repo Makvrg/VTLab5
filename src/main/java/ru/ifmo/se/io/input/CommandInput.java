@@ -188,14 +188,20 @@ public class CommandInput implements Runnable, ShutdownListener {
                     counter++;
                 } else {
                     printer.forcePrintln(
-                            String.format(Messages.CITY_INIT_UNKNOWN_EXC,
-                                    city.getId(), counter)
+                            String.format(
+                                    Messages.CITY_INIT_UNKNOWN_EXC,
+                                    city.getId(), counter
+                            )
                     );
                     return false;
                 }
             } catch (NonUniqueIdException | CreationDateIsAfterNowException e) {
                 printer.forcePrintln(
-                        String.format(Messages.CITY_INIT_ADD_EXC, city.getId(), counter)
+                        String.format(
+                                Messages.CITY_INIT_ADD_EXC,
+                                city.getId(),
+                                counter
+                        )
                 );
                 printer.forcePrintln("Ошибка добавления в коллекцию: " + e.getMessage());
                 return false;
@@ -208,5 +214,4 @@ public class CommandInput implements Runnable, ShutdownListener {
     public void onShutdown() {
         shutdown = true;
     }
-
 }

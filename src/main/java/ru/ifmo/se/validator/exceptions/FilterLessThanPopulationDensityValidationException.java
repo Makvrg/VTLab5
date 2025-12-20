@@ -5,5 +5,4 @@ public class FilterLessThanPopulationDensityValidationException extends RuntimeE
     public FilterLessThanPopulationDensityValidationException(String message) {
         super(message);
     }
-
 }

@@ -5,5 +5,4 @@ public class ReaderCreateException extends RuntimeException {
     public ReaderCreateException(String message) {
         super(message);
     }
-
 }

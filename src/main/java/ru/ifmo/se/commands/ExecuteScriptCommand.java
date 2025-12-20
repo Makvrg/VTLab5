@@ -53,8 +53,8 @@ public class ExecuteScriptCommand implements Command {
         for (Reader reader : commandInputReaders) {
             if (reader.getName().equals(currentFileReader.getName())) {
                 printer.forcePrintln(
-                    "Во избежание рекурсии выполняется "
-                            + "принудительное завершение всей цепочки скриптов");
+                        "Во избежание рекурсии выполняется "
+                                + "принудительное завершение всей цепочки скриптов");
                 while (commandInputReaders.size() > 1) {
                     commandInputReaders.remove(commandInputReaders.size() - 1);
                 }
@@ -68,5 +68,4 @@ public class ExecuteScriptCommand implements Command {
         printer.forcePrintln("Активен режим чтения файла " + currentFileReader.getName());
         printer.off();
     }
-
 }

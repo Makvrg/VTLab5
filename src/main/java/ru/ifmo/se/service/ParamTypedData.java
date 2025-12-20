@@ -8,5 +8,4 @@ import lombok.Setter;
 public class ParamTypedData {
 
     private Long id;
-
 }

@@ -16,7 +16,10 @@ import java.util.Objects;
 public class Human {
 
     private double height;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Europe/Moscow")
+    @JsonFormat(shape = JsonFormat.Shape.STRING,
+            pattern = "dd-MM-yyyy HH:mm:ss",
+            timezone = "Europe/Moscow"
+    )
     private Date birthday;
 
     @Override
@@ -34,12 +37,11 @@ public class Human {
             return false;
         }
         return Double.compare(height, human.height) == 0
-               && Objects.equals(birthday, human.birthday);
+                && Objects.equals(birthday, human.birthday);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(height, birthday);
     }
-
 }

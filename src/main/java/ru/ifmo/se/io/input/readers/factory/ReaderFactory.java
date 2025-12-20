@@ -32,5 +32,4 @@ public class ReaderFactory {
     private String getCanonicalPath(String fileName) throws IOException {
         return new File(fileName).getCanonicalPath();
     }
-
 }

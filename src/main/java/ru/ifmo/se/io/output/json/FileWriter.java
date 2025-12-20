@@ -7,5 +7,4 @@ public interface FileWriter<T> {
     void write(String fileName, T data) throws IOException;
 
     void writeBackup(T data) throws IOException;
-
 }

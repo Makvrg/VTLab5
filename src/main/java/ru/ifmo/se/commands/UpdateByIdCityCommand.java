@@ -15,8 +15,8 @@ public class UpdateByIdCityCommand extends AbstractAddCityCommand {
                                  DataTyper dataTyper,
                                  Printer printer) {
         super("update id {element}",
-              "обновить значение элемента коллекции, id которого равен заданному",
-              collectionService, commandValidator, dataTyper, printer)
+                "обновить значение элемента коллекции, id которого равен заданному",
+                collectionService, commandValidator, dataTyper, printer)
         ;
     }
 
@@ -44,5 +44,4 @@ public class UpdateByIdCityCommand extends AbstractAddCityCommand {
                     "Объект не был обновлён, так как в коллекции нет объекта с данным id");
         }
     }
-
 }

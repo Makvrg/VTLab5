@@ -25,5 +25,4 @@ public class ClearCommand implements Command {
             printer.forcePrintln("Коллекция уже пуста");
         }
     }
-
 }

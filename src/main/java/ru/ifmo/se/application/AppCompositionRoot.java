@@ -42,7 +42,8 @@ public final class AppCompositionRoot {
     private final Printer printer = new OutputPrinter();
 
     private final ReaderFactory readerFactory = new ReaderFactory();
-    private final Reader reader = readerFactory.createTerminalReader("Main Terminal");
+    private final Reader reader =
+            readerFactory.createTerminalReader("Main Terminal");
 
     private final CommandValidator validator = new CommandValidator();
     private final DataTyper dataTyper = new DataTyper();
@@ -78,5 +79,4 @@ public final class AppCompositionRoot {
             inputStreamProvider,
             jsonParser
     );
-
 }

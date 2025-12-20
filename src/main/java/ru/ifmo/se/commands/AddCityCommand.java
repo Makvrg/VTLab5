@@ -15,7 +15,7 @@ public class AddCityCommand extends AbstractAddCityCommand {
                                DataTyper dataTyper,
                                Printer printer) {
         super("add {element}", "добавить новый элемент в коллекцию",
-              collectionService, commandValidator, dataTyper, printer
+                collectionService, commandValidator, dataTyper, printer
         );
     }
 
@@ -40,5 +40,4 @@ public class AddCityCommand extends AbstractAddCityCommand {
                     "Новый объект не был добавлен в коллекцию");
         }
     }
-
 }

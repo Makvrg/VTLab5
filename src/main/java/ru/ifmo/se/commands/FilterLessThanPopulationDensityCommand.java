@@ -49,5 +49,4 @@ public class FilterLessThanPopulationDensityCommand implements Command {
             printer.forcePrintln(e.getMessage());
         }
     }
-
 }

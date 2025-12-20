@@ -5,5 +5,4 @@ public class CreationDateIsAfterNowException extends RuntimeException {
     public CreationDateIsAfterNowException(String message) {
         super(message);
     }
-
 }

@@ -7,5 +7,4 @@ public interface Reader {
     String readLine() throws IOException;
 
     String getName();
-
 }

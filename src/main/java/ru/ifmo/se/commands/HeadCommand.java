@@ -27,5 +27,4 @@ public class HeadCommand implements Command {
                         + formatter.formatCity(city))
                 .orElse("Коллекция пуста"));
     }
-
 }

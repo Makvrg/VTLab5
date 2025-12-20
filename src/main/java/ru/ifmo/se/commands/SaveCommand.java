@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import ru.ifmo.se.io.input.env.EnvironmentProvider;
 import ru.ifmo.se.io.input.readers.Reader;
 import ru.ifmo.se.io.output.json.CityJsonWriter;
+import ru.ifmo.se.io.output.print.Messages;
 import ru.ifmo.se.io.output.print.Printer;
 import ru.ifmo.se.service.CollectionService;
 
@@ -34,10 +35,7 @@ public class SaveCommand implements Command {
             }
             printer.forcePrintln("Сохранение коллекции прошло успешно");
         } catch (IOException e) {
-            printer.forcePrintln(
-                    "При сохранении коллекции возникла ошибка, возможно, "
-                            + "к нему нет прав и/или программа не может создать запасной файл для записи");
+            printer.forcePrintln(Messages.SAVE_COLLECTION_EXC);
         }
     }
-
 }

@@ -41,5 +41,4 @@ public class RemoveAllByPopulationDensityCommand implements Command {
             printer.forcePrintln(e.getMessage());
         }
     }
-
 }

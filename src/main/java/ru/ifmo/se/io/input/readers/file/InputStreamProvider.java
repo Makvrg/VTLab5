@@ -6,5 +6,4 @@ import java.io.InputStreamReader;
 public interface InputStreamProvider {
 
     InputStreamReader open(String fileName) throws IOException;
-
 }

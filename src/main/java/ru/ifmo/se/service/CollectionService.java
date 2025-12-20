@@ -44,11 +44,13 @@ public class CollectionService {
             throw new NonUniqueIdException("Передан уже существующий id");
         }
         if (city.getCreationDate().after(new Date())) {
-            throw new CreationDateIsAfterNowException("Передана дата и время создания объекта City из будущего");
+            throw new CreationDateIsAfterNowException(
+                    "Передана дата и время создания объекта City из будущего");
         }
         if (city.getGovernor().getBirthday() != null
                 && city.getGovernor().getBirthday().after(new Date())) {
-            throw new CreationDateIsAfterNowException("Передана дата и время рождения губернатора из будущего");
+            throw new CreationDateIsAfterNowException(
+                    "Передана дата и время рождения губернатора из будущего");
         }
         return collectionRepository.add(city);
     }
@@ -94,7 +96,6 @@ public class CollectionService {
 
     public Optional<City> head() {
         return collectionRepository.findFirst();
-
     }
 
     public Optional<City> removeHead() {
@@ -118,7 +119,6 @@ public class CollectionService {
         return govList;
     }
 
-
     public void addShutdownListener(ShutdownListener listener) {
         listeners.add(listener);
     }
@@ -126,5 +126,4 @@ public class CollectionService {
     private void shutdown() {
         listeners.forEach(ShutdownListener::onShutdown);
     }
-
 }

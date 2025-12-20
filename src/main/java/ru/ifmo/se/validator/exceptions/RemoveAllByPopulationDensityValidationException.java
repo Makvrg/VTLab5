@@ -5,5 +5,4 @@ public class RemoveAllByPopulationDensityValidationException extends RuntimeExce
     public RemoveAllByPopulationDensityValidationException(String message) {
         super(message);
     }
-
 }

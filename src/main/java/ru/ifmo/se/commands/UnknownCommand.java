@@ -24,5 +24,4 @@ public class UnknownCommand implements Command {
                 )
         );
     }
-
 }

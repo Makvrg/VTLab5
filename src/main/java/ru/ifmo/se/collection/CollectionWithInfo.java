@@ -11,7 +11,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CollectionWithInfo {
 
-    public final List<City> collection;
+    private final List<City> collection;
     private final Date initializationDate = new Date();
     private final Class<?> collectionType;
     private final Class<?> elementsType;
@@ -19,5 +19,4 @@ public class CollectionWithInfo {
     public int getCountOfElements() {
         return collection.size();
     }
-
 }

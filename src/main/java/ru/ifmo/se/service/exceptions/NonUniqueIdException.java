@@ -5,5 +5,4 @@ public class NonUniqueIdException extends RuntimeException {
     public NonUniqueIdException(String message) {
         super(message);
     }
-
 }

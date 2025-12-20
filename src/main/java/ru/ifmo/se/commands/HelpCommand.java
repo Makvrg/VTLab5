@@ -34,5 +34,4 @@ public class HelpCommand implements Command {
         helpText.delete(helpText.length() - 2, helpText.length());
         printer.forcePrintln(helpText.toString());
     }
-
 }

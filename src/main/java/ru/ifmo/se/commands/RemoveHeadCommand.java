@@ -27,5 +27,4 @@ public class RemoveHeadCommand implements Command {
                         + formatter.formatCity(city))
                 .orElse("Коллекция пуста"));
     }
-
 }

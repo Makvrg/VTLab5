@@ -2,11 +2,11 @@ package ru.ifmo.se.application;
 
 public class App {
 
-    public static void main(String[] args) {
-
-        Starter appStarter = new AppStarter();
-        appStarter.start();
-
+    private App() {
     }
 
+    public static void main(final String[] args) {
+        Starter appStarter = new AppStarter();
+        appStarter.start();
+    }
 }
