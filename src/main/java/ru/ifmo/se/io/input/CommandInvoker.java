@@ -48,7 +48,7 @@ public class CommandInvoker {
         );
     }
 
-    public void distribute(String[] inputArgs) {
+    public void invokeCommand(String[] inputArgs) {
         if (commands.containsKey(inputArgs[0])) {
             commands.get(inputArgs[0])
                     .execute(inputArgs,

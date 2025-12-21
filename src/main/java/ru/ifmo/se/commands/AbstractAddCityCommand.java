@@ -8,6 +8,7 @@ import ru.ifmo.se.entity.Human;
 import ru.ifmo.se.io.input.dto.ParamRawData;
 import ru.ifmo.se.io.input.readers.InputTextHandler;
 import ru.ifmo.se.io.input.readers.Reader;
+import ru.ifmo.se.io.input.readers.file.FileReader;
 import ru.ifmo.se.io.output.print.Printer;
 import ru.ifmo.se.service.CollectionService;
 import ru.ifmo.se.service.ParamTypedData;
@@ -140,9 +141,13 @@ public abstract class AbstractAddCityCommand implements Command {
         try {
             String inputString = reader.readLine();
             if (inputString == null) {
-                throw new ExecuteScriptValidateException(
-                        "Неожиданное количество строк данных в файле"
-                );
+                if (reader instanceof FileReader) {
+                    throw new ExecuteScriptValidateException(
+                            "Неожиданное количество строк данных в файле"
+                    );
+                }
+                inputString = "";
+                printer.forcePrintln("");
             }
             return InputTextHandler.stripOrNullField(inputString);
         } catch (IOException e) {

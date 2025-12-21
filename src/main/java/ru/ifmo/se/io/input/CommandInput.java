@@ -8,7 +8,9 @@ import ru.ifmo.se.io.input.json.JsonValidationException;
 import ru.ifmo.se.io.input.readers.InputTextHandler;
 import ru.ifmo.se.io.input.readers.Reader;
 import ru.ifmo.se.io.input.readers.factory.ReaderFactory;
+import ru.ifmo.se.io.input.readers.file.FileReader;
 import ru.ifmo.se.io.input.readers.file.InputStreamProvider;
+import ru.ifmo.se.io.input.readers.terminal.TerminalReader;
 import ru.ifmo.se.io.output.formatter.OutputStringFormatter;
 import ru.ifmo.se.io.output.json.CityJsonWriter;
 import ru.ifmo.se.io.output.print.Messages;
@@ -76,10 +78,39 @@ public class CommandInput implements Runnable, ShutdownListener {
     public void run() {
         while (!shutdown) {
             printer.printIfOn("> ");
+            Reader currentReader = readers.get(readers.size() - 1);
             try {
-                String inputLine = readers.get(readers.size() - 1).readLine();
+                String inputLine = currentReader.readLine();
 
                 if (inputLine == null) {
+                    if (currentReader instanceof FileReader) {
+                        readers.remove(readers.size() - 1);
+                        if (readers.size() == 1) {
+                            printer.on();
+                        }
+                        printer.forcePrintln(
+                                formatter.formatCurrentReaderInfo(List.copyOf(readers))
+                        );
+                        continue;
+                    }
+                    inputLine = "";
+                    printer.forcePrintln("");
+                }
+
+                String[] inputArgs = InputTextHandler.parseArguments(
+                        inputLine
+                );
+                commandInvoker.invokeCommand(inputArgs);
+            } catch (IOException e) {
+                if (currentReader instanceof TerminalReader) {
+                    printer.forcePrintln(
+                            "При чтении с терминала произошла ошибка"
+                    );
+                }
+                if (currentReader instanceof FileReader) {
+                    printer.forcePrintln(
+                            "Файл с указанным названием не найден или к нему нет доступа"
+                    );
                     readers.remove(readers.size() - 1);
                     if (readers.size() == 1) {
                         printer.on();
@@ -87,25 +118,7 @@ public class CommandInput implements Runnable, ShutdownListener {
                     printer.forcePrintln(
                             formatter.formatCurrentReaderInfo(List.copyOf(readers))
                     );
-                    continue;
                 }
-
-                String[] inputArgs = InputTextHandler.parseArguments(
-                        inputLine
-                );
-                commandInvoker.distribute(inputArgs);
-            } catch (IOException e) {
-                printer.forcePrintln(e.getMessage());
-                printer.forcePrintln(
-                        "Файл с указанным названием не найден или к нему нет доступа"
-                );
-                readers.remove(readers.size() - 1);
-                if (readers.size() == 1) {
-                    printer.on();
-                }
-                printer.forcePrintln(
-                        formatter.formatCurrentReaderInfo(List.copyOf(readers))
-                );
             }
         }
     }
