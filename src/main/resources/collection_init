@@ -1,0 +1,37 @@
+[ {
+  "id" : 3,
+  "name" : "Владивосток",
+  "coordinates" : {
+    "x" : 376.0,
+    "y" : -200.0
+  },
+  "creationDate" : "06-12-2025 11:41:47",
+  "area" : 1100,
+  "population" : 200000,
+  "metersAboveSeaLevel" : null,
+  "populationDensity" : 300,
+  "agglomeration" : 60000,
+  "government" : "MONARCHY",
+  "governor" : {
+    "height" : 1.71,
+    "birthday" : null
+  }
+}, {
+  "id" : 4,
+  "name" : "Ижевск",
+  "coordinates" : {
+    "x" : 10.0,
+    "y" : 78.0
+  },
+  "creationDate" : "06-12-2025 11:41:47",
+  "area" : 789,
+  "population" : 600000,
+  "metersAboveSeaLevel" : 13.8,
+  "populationDensity" : 489,
+  "agglomeration" : 100000,
+  "government" : "TOTALITARIANISM",
+  "governor" : {
+    "height" : 1.69,
+    "birthday" : "23-02-1979 13:45:59"
+  }
+} ]
