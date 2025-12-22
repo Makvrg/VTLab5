@@ -227,4 +227,5 @@ public class CommandInput implements Runnable, ShutdownListener {
     public void onShutdown() {
         shutdown = true;
     }
+
 }
