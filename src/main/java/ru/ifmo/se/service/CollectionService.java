@@ -57,7 +57,7 @@ public class CollectionService {
 
     private Long createNewId() {
         Optional<Long> maxId = collectionRepository.findMaxId();
-        return maxId.map(aLong -> aLong + 1).orElse(0L);
+        return maxId.map(aLong -> aLong + 1L).orElse(0L);
     }
 
     public boolean addIfMax(City city) {

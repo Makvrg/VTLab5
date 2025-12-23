@@ -9,3 +9,5 @@
 Запуск приложения командой `java -jar VTLab5-1.0-SNAPSHOT.jar`
 
 Все необходимые права выданы
+
+[![codecov](https://codecov.io/gh/Makvrg/VTLab5/branch/main/graph/badge.svg)](https://codecov.io/gh/Makvrg/VTLab5)
