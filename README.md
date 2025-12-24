@@ -10,4 +10,4 @@
 
 Все необходимые права выданы
 
-[![codecov](https://codecov.io/gh/Makvrg/VTLab5/branch/main/graph/badge.svg)](https://codecov.io/gh/Makvrg/VTLab5)
+[//]: # ([![codecov]&#40;https://codecov.io/gh/Makvrg/VTLab5/branch/main/graph/badge.svg&#41;]&#40;https://codecov.io/gh/Makvrg/VTLab5&#41;)
