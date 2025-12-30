@@ -1,6 +1,5 @@
 package ru.ifmo.se.commands;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import ru.ifmo.se.io.input.readers.Reader;
 import ru.ifmo.se.io.output.print.Printer;
@@ -12,15 +11,24 @@ import ru.ifmo.se.validator.exceptions.RemoveByIdValidationException;
 @RequiredArgsConstructor
 public class RemoveByIdCommand implements Command {
 
-    @Getter
-    private final String commandSignature = "remove_by_id id";
-    @Getter
-    private final String commandDescription =
+    private static final String COMMAND_SIGNATURE = "remove_by_id id";
+
+    private static final String COMMAND_DESCRIPTION =
             "удалить элемент из коллекции по его id";
 
     private final CollectionService collectionService;
     private final CommandValidator commandValidator;
     private final Printer printer;
+
+    @Override
+    public String getCommandSignature() {
+        return COMMAND_SIGNATURE;
+    }
+
+    @Override
+    public String getCommandDescription() {
+        return COMMAND_DESCRIPTION;
+    }
 
     @Override
     public void execute(String[] inputArgs, Reader ignoredReader) {

@@ -1,6 +1,5 @@
 package ru.ifmo.se.commands;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import ru.ifmo.se.io.input.readers.Reader;
 import ru.ifmo.se.io.output.print.Printer;
@@ -11,17 +10,26 @@ import ru.ifmo.se.validator.exceptions.RemoveAllByPopulationDensityValidationExc
 @RequiredArgsConstructor
 public class RemoveAllByPopulationDensityCommand implements Command {
 
-    @Getter
-    private final String commandSignature =
+    private static final String COMMAND_SIGNATURE =
             "remove_all_by_population_density populationDensity";
-    @Getter
-    private final String commandDescription =
+
+    private static final String COMMAND_DESCRIPTION =
             "удалить из коллекции все элементы, значение поля "
                     + "populationDensity которого эквивалентно заданному";
 
     private final CollectionService collectionService;
     private final CommandValidator commandValidator;
     private final Printer printer;
+
+    @Override
+    public String getCommandSignature() {
+        return COMMAND_SIGNATURE;
+    }
+
+    @Override
+    public String getCommandDescription() {
+        return COMMAND_DESCRIPTION;
+    }
 
     @Override
     public void execute(String[] inputArgs, Reader ignoredReader) {

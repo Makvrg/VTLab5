@@ -10,14 +10,25 @@ import ru.ifmo.se.validator.CommandValidator;
 
 public class UpdateByIdCityCommand extends AbstractAddCityCommand {
 
+    private static final String COMMAND_SIGNATURE = "update id {element}";
+    private static final String COMMAND_DESCRIPTION =
+            "обновить значение элемента коллекции, id которого равен заданному";
+
     public UpdateByIdCityCommand(CollectionService collectionService,
                                  CommandValidator commandValidator,
                                  DataTyper dataTyper,
                                  Printer printer) {
-        super("update id {element}",
-                "обновить значение элемента коллекции, id которого равен заданному",
-                collectionService, commandValidator, dataTyper, printer)
-        ;
+        super(collectionService, commandValidator, dataTyper, printer);
+    }
+
+    @Override
+    public String getCommandSignature() {
+        return COMMAND_SIGNATURE;
+    }
+
+    @Override
+    public String getCommandDescription() {
+        return COMMAND_DESCRIPTION;
     }
 
     @Override

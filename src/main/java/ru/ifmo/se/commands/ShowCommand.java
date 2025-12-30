@@ -1,6 +1,5 @@
 package ru.ifmo.se.commands;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import ru.ifmo.se.entity.City;
 import ru.ifmo.se.io.input.readers.Reader;
@@ -13,16 +12,25 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ShowCommand implements Command {
 
-    @Getter
-    private final String commandSignature = "show";
-    @Getter
-    private final String commandDescription =
+    private static final String COMMAND_SIGNATURE = "show";
+
+    private static final String COMMAND_DESCRIPTION =
             "вывести в стандартный поток вывода все элементы "
                     + "коллекции в строковом представлении";
 
     private final CollectionService collectionService;
     private final Printer printer;
     private final OutputStringFormatter formatter;
+
+    @Override
+    public String getCommandSignature() {
+        return COMMAND_SIGNATURE;
+    }
+
+    @Override
+    public String getCommandDescription() {
+        return COMMAND_DESCRIPTION;
+    }
 
     @Override
     public void execute(String[] ignoredArgs, Reader ignoredReader) {

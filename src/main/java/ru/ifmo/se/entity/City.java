@@ -31,6 +31,29 @@ public class City implements Comparable<City> {
     private Government government;
     private Human governor;
 
+    @Getter
+    public enum FieldNames {
+        ID("id"),
+        NAME("name"),
+        X("x"),
+        Y("y"),
+        CREATION_DATE("creationDate"),
+        AREA("area"),
+        POPULATION("population"),
+        METERS_ABOVE_SEA_LEVEL("metersAboveSeaLevel"),
+        POPULATION_DENSITY("populationDensity"),
+        AGGLOMERATION("agglomeration"),
+        GOVERNMENT("government"),
+        HEIGHT("height"),
+        BIRTHDAY("birthday");
+
+        private final String title;
+
+        FieldNames(String title) {
+            this.title = title;
+        }
+    }
+
     @Override
     public int compareTo(City city) {
         Long thisDigit = area * population

@@ -1,6 +1,5 @@
 package ru.ifmo.se.commands;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import ru.ifmo.se.io.input.readers.Reader;
 import ru.ifmo.se.io.input.readers.factory.ReaderCreateException;
@@ -15,10 +14,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ExecuteScriptCommand implements Command {
 
-    @Getter
-    private final String commandSignature = "execute_script file_name";
-    @Getter
-    private final String commandDescription =
+    private static final String COMMAND_SIGNATURE = "execute_script file_name";
+
+    private static final String COMMAND_DESCRIPTION =
             "считать и исполнить скрипт из указанного файла. В скрипте содержатся "
                     + "команды в таком же виде, в котором их вводит пользователь "
                     + "в интерактивном режиме.";
@@ -28,6 +26,16 @@ public class ExecuteScriptCommand implements Command {
     private final ReaderFactory readerFactory;
     private final List<Reader> commandInputReaders;
     private final Printer printer;
+
+    @Override
+    public String getCommandSignature() {
+        return COMMAND_SIGNATURE;
+    }
+
+    @Override
+    public String getCommandDescription() {
+        return COMMAND_DESCRIPTION;
+    }
 
     @Override
     public void execute(String[] inputArgs, Reader ignoredReader) {
