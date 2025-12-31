@@ -1,7 +1,5 @@
 package ru.ifmo.se.commands;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import ru.ifmo.se.io.input.readers.Reader;
 import ru.ifmo.se.io.input.readers.factory.ReaderCreateException;
 import ru.ifmo.se.io.input.readers.factory.ReaderFactory;
@@ -12,22 +10,30 @@ import ru.ifmo.se.validator.exceptions.ExecuteScriptValidateException;
 
 import java.util.List;
 
-@RequiredArgsConstructor
-public class ExecuteScriptCommand implements Command {
-
-    @Getter
-    private final String commandSignature = "execute_script file_name";
-    @Getter
-    private final String commandDescription =
-            "считать и исполнить скрипт из указанного файла. В скрипте содержатся "
-                    + "команды в таком же виде, в котором их вводит пользователь "
-                    + "в интерактивном режиме.";
+public class ExecuteScriptCommand extends Command {
 
     private final CommandValidator commandValidator;
     private final InputStreamProvider inputStreamProvider;
     private final ReaderFactory readerFactory;
     private final List<Reader> commandInputReaders;
     private final Printer printer;
+
+    public ExecuteScriptCommand(CommandValidator commandValidator,
+                                InputStreamProvider inputStreamProvider,
+                                ReaderFactory readerFactory,
+                                List<Reader> commandInputReaders,
+                                Printer printer) {
+        super("execute_script file_name",
+                "считать и исполнить скрипт из указанного файла. В скрипте содержатся "
+                        + "команды в таком же виде, в котором их вводит пользователь "
+                        + "в интерактивном режиме."
+        );
+        this.commandValidator = commandValidator;
+        this.inputStreamProvider = inputStreamProvider;
+        this.readerFactory = readerFactory;
+        this.commandInputReaders = commandInputReaders;
+        this.printer = printer;
+    }
 
     @Override
     public void execute(String[] inputArgs, Reader ignoredReader) {

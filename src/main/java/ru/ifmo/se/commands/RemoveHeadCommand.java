@@ -1,24 +1,24 @@
 package ru.ifmo.se.commands;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import ru.ifmo.se.io.input.readers.Reader;
 import ru.ifmo.se.io.output.formatter.OutputStringFormatter;
 import ru.ifmo.se.io.output.print.Printer;
 import ru.ifmo.se.service.CollectionService;
 
-@RequiredArgsConstructor
-public class RemoveHeadCommand implements Command {
-
-    @Getter
-    private final String commandSignature = "remove_head";
-    @Getter
-    private final String commandDescription =
-            "вывести первый элемент коллекции и удалить его";
+public class RemoveHeadCommand extends Command {
 
     private final CollectionService collectionService;
     private final Printer printer;
     private final OutputStringFormatter formatter;
+
+    public RemoveHeadCommand(CollectionService collectionService,
+                             Printer printer,
+                             OutputStringFormatter formatter) {
+        super("remove_head", "вывести первый элемент коллекции и удалить его");
+        this.collectionService = collectionService;
+        this.printer = printer;
+        this.formatter = formatter;
+    }
 
     @Override
     public void execute(String[] ignoredArgs, Reader ignoredReader) {

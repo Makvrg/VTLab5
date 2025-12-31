@@ -1,23 +1,20 @@
 package ru.ifmo.se.commands;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import ru.ifmo.se.io.input.readers.Reader;
 import ru.ifmo.se.io.output.print.Printer;
 
 import java.util.Collection;
 
-@RequiredArgsConstructor
-public class HelpCommand implements Command {
-
-    @Getter
-    private final String commandSignature = "help";
-    @Getter
-    private final String commandDescription =
-            "вывести справку по доступным командам";
+public class HelpCommand extends Command {
 
     private final Printer printer;
     private final Collection<Command> commands;
+
+    public HelpCommand(Printer printer, Collection<Command> commands) {
+        super("help", "вывести справку по доступным командам");
+        this.printer = printer;
+        this.commands = commands;
+    }
 
     @Override
     public void execute(String[] ignoredArgs, Reader ignoredReader) {

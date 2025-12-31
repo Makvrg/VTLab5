@@ -11,9 +11,9 @@ import ru.ifmo.se.validator.CommandValidator;
 public class AddCityCommand extends AbstractAddCityCommand {
 
     public AddCityCommand(CollectionService collectionService,
-                               CommandValidator commandValidator,
-                               DataTyper dataTyper,
-                               Printer printer) {
+                          CommandValidator commandValidator,
+                          DataTyper dataTyper,
+                          Printer printer) {
         super("add {element}", "добавить новый элемент в коллекцию",
                 collectionService, commandValidator, dataTyper, printer
         );

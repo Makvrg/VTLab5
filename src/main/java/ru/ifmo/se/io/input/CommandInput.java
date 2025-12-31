@@ -13,7 +13,7 @@ import ru.ifmo.se.io.input.readers.file.InputStreamProvider;
 import ru.ifmo.se.io.input.readers.terminal.TerminalReader;
 import ru.ifmo.se.io.output.formatter.OutputStringFormatter;
 import ru.ifmo.se.io.output.json.CityJsonWriter;
-import ru.ifmo.se.io.output.print.Messages;
+import ru.ifmo.se.io.output.print.CollectionActionsMessages;
 import ru.ifmo.se.io.output.print.Printer;
 import ru.ifmo.se.service.CollectionService;
 import ru.ifmo.se.service.exceptions.CreationDateIsAfterNowException;
@@ -183,7 +183,7 @@ public class CommandInput implements Runnable, ShutdownListener {
                 );
             } catch (InputFieldValidationException e) {
                 printer.forcePrintln(
-                        String.format(Messages.CITY_INIT_VALID_EXC,
+                        String.format(CollectionActionsMessages.CITY_INIT_VALID_EXC,
                                 city.getId(), counter)
                 );
                 printer.forcePrintln("Выявленная в нём ошибка: " + e.getMessage());
@@ -202,7 +202,7 @@ public class CommandInput implements Runnable, ShutdownListener {
                 } else {
                     printer.forcePrintln(
                             String.format(
-                                    Messages.CITY_INIT_UNKNOWN_EXC,
+                                    CollectionActionsMessages.CITY_INIT_UNKNOWN_EXC,
                                     city.getId(), counter
                             )
                     );
@@ -211,7 +211,7 @@ public class CommandInput implements Runnable, ShutdownListener {
             } catch (NonUniqueIdException | CreationDateIsAfterNowException e) {
                 printer.forcePrintln(
                         String.format(
-                                Messages.CITY_INIT_ADD_EXC,
+                                CollectionActionsMessages.CITY_INIT_ADD_EXC,
                                 city.getId(),
                                 counter
                         )
@@ -227,5 +227,4 @@ public class CommandInput implements Runnable, ShutdownListener {
     public void onShutdown() {
         shutdown = true;
     }
-
 }

@@ -1,27 +1,29 @@
 package ru.ifmo.se.commands;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import ru.ifmo.se.io.input.readers.Reader;
 import ru.ifmo.se.io.output.print.Printer;
 import ru.ifmo.se.service.CollectionService;
 import ru.ifmo.se.validator.CommandValidator;
 import ru.ifmo.se.validator.exceptions.RemoveAllByPopulationDensityValidationException;
 
-@RequiredArgsConstructor
-public class RemoveAllByPopulationDensityCommand implements Command {
-
-    @Getter
-    private final String commandSignature =
-            "remove_all_by_population_density populationDensity";
-    @Getter
-    private final String commandDescription =
-            "удалить из коллекции все элементы, значение поля "
-                    + "populationDensity которого эквивалентно заданному";
+public class RemoveAllByPopulationDensityCommand extends Command {
 
     private final CollectionService collectionService;
     private final CommandValidator commandValidator;
     private final Printer printer;
+
+    public RemoveAllByPopulationDensityCommand(
+            CollectionService collectionService,
+            CommandValidator commandValidator,
+            Printer printer) {
+        super("remove_all_by_population_density populationDensity",
+                "удалить из коллекции все элементы, значение поля "
+                        + "populationDensity которого эквивалентно заданному"
+        );
+        this.collectionService = collectionService;
+        this.commandValidator = commandValidator;
+        this.printer = printer;
+    }
 
     @Override
     public void execute(String[] inputArgs, Reader ignoredReader) {

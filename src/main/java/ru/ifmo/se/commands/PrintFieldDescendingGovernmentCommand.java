@@ -1,7 +1,5 @@
 package ru.ifmo.se.commands;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import ru.ifmo.se.entity.Government;
 import ru.ifmo.se.io.input.readers.Reader;
 import ru.ifmo.se.io.output.formatter.OutputStringFormatter;
@@ -10,18 +8,23 @@ import ru.ifmo.se.service.CollectionService;
 
 import java.util.List;
 
-@RequiredArgsConstructor
-public class PrintFieldDescendingGovernmentCommand implements Command {
-
-    @Getter
-    private final String commandSignature = "print_field_descending_government";
-    @Getter
-    private final String commandDescription =
-            "вывести значения поля government всех элементов в порядке убывания";
+public class PrintFieldDescendingGovernmentCommand extends Command {
 
     private final CollectionService collectionService;
     private final Printer printer;
     private final OutputStringFormatter formatter;
+
+    public PrintFieldDescendingGovernmentCommand(
+            CollectionService collectionService,
+            Printer printer,
+            OutputStringFormatter formatter) {
+        super("print_field_descending_government",
+                "вывести значения поля government всех элементов в порядке убывания"
+        );
+        this.collectionService = collectionService;
+        this.printer = printer;
+        this.formatter = formatter;
+    }
 
     @Override
     public void execute(String[] ignoredArgs, Reader ignoredReader) {

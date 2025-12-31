@@ -1,7 +1,5 @@
 package ru.ifmo.se.commands;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import ru.ifmo.se.entity.City;
 import ru.ifmo.se.io.input.readers.Reader;
 import ru.ifmo.se.io.output.formatter.OutputStringFormatter;
@@ -12,20 +10,26 @@ import ru.ifmo.se.validator.exceptions.FilterLessThanPopulationDensityValidation
 
 import java.util.List;
 
-@RequiredArgsConstructor
-public class FilterLessThanPopulationDensityCommand implements Command {
-
-    @Getter
-    private final String commandSignature =
-            "filter_less_than_population_density populationDensity";
-    @Getter
-    private final String commandDescription =
-            "вывести элементы, значение поля populationDensity которых меньше заданного";
+public class FilterLessThanPopulationDensityCommand extends Command {
 
     private final CollectionService collectionService;
     private final CommandValidator commandValidator;
     private final Printer printer;
     private final OutputStringFormatter formatter;
+
+    public FilterLessThanPopulationDensityCommand(
+            CollectionService collectionService,
+            CommandValidator commandValidator,
+            Printer printer,
+            OutputStringFormatter formatter) {
+        super("filter_less_than_population_density populationDensity",
+                "вывести элементы, значение поля populationDensity которых меньше заданного"
+        );
+        this.collectionService = collectionService;
+        this.commandValidator = commandValidator;
+        this.printer = printer;
+        this.formatter = formatter;
+    }
 
     @Override
     public void execute(String[] inputArgs, Reader ignoredReader) {

@@ -1,6 +1,5 @@
 package ru.ifmo.se.commands;
 
-import lombok.Getter;
 import ru.ifmo.se.entity.City;
 import ru.ifmo.se.entity.Coordinates;
 import ru.ifmo.se.entity.Government;
@@ -28,12 +27,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public abstract class AbstractAddCityCommand implements Command {
-
-    @Getter
-    private final String commandSignature;
-    @Getter
-    private final String commandDescription;
+public abstract class AbstractAddCityCommand extends Command {
 
     private Reader reader;
 
@@ -47,14 +41,14 @@ public abstract class AbstractAddCityCommand implements Command {
     private final Map<String, Consumer<String>> inputValidateMethods;
     private final Map<String, Consumer<String>> dtoFieldSetters;
 
-    public AbstractAddCityCommand(String commandSignature,
-                                  String commandDescription,
-                                  CollectionService collectionService,
-                                  CommandValidator commandValidator,
-                                  DataTyper dataTyper,
-                                  Printer printer) {
-        this.commandSignature = commandSignature;
-        this.commandDescription = commandDescription;
+    protected AbstractAddCityCommand(
+            String commandSignature,
+            String commandDescription,
+            CollectionService collectionService,
+            CommandValidator commandValidator,
+            DataTyper dataTyper,
+            Printer printer) {
+        super(commandSignature, commandDescription);
         this.collectionService = collectionService;
         this.commandValidator = commandValidator;
         this.dataTyper = dataTyper;
@@ -158,58 +152,58 @@ public abstract class AbstractAddCityCommand implements Command {
     }
 
     private Map<String, Supplier<String>> buildMapOfReadActions() {
-        Map<String, Supplier<String>> commands = new LinkedHashMap<>();
+        Map<String, Supplier<String>> actions = new LinkedHashMap<>();
 
-        commands.put("name",
+        actions.put(City.FieldNames.ID.getTitle(),
                 () ->
                     readInput(
                             null,
                             "Введите название города"
                     )
         );
-        commands.put("x",
+        actions.put(City.FieldNames.X.getTitle(),
                 () ->
                     readInput(
                             "x-координата города - вещественное число, не превышающее 579",
                             "Введите координату x"
                     )
         );
-        commands.put("y",
+        actions.put(City.FieldNames.Y.getTitle(),
                 () ->
                     readInput(
                             "y-координата города - вещественное число",
                             "Введите координату y"
                     )
         );
-        commands.put("area",
+        actions.put(City.FieldNames.AREA.getTitle(),
                 () ->
                     readInput(
                             null,
                             "Введите целочисленную площадь города"
                     )
         );
-        commands.put("population",
+        actions.put(City.FieldNames.POPULATION.getTitle(),
                 () ->
                     readInput(
                             null,
                             "Введите численность населения города"
                     )
         );
-        commands.put("metersAboveSeaLevel",
+        actions.put(City.FieldNames.METERS_ABOVE_SEA_LEVEL.getTitle(),
                 () ->
                     readInput(
                             "Количество метров над уровнем моря - вещественное число",
                             "Введите количество метров над уровнем моря"
                     )
         );
-        commands.put("populationDensity",
+        actions.put(City.FieldNames.POPULATION_DENSITY.getTitle(),
                 () ->
                     readInput(
                             null,
                             "Введите целочисленную плотность населения города"
                         )
         );
-        commands.put("agglomeration",
+        actions.put(City.FieldNames.AGGLOMERATION.getTitle(),
                 () ->
                     readInput(
                             null,
@@ -223,21 +217,21 @@ public abstract class AbstractAddCityCommand implements Command {
                                  .append(government)
                                  .append("\n");
         }
-        commands.put("government",
+        actions.put(City.FieldNames.GOVERNMENT.getTitle(),
                 () ->
                     readInput(
                             governmentExplanation.toString(),
                             "Введите тип правления города"
                     )
         );
-        commands.put("height",
+        actions.put(City.FieldNames.HEIGHT.getTitle(),
                 () ->
                     readInput(
                             "Рост губернатора города - вещественное число в метрах",
                             "Введите рост губернатора"
                     )
         );
-        commands.put("birthday",
+        actions.put(City.FieldNames.BIRTHDAY.getTitle(),
                 () ->
                     readInput(
                             "Дата и время рождения губернатора "
@@ -245,57 +239,77 @@ public abstract class AbstractAddCityCommand implements Command {
                             "Введите дату и время рождения губернатора"
                     )
         );
-        return commands;
+        return actions;
     }
 
     private Map<String, Consumer<String>> buildMapOfInputValidateMethods() {
         Map<String, Consumer<String>> validateMethods = new HashMap<>();
 
-        validateMethods.put("name", commandValidator::validateNameInput);
-        validateMethods.put("x", commandValidator::validateXCoordInput);
-        validateMethods.put("y", commandValidator::validateYCoordInput);
-        validateMethods.put("area", commandValidator::validateAreaInput);
-        validateMethods.put("population", commandValidator::validatePopulationInput);
-        validateMethods.put("metersAboveSeaLevel",
-                commandValidator::validateMetersAboveSeaLevelInput);
-        validateMethods.put("populationDensity",
-                commandValidator::validatePopulationDensityInput);
-        validateMethods.put("agglomeration", commandValidator::validateAgglomerationInput);
-        validateMethods.put("government", commandValidator::validateRusGovernmentInput);
-        validateMethods.put("height", commandValidator::validateHeightInput);
-        validateMethods.put("birthday", commandValidator::validateBirthdayInput);
-
+        validateMethods.put(
+                City.FieldNames.NAME.getTitle(), commandValidator::validateNameInput);
+        validateMethods.put(
+                City.FieldNames.X.getTitle(), commandValidator::validateXCoordInput);
+        validateMethods.put(
+                City.FieldNames.Y.getTitle(), commandValidator::validateYCoordInput);
+        validateMethods.put(
+                City.FieldNames.AREA.getTitle(), commandValidator::validateAreaInput
+        );
+        validateMethods.put(
+                City.FieldNames.POPULATION.getTitle(), commandValidator::validatePopulationInput);
+        validateMethods.put(
+                City.FieldNames.METERS_ABOVE_SEA_LEVEL.getTitle(),
+                commandValidator::validateMetersAboveSeaLevelInput
+        );
+        validateMethods.put(
+                City.FieldNames.POPULATION_DENSITY.getTitle(),
+                commandValidator::validatePopulationDensityInput
+        );
+        validateMethods.put(
+                City.FieldNames.AGGLOMERATION.getTitle(),
+                commandValidator::validateAgglomerationInput
+        );
+        validateMethods.put(
+                City.FieldNames.GOVERNMENT.getTitle(),
+                commandValidator::validateRusGovernmentInput
+        );
+        validateMethods.put(
+                City.FieldNames.HEIGHT.getTitle(), commandValidator::validateHeightInput);
+        validateMethods.put(
+                City.FieldNames.BIRTHDAY.getTitle(),
+                commandValidator::validateBirthdayInput
+        );
         return validateMethods;
     }
 
     private Map<String, Consumer<String>> buildMapOfDtoFieldSetters() {
-        Map<String, Consumer<String>> dtoFieldSetters = new HashMap<>();
+        Map<String, Consumer<String>> setters = new HashMap<>();
 
-        dtoFieldSetters.put("name", name -> city.setName(name));
-        dtoFieldSetters.put("x",
+        setters.put(City.FieldNames.NAME.getTitle(), name -> city.setName(name));
+        setters.put(City.FieldNames.X.getTitle(),
                 x -> city.getCoordinates().setX(Double.parseDouble(x)));
-        dtoFieldSetters.put("y",
+        setters.put(City.FieldNames.Y.getTitle(),
                 y -> city.getCoordinates().setY(Float.parseFloat(y)));
-        dtoFieldSetters.put("area", area -> city.setArea(Long.valueOf(area)));
-        dtoFieldSetters.put("population",
+        setters.put(City.FieldNames.AREA.getTitle(),
+                area -> city.setArea(Long.valueOf(area)));
+        setters.put(City.FieldNames.POPULATION.getTitle(),
                 popul -> city.setPopulation(Integer.valueOf(popul)));
-        dtoFieldSetters.put("metersAboveSeaLevel",
+        setters.put(City.FieldNames.METERS_ABOVE_SEA_LEVEL.getTitle(),
                 meters -> city.setMetersAboveSeaLevel(
                         (meters != null) ? Float.valueOf(meters) : null
                 )
         );
-        dtoFieldSetters.put("populationDensity",
+        setters.put(City.FieldNames.POPULATION_DENSITY.getTitle(),
                 popDens -> city.setPopulationDensity(Long.parseLong(popDens)));
-        dtoFieldSetters.put("agglomeration",
+        setters.put(City.FieldNames.AGGLOMERATION.getTitle(),
                 aggl -> city.setAgglomeration(
                         (aggl != null) ? Integer.valueOf(aggl) : null
                 )
         );
-        dtoFieldSetters.put("government",
+        setters.put(City.FieldNames.GOVERNMENT.getTitle(),
                 gov -> city.setGovernment(Government.fromRussianString(gov)));
-        dtoFieldSetters.put("height",
+        setters.put(City.FieldNames.HEIGHT.getTitle(),
                 height -> city.getGovernor().setHeight(Double.parseDouble(height)));
-        dtoFieldSetters.put("birthday",
+        setters.put(City.FieldNames.BIRTHDAY.getTitle(),
                 birthday ->
                 {
                     if (birthday != null) {
@@ -315,7 +329,6 @@ public abstract class AbstractAddCityCommand implements Command {
                     }
                 }
         );
-
-        return dtoFieldSetters;
+        return setters;
     }
 }
