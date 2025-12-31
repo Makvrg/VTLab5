@@ -19,7 +19,7 @@ import java.util.Optional;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class CollectionServiceTest {
+class CollectionServiceTest {
 
     @Mock
     private CollectionRepository collectionRepository;
