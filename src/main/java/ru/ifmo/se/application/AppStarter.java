@@ -1,6 +1,6 @@
 package ru.ifmo.se.application;
 
-import ru.ifmo.se.io.output.print.Messages;
+import ru.ifmo.se.io.output.print.CollectionActionsMessages;
 
 import java.io.IOException;
 
@@ -19,7 +19,7 @@ public class AppStarter implements Starter {
             appCompositionRoot.getCommandInput().initialize();
         } catch (IOException e) {
             appCompositionRoot.getPrinter().forcePrintln(
-                    Messages.CITY_INIT_OPEN_FILE_EXC
+                    CollectionActionsMessages.CITY_INIT_OPEN_FILE_EXC
                             + e.getMessage()
             );
         }

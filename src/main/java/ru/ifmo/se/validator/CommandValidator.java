@@ -11,36 +11,38 @@ import java.util.Date;
 
 public class CommandValidator {
 
-    private static final double MAX_COORD_X = 579;
+    private static final double MAX_X_COORD = 579;
+    private static final String DATE_PATTERN = "dd-MM-yyyy HH:mm:ss";
 
     public void validateTypedIdInput(Long id) {
         if (id < 0) {
             throw new InputFieldValidationException(
-                    "Id города должен быть неотрицательным");
+                    ValidatorMessages.ID_MUST_BE_NON_NEGATIVE);
         }
     }
 
     public void validateTypedCreationDateInput(Date creationDate) {
         if (creationDate == null) {
             throw new InputFieldValidationException(
-                    "Дата и время основания города "
-                            + "должны иметь формат дд-ММ-гггг ЧЧ:мм:сс");
+                    ValidatorMessages.CREATE_DATE_FORMAT_EXC);
         }
     }
 
     public void validateTypedXCoordInput(double xCoord) {
         if (Double.isNaN(xCoord)) {
             throw new InputFieldValidationException(
-                    "Координата x должна быть вещественным числом");
+                    ValidatorMessages.X_COORD_MUST_BE_REAL_NUM);
         }
         if (Double.isInfinite(xCoord)) {
             throw new InputFieldValidationException(
-                    "Координата x по модулю не должна превышать максимум числа в памяти");
+                    ValidatorMessages.ABS_X_COORD_MUST_BE_LESS_MAX);
         }
-        if (xCoord > MAX_COORD_X) {
+        if (xCoord > MAX_X_COORD) {
             throw new InputFieldValidationException(
-                    "Координата x не должна быть больше "
-                            + MAX_COORD_X
+                    String.format(
+                            ValidatorMessages.X_COORD_MUST_BE_LESS_MAX,
+                            MAX_X_COORD
+                    )
             );
         }
     }
@@ -48,25 +50,25 @@ public class CommandValidator {
     public void validateTypedYCoordInput(float yCoord) {
         if (Float.isNaN(yCoord)) {
             throw new InputFieldValidationException(
-                    "Координата y должна быть вещественным числом");
+                    ValidatorMessages.Y_COORD_MUST_BE_REAL_NUM);
         }
         if (Float.isInfinite(yCoord)) {
             throw new InputFieldValidationException(
-                    "Координата y по модулю не должна превышать максимум числа в памяти");
+                    ValidatorMessages.ABS_Y_COORD_MUST_BE_LESS_MAX);
         }
     }
 
     public void validateTypedAreaInput(Long area) {
         if (area <= 0) {
             throw new InputFieldValidationException(
-                    "Площадь города должна быть больше 0");
+                    ValidatorMessages.AREA_MUST_BE_MORE_ZERO);
         }
     }
 
     public void validateTypedPopulationInput(Integer population) {
         if (population <= 0) {
             throw new InputFieldValidationException(
-                    "Численность населения города должна быть больше 0");
+                    ValidatorMessages.POPULATION_MUST_BE_MORE_ZERO);
         }
     }
 
@@ -74,11 +76,11 @@ public class CommandValidator {
         if (metersAboveSeaLevel != null) {
             if (metersAboveSeaLevel.isNaN()) {
                 throw new InputFieldValidationException(
-                        "Число метров над уровнем моря должно быть вещественным числом");
+                        ValidatorMessages.METERS_ABOVE_SEA_LEVEL_MUST_BE_REAL_NUM);
             }
             if (metersAboveSeaLevel.isInfinite()) {
                 throw new InputFieldValidationException(
-                        "Число метров над уровнем моря не должно превышать максимум числа в памяти");
+                        ValidatorMessages.ABS_METERS_ABOVE_SEA_LEVEL_MUST_BE_LESS_MAX);
             }
         }
     }
@@ -86,63 +88,65 @@ public class CommandValidator {
     public void validateTypedPopulationDensityInput(long populationDensity) {
         if (populationDensity <= 0) {
             throw new InputFieldValidationException(
-                    "Плотность населения города должна быть больше 0");
+                    ValidatorMessages.POPULATION_DENSITY_MUST_BE_MORE_ZERO);
         }
     }
 
     public void validateTypedGovernmentInput(Government government) {
         if (government == null) {
             throw new InputFieldValidationException(
-                    "Тип правления города должен быть одним из предложенных");
+                    ValidatorMessages.GOVERNMENT_MUST_BE_IN_ENUM);
         }
     }
 
     public void validateTypedHeightInput(double height) {
         if (Double.isNaN(height)) {
             throw new InputFieldValidationException(
-                    "Рост губернатора города должен быть вещественным числом в метрах");
+                    ValidatorMessages.HEIGHT_MUST_BE_REAL_NUM);
         }
         if (Double.isInfinite(height)) {
             throw new InputFieldValidationException(
-                    "Рост губернатора города не должен превышать максимум числа в памяти");
+                    ValidatorMessages.ABS_HEIGHT_MUST_BE_LESS_MAX);
         }
         if (height <= 0) {
             throw new InputFieldValidationException(
-                    "Рост губернатора города должен быть больше 0");
+                    ValidatorMessages.HEIGHT_MUST_BE_MORE_ZERO);
         }
     }
 
     public void validateNameInput(String name) {
         if (name == null || name.isBlank()) {
             throw new InputFieldValidationException(
-                    "Название города не должно быть пустым");
+                    ValidatorMessages.NAME_MUST_BE_NON_BLANK);
         }
     }
 
     public void validateXCoordInput(String xCoord) {
         if (xCoord == null || xCoord.isBlank()) {
             throw new InputFieldValidationException(
-                    "Координата x должна быть вещественным числом");
+                    ValidatorMessages.X_COORD_MUST_BE_REAL_NUM);
         }
         double typedX;
         try {
             typedX = Double.parseDouble(xCoord);
         } catch (NumberFormatException e) {
             throw new InputFieldValidationException(
-                    "Координата x должна быть вещественным числом");
+                    ValidatorMessages.X_COORD_MUST_BE_REAL_NUM);
         }
         if (Double.isNaN(typedX)) {
             throw new InputFieldValidationException(
-                    "Координата x должна быть вещественным числом");
+                    ValidatorMessages.X_COORD_MUST_BE_REAL_NUM);
         }
         if (Double.isInfinite(typedX)) {
             throw new InputFieldValidationException(
-                    "Координата x по модулю не должна превышать максимум числа в памяти");
+                    ValidatorMessages.ABS_X_COORD_MUST_BE_LESS_MAX);
         }
-        if (typedX > MAX_COORD_X) {
+        if (typedX > MAX_X_COORD) {
             throw new InputFieldValidationException(
-                    "Координата x не должна быть больше "
-                            + MAX_COORD_X
+                    String.format(
+                            ValidatorMessages.X_COORD_MUST_BE_LESS_MAX,
+                            MAX_X_COORD
+                    )
             );
         }
     }
@@ -150,56 +154,56 @@ public class CommandValidator {
     public void validateYCoordInput(String yCoord) {
         if (yCoord == null || yCoord.isBlank()) {
             throw new InputFieldValidationException(
-                    "Координата y должна быть вещественным числом");
+                    ValidatorMessages.Y_COORD_MUST_BE_REAL_NUM);
         }
         float typedY;
         try {
             typedY = Float.parseFloat(yCoord);
         } catch (NumberFormatException e) {
             throw new InputFieldValidationException(
-                    "Координата y должна быть вещественным числом");
+                    ValidatorMessages.Y_COORD_MUST_BE_REAL_NUM);
         }
         if (Float.isNaN(typedY)) {
             throw new InputFieldValidationException(
-                    "Координата y должна быть вещественным числом");
+                    ValidatorMessages.Y_COORD_MUST_BE_REAL_NUM);
         }
         if (Float.isInfinite(typedY)) {
             throw new InputFieldValidationException(
-                    "Координата y по модулю не должна превышать максимум числа в памяти");
+                    ValidatorMessages.ABS_Y_COORD_MUST_BE_LESS_MAX);
         }
     }
 
     public void validateAreaInput(String area) {
         if (area == null || area.isBlank()) {
             throw new InputFieldValidationException(
-                    "Площадь города должна быть целым числом");
+                    ValidatorMessages.AREA_MUST_BE_INTEGER);
         }
         try {
             Long.parseLong(area);
         } catch (NumberFormatException e) {
             throw new InputFieldValidationException(
-                    "Площадь города должна быть целым числом");
+                    ValidatorMessages.AREA_MUST_BE_INTEGER);
         }
         if (Long.parseLong(area) <= 0) {
             throw new InputFieldValidationException(
-                    "Площадь города должна быть больше 0");
+                    ValidatorMessages.AREA_MUST_BE_MORE_ZERO);
         }
     }
 
     public void validatePopulationInput(String population) {
         if (population == null || population.isBlank()) {
             throw new InputFieldValidationException(
-                    "Численность населения города должна быть целым числом");
+                    ValidatorMessages.POPULATION_MUST_BE_INTEGER);
         }
         try {
             Integer.parseInt(population);
         } catch (NumberFormatException e) {
             throw new InputFieldValidationException(
-                    "Численность населения города должна быть целым числом");
+                    ValidatorMessages.POPULATION_MUST_BE_INTEGER);
         }
         if (Integer.parseInt(population) <= 0) {
             throw new InputFieldValidationException(
-                    "Численность населения города должна быть больше 0");
+                    ValidatorMessages.POPULATION_MUST_BE_MORE_ZERO);
         }
     }
 
@@ -210,15 +214,15 @@ public class CommandValidator {
                 typedMeters = Float.parseFloat(metersAboveSeaLevel);
             } catch (NumberFormatException e) {
                 throw new InputFieldValidationException(
-                        "Число метров над уровнем моря должно быть вещественным числом");
+                        ValidatorMessages.METERS_ABOVE_SEA_LEVEL_MUST_BE_REAL_NUM);
             }
             if (Float.isNaN(typedMeters)) {
                 throw new InputFieldValidationException(
-                        "Число метров над уровнем моря должно быть вещественным числом");
+                        ValidatorMessages.METERS_ABOVE_SEA_LEVEL_MUST_BE_REAL_NUM);
             }
             if (Float.isInfinite(typedMeters)) {
                 throw new InputFieldValidationException(
-                        "Число метров над уровнем моря не должно превышать максимум числа в памяти");
+                        ValidatorMessages.ABS_METERS_ABOVE_SEA_LEVEL_MUST_BE_LESS_MAX);
             }
         }
     }
@@ -226,17 +230,17 @@ public class CommandValidator {
     public void validatePopulationDensityInput(String populationDensity) {
         if (populationDensity == null || populationDensity.isBlank()) {
             throw new InputFieldValidationException(
-                    "Плотность населения города должна быть целым числом");
+                    ValidatorMessages.POPULATION_DENSITY_MUST_BE_INTEGER);
         }
         try {
             Long.parseLong(populationDensity);
         } catch (NumberFormatException e) {
             throw new InputFieldValidationException(
-                    "Плотность населения города должна быть целым числом");
+                    ValidatorMessages.POPULATION_DENSITY_MUST_BE_INTEGER);
         }
         if (Long.parseLong(populationDensity) <= 0) {
             throw new InputFieldValidationException(
-                    "Плотность населения города должна быть больше 0");
+                    ValidatorMessages.POPULATION_MUST_BE_MORE_ZERO);
         }
     }
 
@@ -246,7 +250,7 @@ public class CommandValidator {
                 Integer.parseInt(agglomeration);
             } catch (NumberFormatException e) {
                 throw new InputFieldValidationException(
-                        "Численность населения агломерации города должна быть целым числом");
+                        ValidatorMessages.AGGLOMERATION_MUST_BE_INTEGER);
             }
         }
     }
@@ -258,33 +262,33 @@ public class CommandValidator {
                           .toList()
                           .contains(government)) {
             throw new InputFieldValidationException(
-                    "Тип правления города должен быть одним из предложенных");
+                    ValidatorMessages.GOVERNMENT_MUST_BE_IN_ENUM);
         }
     }
 
     public void validateHeightInput(String height) {
         if (height == null || height.isBlank()) {
             throw new InputFieldValidationException(
-                    "Рост губернатора города должен быть вещественным числом в метрах");
+                    ValidatorMessages.HEIGHT_MUST_BE_REAL_NUM);
         }
         double typedHeight;
         try {
             typedHeight = Double.parseDouble(height);
         } catch (NumberFormatException e) {
             throw new InputFieldValidationException(
-                    "Рост губернатора города должен быть вещественным числом в метрах");
+                    ValidatorMessages.HEIGHT_MUST_BE_REAL_NUM);
         }
         if (Double.isNaN(typedHeight)) {
             throw new InputFieldValidationException(
-                    "Рост губернатора города должен быть вещественным числом в метрах");
+                    ValidatorMessages.HEIGHT_MUST_BE_REAL_NUM);
         }
         if (Double.isInfinite(typedHeight)) {
             throw new InputFieldValidationException(
-                    "Рост губернатора города не должен превышать максимум числа в памяти");
+                    ValidatorMessages.ABS_HEIGHT_MUST_BE_LESS_MAX);
         }
         if (Double.parseDouble(height) <= 0) {
             throw new InputFieldValidationException(
-                    "Рост губернатора города должен быть больше 0");
+                    ValidatorMessages.HEIGHT_MUST_BE_MORE_ZERO);
         }
     }
 
@@ -292,14 +296,12 @@ public class CommandValidator {
         if (birthday != null) {
             try {
                 SimpleDateFormat sdf =
-                        new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+                        new SimpleDateFormat(DATE_PATTERN);
                 sdf.setLenient(false);
                 sdf.parse(birthday);
             } catch (ParseException e) {
                 throw new InputFieldValidationException(
-                        "Дата и время рождения губернатора города "
-                                + "должны иметь формат дд-ММ-гггг ЧЧ:мм:сс"
-                );
+                        ValidatorMessages.BIRTHDAY_FORMAT_EXC);
             }
         }
     }
@@ -310,12 +312,12 @@ public class CommandValidator {
                 Long.parseLong(paramRawData.getId());
             } catch (NumberFormatException e) {
                 throw new ParamRawDataValidationException(
-                        "Аргумент id должен быть целым числом"
+                        ValidatorMessages.ARGUMENT_ID_MUST_BE_INTEGER
                 );
             }
             if (Long.parseLong(paramRawData.getId()) < 0) {
                 throw new ParamRawDataValidationException(
-                        "Аргумент id должен быть положительным числом"
+                        ValidatorMessages.ARGUMENT_ID_MUST_BE_NON_NEGATIVE
                 );
             }
         }
@@ -323,32 +325,30 @@ public class CommandValidator {
 
     public void validateRemoveById(String id) {
         if (id == null) {
-            throw new RemoveByIdValidationException("Не передан параметр id");
+            throw new RemoveByIdValidationException(
+                    ValidatorMessages.PARAMETER_ID_NOT_PASSED);
         }
         try {
             Long.valueOf(id);
         } catch (NumberFormatException e) {
             throw new RemoveByIdValidationException(
-                    "Переданный аргумент id не является целым числом"
-            );
+                    ValidatorMessages.ARGUMENT_ID_MUST_BE_INTEGER);
         }
     }
 
     public void validateRemoveAllByPopulationDensity(String populationDensity) {
         if (populationDensity == null) {
             throw new RemoveAllByPopulationDensityValidationException(
-                    "Не передан параметр populationDensity"
-            );
+                    ValidatorMessages.PARAMETER_POPULATION_DENSITY_NOT_PASSED);
         }
         try {
             if (Long.parseLong(populationDensity) <= 0) {
                 throw new RemoveAllByPopulationDensityValidationException(
-                        "Плотность населения города должна быть больше 0"
-                );
+                        ValidatorMessages.POPULATION_DENSITY_MUST_BE_MORE_ZERO);
             }
         } catch (NumberFormatException e) {
             throw new RemoveAllByPopulationDensityValidationException(
-                    "Плотность населения города должна быть целым числом"
+                    ValidatorMessages.POPULATION_DENSITY_MUST_BE_INTEGER
             );
         }
     }
@@ -356,25 +356,23 @@ public class CommandValidator {
     public void validateFilterLessThanPopulationDensity(String populationDensity) {
         if (populationDensity == null) {
             throw new FilterLessThanPopulationDensityValidationException(
-                    "Не передан параметр populationDensity"
-            );
+                    ValidatorMessages.PARAMETER_POPULATION_DENSITY_NOT_PASSED);
         }
         try {
             if (Long.parseLong(populationDensity) <= 0) {
                 throw new FilterLessThanPopulationDensityValidationException(
-                        "Плотность населения города должна быть больше 0"
-                );
+                        ValidatorMessages.POPULATION_DENSITY_MUST_BE_MORE_ZERO);
             }
         } catch (NumberFormatException e) {
             throw new FilterLessThanPopulationDensityValidationException(
-                    "Плотность населения города должна быть целым числом"
-            );
+                    ValidatorMessages.POPULATION_DENSITY_MUST_BE_INTEGER);
         }
     }
 
     public void validateExecuteScript(String fileName) {
         if (fileName == null) {
-            throw new ExecuteScriptValidateException("Не введено название файла");
+            throw new ExecuteScriptValidateException(
+                    ValidatorMessages.PARAMETER_FILE_NAME_NOT_PASSED);
         }
     }
 }

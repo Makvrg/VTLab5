@@ -71,84 +71,84 @@ public class CommandInvoker {
             Printer printer,
             EnvironmentProvider environmentProvider,
             CityJsonWriter fileWriter) {
-        Map<String, Command> commands = new LinkedHashMap<>();
+        Map<String, Command> comms = new LinkedHashMap<>();
         Command currentCommand;
         Function<Command, String> getCommandName = 
                 cmd -> cmd.getCommandSignature().split(" ")[0];
         
         currentCommand = new UnknownCommand(printer);
-        commands.put(getCommandName.apply(currentCommand), currentCommand);
+        comms.put(getCommandName.apply(currentCommand), currentCommand);
 
         keyOfUnknownCommand = getCommandName.apply(currentCommand);
         
-        currentCommand = new HelpCommand(printer, commands.values());
-        commands.put(getCommandName.apply(currentCommand), currentCommand);
+        currentCommand = new HelpCommand(printer, comms.values());
+        comms.put(getCommandName.apply(currentCommand), currentCommand);
 
         currentCommand = new ExitCommand(collectionService, printer);
-        commands.put(getCommandName.apply(currentCommand), currentCommand);
+        comms.put(getCommandName.apply(currentCommand), currentCommand);
 
         currentCommand = new InfoCommand(collectionService, printer);
-        commands.put(getCommandName.apply(currentCommand), currentCommand);
+        comms.put(getCommandName.apply(currentCommand), currentCommand);
 
         currentCommand = new AddCityCommand(
                 collectionService, commandValidator,
                 dataTyper, printer
         );
-        commands.put(getCommandName.apply(currentCommand), currentCommand);
+        comms.put(getCommandName.apply(currentCommand), currentCommand);
 
         currentCommand = new ShowCommand(collectionService, printer, formatter);
-        commands.put(getCommandName.apply(currentCommand), currentCommand);
+        comms.put(getCommandName.apply(currentCommand), currentCommand);
 
         currentCommand = new RemoveByIdCommand(
                 collectionService, commandValidator, printer
         );
-        commands.put(getCommandName.apply(currentCommand), currentCommand);
+        comms.put(getCommandName.apply(currentCommand), currentCommand);
 
         currentCommand = new ClearCommand(collectionService, printer);
-        commands.put(getCommandName.apply(currentCommand), currentCommand);
+        comms.put(getCommandName.apply(currentCommand), currentCommand);
 
         currentCommand = new SaveCommand(
                 collectionService, printer, environmentProvider, fileWriter
         );
-        commands.put(getCommandName.apply(currentCommand), currentCommand);
+        comms.put(getCommandName.apply(currentCommand), currentCommand);
 
         currentCommand = new HeadCommand(collectionService, printer, formatter);
-        commands.put(getCommandName.apply(currentCommand), currentCommand);
+        comms.put(getCommandName.apply(currentCommand), currentCommand);
 
         currentCommand = new RemoveHeadCommand(collectionService, printer, formatter);
-        commands.put(getCommandName.apply(currentCommand), currentCommand);
+        comms.put(getCommandName.apply(currentCommand), currentCommand);
 
         currentCommand = new AddIfMaxCityCommand(
                 collectionService, commandValidator,
                 dataTyper, printer
         );
-        commands.put(getCommandName.apply(currentCommand), currentCommand);
+        comms.put(getCommandName.apply(currentCommand), currentCommand);
 
         currentCommand = new RemoveAllByPopulationDensityCommand(
                 collectionService, commandValidator, printer
         );
-        commands.put(getCommandName.apply(currentCommand), currentCommand);
+        comms.put(getCommandName.apply(currentCommand), currentCommand);
 
         currentCommand = new FilterLessThanPopulationDensityCommand(
                 collectionService, commandValidator, printer, formatter
         );
-        commands.put(getCommandName.apply(currentCommand), currentCommand);
+        comms.put(getCommandName.apply(currentCommand), currentCommand);
 
         currentCommand = new PrintFieldDescendingGovernmentCommand(
                 collectionService, printer, formatter);
-        commands.put(getCommandName.apply(currentCommand), currentCommand);
+        comms.put(getCommandName.apply(currentCommand), currentCommand);
 
         currentCommand = new UpdateByIdCityCommand(
                 collectionService, commandValidator,
                 dataTyper, printer
         );
-        commands.put(getCommandName.apply(currentCommand), currentCommand);
+        comms.put(getCommandName.apply(currentCommand), currentCommand);
 
         currentCommand = new ExecuteScriptCommand(
                 commandValidator, inputStreamProvider,
                 readerFactory, commandInputReaders, printer
         );
-        commands.put(getCommandName.apply(currentCommand), currentCommand);
-        return commands;
+        comms.put(getCommandName.apply(currentCommand), currentCommand);
+        return comms;
     }
 }

@@ -1,8 +1,8 @@
 package ru.ifmo.se.io.output.print;
 
-public class Messages {
+public class CollectionActionsMessages {
 
-    private Messages() {
+    private CollectionActionsMessages() {
     }
 
     public static final String CITY_INIT_VALID_EXC = """
