@@ -1,12 +1,15 @@
 package ru.ifmo.se.commands;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import ru.ifmo.se.io.input.readers.Reader;
 
-public interface Command {
+@Getter
+@RequiredArgsConstructor
+public abstract class Command {
 
-    String getCommandSignature();
+    protected final String commandSignature;
+    protected final String commandDescription;
 
-    String getCommandDescription();
-
-    void execute(String[] inputArgs, Reader reader);
+    public abstract void execute(String[] inputArgs, Reader reader);
 }

@@ -3,7 +3,6 @@ package ru.ifmo.se.io.input.readers;
 public class InputTextHandler {
 
     private InputTextHandler() {
-        throw new AssertionError("Нельзя создавать объекты этого класса");
     }
 
     public static String[] parseArguments(String line) {

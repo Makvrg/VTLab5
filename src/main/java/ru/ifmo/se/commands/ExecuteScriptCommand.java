@@ -1,6 +1,5 @@
 package ru.ifmo.se.commands;
 
-import lombok.RequiredArgsConstructor;
 import ru.ifmo.se.io.input.readers.Reader;
 import ru.ifmo.se.io.input.readers.factory.ReaderCreateException;
 import ru.ifmo.se.io.input.readers.factory.ReaderFactory;
@@ -11,15 +10,7 @@ import ru.ifmo.se.validator.exceptions.ExecuteScriptValidateException;
 
 import java.util.List;
 
-@RequiredArgsConstructor
-public class ExecuteScriptCommand implements Command {
-
-    private static final String COMMAND_SIGNATURE = "execute_script file_name";
-
-    private static final String COMMAND_DESCRIPTION =
-            "считать и исполнить скрипт из указанного файла. В скрипте содержатся "
-                    + "команды в таком же виде, в котором их вводит пользователь "
-                    + "в интерактивном режиме.";
+public class ExecuteScriptCommand extends Command {
 
     private final CommandValidator commandValidator;
     private final InputStreamProvider inputStreamProvider;
@@ -27,14 +18,21 @@ public class ExecuteScriptCommand implements Command {
     private final List<Reader> commandInputReaders;
     private final Printer printer;
 
-    @Override
-    public String getCommandSignature() {
-        return COMMAND_SIGNATURE;
-    }
-
-    @Override
-    public String getCommandDescription() {
-        return COMMAND_DESCRIPTION;
+    public ExecuteScriptCommand(CommandValidator commandValidator,
+                                InputStreamProvider inputStreamProvider,
+                                ReaderFactory readerFactory,
+                                List<Reader> commandInputReaders,
+                                Printer printer) {
+        super("execute_script file_name",
+                "считать и исполнить скрипт из указанного файла. В скрипте содержатся "
+                        + "команды в таком же виде, в котором их вводит пользователь "
+                        + "в интерактивном режиме."
+        );
+        this.commandValidator = commandValidator;
+        this.inputStreamProvider = inputStreamProvider;
+        this.readerFactory = readerFactory;
+        this.commandInputReaders = commandInputReaders;
+        this.printer = printer;
     }
 
     @Override

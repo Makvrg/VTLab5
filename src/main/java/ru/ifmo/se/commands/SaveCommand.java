@@ -1,6 +1,5 @@
 package ru.ifmo.se.commands;
 
-import lombok.RequiredArgsConstructor;
 import ru.ifmo.se.io.input.env.EnvironmentProvider;
 import ru.ifmo.se.io.input.readers.Reader;
 import ru.ifmo.se.io.output.json.CityJsonWriter;
@@ -10,26 +9,22 @@ import ru.ifmo.se.service.CollectionService;
 
 import java.io.IOException;
 
-@RequiredArgsConstructor
-public class SaveCommand implements Command {
-
-    private static final String COMMAND_SIGNATURE = "save";
-
-    private static final String COMMAND_DESCRIPTION = "сохранить коллекцию в файл";
+public class SaveCommand extends Command {
 
     private final CollectionService collectionService;
     private final Printer printer;
     private final EnvironmentProvider environmentProvider;
     private final CityJsonWriter fileWriter;
 
-    @Override
-    public String getCommandSignature() {
-        return COMMAND_SIGNATURE;
-    }
-
-    @Override
-    public String getCommandDescription() {
-        return COMMAND_DESCRIPTION;
+    public SaveCommand(CollectionService collectionService,
+                       Printer printer,
+                       EnvironmentProvider environmentProvider,
+                       CityJsonWriter fileWriter) {
+        super("save", "сохранить коллекцию в файл");
+        this.collectionService = collectionService;
+        this.printer = printer;
+        this.environmentProvider = environmentProvider;
+        this.fileWriter = fileWriter;
     }
 
     @Override

@@ -1,28 +1,18 @@
 package ru.ifmo.se.commands;
 
-import lombok.RequiredArgsConstructor;
 import ru.ifmo.se.io.input.readers.Reader;
 import ru.ifmo.se.io.output.print.Printer;
 import ru.ifmo.se.service.CollectionService;
 
-@RequiredArgsConstructor
-public class ClearCommand implements Command {
-
-    private static final String COMMAND_SIGNATURE = "clear";
-
-    private static final String COMMAND_DESCRIPTION = "очистить коллекцию";
+public class ClearCommand extends Command {
 
     private final CollectionService collectionService;
     private final Printer printer;
 
-    @Override
-    public String getCommandSignature() {
-        return COMMAND_SIGNATURE;
-    }
-
-    @Override
-    public String getCommandDescription() {
-        return COMMAND_DESCRIPTION;
+    public ClearCommand(CollectionService collectionService, Printer printer) {
+        super("clear", "очистить коллекцию");
+        this.collectionService = collectionService;
+        this.printer = printer;
     }
 
     @Override

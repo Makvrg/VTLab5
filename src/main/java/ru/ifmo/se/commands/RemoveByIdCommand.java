@@ -1,6 +1,5 @@
 package ru.ifmo.se.commands;
 
-import lombok.RequiredArgsConstructor;
 import ru.ifmo.se.io.input.readers.Reader;
 import ru.ifmo.se.io.output.print.Printer;
 import ru.ifmo.se.service.CollectionService;
@@ -8,26 +7,19 @@ import ru.ifmo.se.service.exceptions.RemoveByIdIllegalStateException;
 import ru.ifmo.se.validator.CommandValidator;
 import ru.ifmo.se.validator.exceptions.RemoveByIdValidationException;
 
-@RequiredArgsConstructor
-public class RemoveByIdCommand implements Command {
-
-    private static final String COMMAND_SIGNATURE = "remove_by_id id";
-
-    private static final String COMMAND_DESCRIPTION =
-            "удалить элемент из коллекции по его id";
+public class RemoveByIdCommand extends Command {
 
     private final CollectionService collectionService;
     private final CommandValidator commandValidator;
     private final Printer printer;
 
-    @Override
-    public String getCommandSignature() {
-        return COMMAND_SIGNATURE;
-    }
-
-    @Override
-    public String getCommandDescription() {
-        return COMMAND_DESCRIPTION;
+    public RemoveByIdCommand(CollectionService collectionService,
+                             CommandValidator commandValidator,
+                             Printer printer) {
+        super("remove_by_id id", "удалить элемент из коллекции по его id");
+        this.collectionService = collectionService;
+        this.commandValidator = commandValidator;
+        this.printer = printer;
     }
 
     @Override

@@ -3,7 +3,6 @@ package ru.ifmo.se.io.output.print;
 public class Messages {
 
     private Messages() {
-        throw new AssertionError("Нельзя создавать объекты этого класса");
     }
 
     public static final String CITY_INIT_VALID_EXC = """

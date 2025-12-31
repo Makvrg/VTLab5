@@ -20,11 +20,14 @@ import ru.ifmo.se.validator.exceptions.ParamRawDataValidationException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public abstract class AbstractAddCityCommand implements Command {
+public abstract class AbstractAddCityCommand extends Command {
 
     private Reader reader;
 
@@ -38,10 +41,14 @@ public abstract class AbstractAddCityCommand implements Command {
     private final Map<String, Consumer<String>> inputValidateMethods;
     private final Map<String, Consumer<String>> dtoFieldSetters;
 
-    protected AbstractAddCityCommand(CollectionService collectionService,
-                                     CommandValidator commandValidator,
-                                     DataTyper dataTyper,
-                                     Printer printer) {
+    protected AbstractAddCityCommand(
+            String commandSignature,
+            String commandDescription,
+            CollectionService collectionService,
+            CommandValidator commandValidator,
+            DataTyper dataTyper,
+            Printer printer) {
+        super(commandSignature, commandDescription);
         this.collectionService = collectionService;
         this.commandValidator = commandValidator;
         this.dataTyper = dataTyper;
